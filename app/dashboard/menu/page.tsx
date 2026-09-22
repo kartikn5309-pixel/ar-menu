@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { FormEvent, ReactNode } from "react";
@@ -75,7 +76,7 @@ export default function MenuManagementPage() {
     ]);
     if (categoryResult.error || itemResult.error) { setError(categoryResult.error?.message ?? itemResult.error?.message ?? "Could not load menu data."); return; }
     setCategories((categoryResult.data ?? []) as Category[]);
-    setItems((itemResult.data ?? []) as MenuItem[]);
+      setItems((itemResult.data ?? []) as MenuItem[]);
   }
 
   function notify(message: string) {

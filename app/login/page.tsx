@@ -1,8 +1,11 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+
+const PENDING_RESTAURANT_KEY = "ar-menu-pending-restaurant";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,7 +16,7 @@ export default function LoginPage() {
   async function handleLogin(e: FormEvent) {
   e.preventDefault();
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -21,6 +24,31 @@ export default function LoginPage() {
   if (error) {
     alert(error.message);
     return;
+  }
+
+  try {
+    const pendingName = window.localStorage.getItem(PENDING_RESTAURANT_KEY)?.trim();
+    if (pendingName && data.user) {
+      const { data: existingRestaurant, error: lookupError } = await supabase
+        .from("restaurants")
+        .select("id")
+        .eq("owner_id", data.user.id)
+        .maybeSingle();
+      if (lookupError) {
+        alert(lookupError.message);
+        return;
+      }
+      if (!existingRestaurant) {
+        const { error: profileError } = await supabase.from("restaurants").insert({ owner_id: data.user.id, name: pendingName });
+        if (profileError) {
+          alert(profileError.message);
+          return;
+        }
+      }
+      window.localStorage.removeItem(PENDING_RESTAURANT_KEY);
+    }
+  } catch {
+    // Continue login if browser storage is unavailable.
   }
 
 router.push("/dashboard");
@@ -85,6 +113,9 @@ router.push("/dashboard");
 
           <p className="text-xs text-slate-400 text-center mt-6">
             Secure restaurant portal
+          </p>
+          <p className="text-sm text-center mt-4 text-slate-500">
+            New restaurant? <Link href="/signup" className="font-semibold text-slate-900 hover:underline">Create Restaurant Account</Link>
           </p>
         </div>
       </div>

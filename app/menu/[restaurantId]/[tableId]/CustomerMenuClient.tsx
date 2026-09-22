@@ -8,6 +8,7 @@ type MenuItem = { id: string; category_id: string | null; name: string; descript
 type Category = { id: string; name: string };
 type CartLine = MenuItem & { quantity: number; notes: string };
 type OrderResult = { order_id: string; access_token: string };
+const ORDER_STORAGE_KEY = "ar-menu-orders";
 
 export default function CustomerMenuClient({ restaurantId, tableId, items, categories }: { restaurantId: string; tableId: string; items: MenuItem[]; categories: Category[] }) {
   const router = useRouter();
@@ -65,6 +66,17 @@ export default function CustomerMenuClient({ restaurantId, tableId, items, categ
       return;
     }
     const result = data as OrderResult;
+    try {
+      const stored = JSON.parse(window.localStorage.getItem(ORDER_STORAGE_KEY) ?? "[]") as unknown;
+      const orders = Array.isArray(stored) ? stored.filter((entry): entry is OrderResult => {
+        if (!entry || typeof entry !== "object") return false;
+        const candidate = entry as Partial<OrderResult>;
+        return typeof candidate.order_id === "string" && typeof candidate.access_token === "string";
+      }).filter((entry, index, entries) => entries.findIndex((candidate) => candidate.order_id === entry.order_id) === index) : [];
+      const nextOrders = orders.some((entry) => entry.order_id === result.order_id) ? orders : [...orders, result];
+      window.localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(nextOrders));
+    } catch {
+    }
     router.push(`/menu/order/${result.order_id}?token=${encodeURIComponent(result.access_token)}`);
   }
 
