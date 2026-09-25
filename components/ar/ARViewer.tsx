@@ -3,24 +3,26 @@
 import { useEffect, useRef, useState } from "react";
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
 
-declare global {
+type ModelViewerElementProps = DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> & {
+  src?: string;
+  poster?: string;
+  alt?: string;
+  "camera-controls"?: boolean;
+  "auto-rotate"?: boolean;
+  ar?: boolean;
+  "ar-modes"?: string;
+  "ar-scale"?: string;
+  "ar-placement"?: string;
+  "touch-action"?: string;
+  "shadow-intensity"?: string;
+  loading?: string;
+  reveal?: string;
+};
+
+declare module "react" {
   namespace JSX {
     interface IntrinsicElements {
-      "model-viewer": DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> & {
-        src?: string;
-        poster?: string;
-        alt?: string;
-        "camera-controls"?: boolean;
-        "auto-rotate"?: boolean;
-        ar?: boolean;
-        "ar-modes"?: string;
-        "ar-scale"?: string;
-        "ar-placement"?: string;
-        "touch-action"?: string;
-        "shadow-intensity"?: string;
-        loading?: string;
-        reveal?: string;
-      };
+      "model-viewer": ModelViewerElementProps;
     }
   }
 }
