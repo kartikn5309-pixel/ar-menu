@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 type PageProps = { params: Promise<{ restaurantId: string; tableId: string }> };
 type Category = { id: string; name: string; description: string | null; sort_order: number };
-type MenuItem = { id: string; category_id: string | null; name: string; description: string | null; price: number; image_url: string | null; is_veg: boolean; sort_order: number };
+type MenuItem = { id: string; category_id: string | null; name: string; description: string | null; price: number; image_url: string | null; model_url: string | null; has_3d_model: boolean; is_veg: boolean; sort_order: number };
 
 export default async function CustomerMenuPage({ params }: PageProps) {
   const { restaurantId, tableId } = await params;
@@ -56,7 +56,7 @@ export default async function CustomerMenuPage({ params }: PageProps) {
       .order("sort_order", { ascending: true }),
     supabase
       .from("menu_items")
-      .select("id, category_id, name, description, price, image_url, is_veg, sort_order")
+      .select("id, category_id, name, description, price, image_url, model_url, has_3d_model, is_veg, sort_order")
       .eq("restaurant_id", restaurantId)
       .eq("is_available", true)
       .order("sort_order", { ascending: true }),
