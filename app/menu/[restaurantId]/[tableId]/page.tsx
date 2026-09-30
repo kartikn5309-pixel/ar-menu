@@ -78,31 +78,110 @@ export default async function CustomerMenuPage({ params }: PageProps) {
   const categories = (categoryResult.data ?? []) as Category[];
   const items = (itemResult.data ?? []) as MenuItem[];
   return (
-    <main className="min-h-screen bg-[#fbfaf7] text-slate-950">
-      <header className="relative isolate overflow-hidden bg-[#172019] px-5 pb-9 pt-5 text-white sm:px-8 sm:pb-12">
-        {restaurant.cover_image_url && <div className="absolute inset-0 -z-10 bg-cover bg-center opacity-35" style={{ backgroundImage: `url("${restaurant.cover_image_url}")` }} />}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/20 via-[#172019]/65 to-[#172019]" />
-        <div className="mx-auto flex max-w-5xl items-center justify-between text-xs font-semibold uppercase tracking-[0.2em] text-white/65">
-          <span>AR MENU</span>
-          <span className="rounded-full border border-white/20 px-3 py-1.5 text-[10px] tracking-[0.16em]">Table {table.name || table.table_number}</span>
-        </div>
-        <div className="relative mx-auto mt-12 max-w-5xl sm:mt-20">
-          {restaurant.logo_url && <div role="img" aria-label={`${restaurant.name} logo`} className="mb-5 h-16 w-16 rounded-2xl border border-white/25 bg-cover bg-center shadow-2xl sm:h-20 sm:w-20" style={{ backgroundImage: `url("${restaurant.logo_url}")` }} />}
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-orange-300">Welcome to</p>
-          <h1 className="mt-3 max-w-2xl text-4xl font-bold tracking-tight sm:text-6xl">{restaurant.name}</h1>
-          {restaurant.description && <p className="mt-5 max-w-xl text-base leading-7 text-white/75 sm:text-lg">{restaurant.description}</p>}
-          <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/65">
-            {restaurant.address && <span>{restaurant.address}</span>}
-            {restaurant.phone && <a href={`tel:${restaurant.phone}`} className="underline decoration-white/30 underline-offset-4">{restaurant.phone}</a>}
+    <main className="min-h-screen bg-[#faf9f5] text-zinc-900">
+      {/* Restaurant Hero Header */}
+      <header className="relative isolate overflow-hidden bg-[#18181b] text-white">
+        {restaurant.cover_image_url && (
+          <div
+            className="absolute inset-0 -z-10 bg-cover bg-center opacity-30 mix-blend-overlay filter blur-[1px] scale-105 transition-transform duration-700"
+            style={{ backgroundImage: `url("${restaurant.cover_image_url}")` }}
+            aria-hidden="true"
+          />
+        )}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#18181b] via-[#18181b]/70 to-black/40" />
+
+        <div className="mx-auto max-w-5xl px-5 pt-6 pb-8 sm:px-8 sm:pb-12">
+          {/* Top Brand & Table Bar */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-orange-600 text-xs font-black tracking-wider text-white shadow-sm">
+                AR
+              </span>
+              <span className="text-xs font-bold tracking-[0.2em] text-white/80 uppercase">
+                Menu
+              </span>
+            </div>
+
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-white backdrop-blur-md shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Table {table.name || table.table_number}</span>
+            </div>
+          </div>
+
+          {/* Restaurant Details */}
+          <div className="mt-8 sm:mt-12 flex flex-col sm:flex-row items-start sm:items-end gap-5">
+            {restaurant.logo_url && (
+              <div
+                role="img"
+                aria-label={`${restaurant.name} logo`}
+                className="h-20 w-20 shrink-0 rounded-2xl border-2 border-white/25 bg-white bg-cover bg-center shadow-xl sm:h-24 sm:w-24"
+                style={{ backgroundImage: `url("${restaurant.logo_url}")` }}
+              />
+            )}
+
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-orange-400">
+                Welcome to
+              </p>
+              <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+                {restaurant.name}
+              </h1>
+
+              {restaurant.description && (
+                <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-zinc-300 sm:text-base">
+                  {restaurant.description}
+                </p>
+              )}
+
+              {(restaurant.address || restaurant.phone) && (
+                <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-zinc-400">
+                  {restaurant.address && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <svg className="h-3.5 w-3.5 text-orange-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M20 10c0 4.993-5.5 11.5-8 12-2.5-.5-8-7.007-8-12a8 8 0 0 1 16 0Z"/><circle cx={12} cy={10} r={3}/></svg>
+                      {restaurant.address}
+                    </span>
+                  )}
+                  {restaurant.phone && (
+                    <a
+                      href={`tel:${restaurant.phone}`}
+                      className="inline-flex items-center gap-1.5 text-zinc-300 hover:text-white underline decoration-zinc-600 underline-offset-4"
+                    >
+                      <svg className="h-3.5 w-3.5 text-orange-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+                      {restaurant.phone}
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="mx-auto max-w-5xl px-5 py-7 pb-28 sm:px-8 sm:py-12">
-        <CustomerMenuClient restaurantId={restaurantId} tableId={tableId} items={items} categories={categories} />
-        {items.length === 0 && <div className="rounded-3xl border border-dashed border-orange-200 bg-white px-6 py-16 text-center shadow-sm"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-orange-500">A little patience</p><h2 className="mt-3 text-2xl font-bold">Menu coming soon</h2><p className="mt-2 text-sm text-slate-500">There are no available items at the moment.</p></div>}
+      {/* Main Content Area */}
+      <div className="mx-auto max-w-5xl px-4 py-6 pb-36 sm:px-8 sm:py-10">
+        <CustomerMenuClient
+          restaurantId={restaurantId}
+          tableId={tableId}
+          items={items}
+          categories={categories}
+        />
+
+        {items.length === 0 && (
+          <div className="mt-8 rounded-3xl border border-dashed border-stone-300 bg-white p-12 text-center shadow-sm">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-2xl text-orange-600">
+              🍽️
+            </div>
+            <h2 className="mt-4 text-xl font-bold text-zinc-900">Menu coming soon</h2>
+            <p className="mt-2 text-sm text-zinc-500 max-w-md mx-auto">
+              This restaurant is curating their digital menu. Please check back shortly or ask a server for assistance.
+            </p>
+          </div>
+        )}
       </div>
-      <footer className="border-t border-slate-200 px-5 py-8 text-center text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Powered by AR MENU</footer>
+
+      <footer className="border-t border-stone-200/80 bg-white/50 px-5 py-8 text-center text-xs font-medium text-zinc-400">
+        Powered by <span className="font-semibold text-zinc-700">AR MENU</span> · Smart Digital Dining
+      </footer>
     </main>
   );
 }
@@ -117,15 +196,24 @@ function formatSupabaseError(error: { code?: string; message?: string; details?:
   };
 }
 
-function InvalidMenuLink({ message = "This table menu link is invalid or no longer active." }: { message?: string }) {
+function InvalidMenuLink({
+  message = "This table menu link is invalid or no longer active.",
+}: {
+  message?: string;
+}) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#fffaf5] px-5 text-center text-slate-900">
-      <section className="w-full max-w-md rounded-3xl border border-orange-100 bg-white p-8 shadow-sm sm:p-10">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-100 text-2xl text-orange-600">!</div>
-        <h1 className="mt-5 text-2xl font-bold">Menu link unavailable</h1>
-        <p className="mt-3 leading-7 text-slate-500">{message}</p>
-        <p className="mt-6 text-sm text-slate-400">Please scan the QR code at your table again or ask a member of staff for help.</p>
+    <main className="flex min-h-screen items-center justify-center bg-[#faf9f5] px-5 text-center text-zinc-900">
+      <section className="w-full max-w-md rounded-3xl border border-stone-200 bg-white p-8 shadow-xl sm:p-10">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-xl font-bold text-orange-600 border border-orange-200">
+          !
+        </div>
+        <h1 className="mt-5 text-2xl font-extrabold text-zinc-900">Menu Unavailable</h1>
+        <p className="mt-3 text-sm leading-relaxed text-zinc-500">{message}</p>
+        <div className="mt-6 rounded-2xl bg-stone-50 p-4 border border-stone-200/70 text-xs text-zinc-500">
+          Please rescan the QR code on your table or request assistance from the restaurant staff.
+        </div>
       </section>
     </main>
   );
 }
+
