@@ -248,5 +248,188 @@ body {
   animation: progressFillV2 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* ===================================================
+   Enterprise Restaurant Auth Transition
+   =================================================== */
+
+@keyframes authRingSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes authRingReverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes authPulseGlow {
+  0%, 100% { opacity: 0.5; transform: scale(0.98); }
+  50% { opacity: 0.95; transform: scale(1.03); }
+}
+
+@keyframes authBeamSweep {
+  0% { transform: translateY(-120%); opacity: 0; }
+  30% { opacity: 0.6; }
+  70% { opacity: 0.6; }
+  100% { transform: translateY(120%); opacity: 0; }
+}
+
+@keyframes authProgressFill {
+  0% { width: 10%; }
+  35% { width: 48%; }
+  75% { width: 88%; }
+  100% { width: 100%; }
+}
+
+.animate-auth-ring-spin {
+  animation: authRingSpin 7s linear infinite;
+}
+
+.animate-auth-ring-reverse {
+  animation: authRingReverse 9s linear infinite;
+}
+
+.animate-auth-pulse-glow {
+  animation: authPulseGlow 2.2s ease-in-out infinite;
+}
+
+.animate-auth-beam-sweep {
+  animation: authBeamSweep 1.8s ease-in-out infinite;
+}
+
+.animate-auth-progress-fill {
+  animation: authProgressFill 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-auth-ring-spin,
+  .animate-auth-ring-reverse,
+  .animate-auth-pulse-glow,
+  .animate-auth-beam-sweep,
+  .animate-auth-progress-fill,
+  .animate-fadeIn {
+    animation: none !important;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ===================================================
+   Spatial Luxury — Living Background System
+   =================================================== */
+
+@keyframes ambientGlow1 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.16; }
+  50% { transform: translate(32px, -20px) scale(1.10); opacity: 0.26; }
+}
+
+@keyframes ambientGlow2 {
+  0%, 100% { transform: translate(0, 0) scale(1.06); opacity: 0.12; }
+  50% { transform: translate(-28px, 24px) scale(0.96); opacity: 0.22; }
+}
+
+@keyframes ambientGlow3 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.10; }
+  50% { transform: translate(20px, 28px) scale(1.08); opacity: 0.20; }
+}
+
+@keyframes scanArcSweep {
+  0% { transform: rotate(0deg); opacity: 0.30; }
+  50% { opacity: 0.70; }
+  100% { transform: rotate(360deg); opacity: 0.30; }
+}
+
+@keyframes scanArcReverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes contourDrift {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.06; }
+  50% { transform: translateY(-8px) scale(1.015); opacity: 0.12; }
+}
+
+@keyframes moteFloat1 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.08; }
+  50% { transform: translate(14px, -22px); opacity: 0.35; }
+}
+
+@keyframes moteFloat2 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.06; }
+  50% { transform: translate(-16px, -28px); opacity: 0.30; }
+}
+
+@keyframes moteFloat3 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.10; }
+  50% { transform: translate(12px, 18px); opacity: 0.38; }
+}
+
+.animate-ambient-glow-1 {
+  animation: ambientGlow1 14s ease-in-out infinite;
+}
+
+.animate-ambient-glow-2 {
+  animation: ambientGlow2 18s ease-in-out infinite;
+}
+
+.animate-ambient-glow-3 {
+  animation: ambientGlow3 13s ease-in-out infinite;
+}
+
+.animate-scan-arc-sweep {
+  animation: scanArcSweep 20s linear infinite;
+}
+
+.animate-scan-arc-reverse {
+  animation: scanArcReverse 28s linear infinite;
+}
+
+.animate-contour-drift {
+  animation: contourDrift 16s ease-in-out infinite;
+}
+
+.animate-mote-1 {
+  animation: moteFloat1 9s ease-in-out infinite;
+}
+
+.animate-mote-2 {
+  animation: moteFloat2 12s ease-in-out infinite;
+}
+
+.animate-mote-3 {
+  animation: moteFloat3 10s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ambient-glow-1,
+  .animate-ambient-glow-2,
+  .animate-ambient-glow-3,
+  .animate-scan-arc-sweep,
+  .animate-scan-arc-reverse,
+  .animate-contour-drift,
+  .animate-mote-1,
+  .animate-mote-2,
+  .animate-mote-3,
+  .animate-ken-burns {
+    animation: none !important;
+  }
+}
+
+@keyframes kenBurnsSlow {
+  0% { transform: scale(1.0); }
+  100% { transform: scale(1.045); }
+}
+
+.animate-ken-burns {
+  animation: kenBurnsSlow 4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 
 
