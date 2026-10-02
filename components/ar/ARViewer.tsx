@@ -93,7 +93,7 @@ export default function ARViewer({ modelUrl, itemName, poster, onClose }: ARView
               camera-controls
               auto-rotate
               ar
-              ar-modes="webxr scene-viewer quick-look"
+              ar-modes="scene-viewer webxr quick-look"
               ar-scale="auto"
               ar-placement="floor"
               touch-action="pan-y"
