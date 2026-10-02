@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import ARViewer from "@/components/ar/ARViewer";
 
 /* --------------------------------------------------------------------------
    Data & Configuration — Spatial Luxury Design System
@@ -112,6 +113,56 @@ const CURATED_DISHES: MenuDish[] = [
   },
 ];
 
+type ARDemoDish = {
+  id: string;
+  name: string;
+  subtitle: string;
+  category: string;
+  description: string;
+  price: string;
+  isVeg: boolean;
+  image: string;
+  modelUrl: string;
+  badge: string;
+  scaleMetric: string;
+  arReady: boolean;
+};
+
+const AR_DEMO_DISHES: ARDemoDish[] = [
+  {
+    id: "paneer-tikka",
+    name: "Tandoori Paneer Tikka",
+    subtitle: "Clay Oven Charred Cottage Cheese",
+    category: "Signature Clay Oven",
+    description:
+      "Tender cubes of cottage cheese marinated in hung curd, Kashmiri chilli, and roasted cumin, charred with bell peppers in a clay oven. Experience the aroma and texture directly on your table in 1:1 scale.",
+    price: "₹250",
+    isVeg: true,
+    image: "/images/paneer-tikka.jpg",
+    modelUrl:
+      "https://xwyofduioqxruycjpaih.supabase.co/storage/v1/object/public/menu-3d-models/restaurant/923d62b5-7d99-495f-9d9a-c4bbc1602cd0/models/f4858bb8-ebf3-4017-bff3-510bce582316.glb",
+    badge: "AR READY",
+    scaleMetric: "1:1 Physical Scale",
+    arReady: true,
+  },
+  {
+    id: "signature-burger",
+    name: "Signature Gourmet Burger",
+    subtitle: "Dry-Aged Brioche Gourmet Stack",
+    category: "Artisanal Mains",
+    description:
+      "A crafted gourmet patty layered with melted aged cheddar, caramelized shallot glaze, crisp micro greens, and toasted golden brioche. Test 360° walkaround inspection in your physical dining space.",
+    price: "₹80",
+    isVeg: true,
+    image: "/images/hero-dish.jpg",
+    modelUrl:
+      "https://xwyofduioqxruycjpaih.supabase.co/storage/v1/object/public/menu-3d-models/restaurant/923d62b5-7d99-495f-9d9a-c4bbc1602cd0/models/b1c12128-8e93-425c-aee8-c23a8f4e89d9.glb",
+    badge: "AR READY",
+    scaleMetric: "1:1 Physical Scale",
+    arReady: true,
+  },
+];
+
 type DashboardTab = "menu" | "tables" | "orders";
 
 type HeroScene = {
@@ -177,6 +228,15 @@ export default function HomePage() {
   const [activeDashboardTab, setActiveDashboardTab] = useState<DashboardTab>("menu");
   const [selectedDishForModal, setSelectedDishForModal] = useState<MenuDish | null>(null);
 
+  // Interactive AR Demo Section state (Static Showcase Data)
+  const [activeDemoDishId, setActiveDemoDishId] = useState<string>("paneer-tikka");
+  const [arViewerDish, setArViewerDish] = useState<ARDemoDish | null>(null);
+
+  const activeDemoDish =
+    AR_DEMO_DISHES.find((dish) => dish.id === activeDemoDishId) ?? AR_DEMO_DISHES[0];
+  const secondaryDemoDish =
+    AR_DEMO_DISHES.find((dish) => dish.id !== activeDemoDishId) ?? AR_DEMO_DISHES[1];
+
   // Cinematic Living Food Background state
   const [activeSceneIndex, setActiveSceneIndex] = useState(0);
   const [videoErrors, setVideoErrors] = useState<Record<string, boolean>>({});
@@ -233,6 +293,7 @@ export default function HomePage() {
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
         setSelectedDishForModal(null);
+        setArViewerDish(null);
       }
     }
     window.addEventListener("keydown", onKeyDown);
@@ -962,6 +1023,412 @@ export default function HomePage() {
                         sizes with 1:1 physical accuracy.
                       </p>
                     </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => scrollToSection("ar-demo")}
+                      className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#C6A15B] hover:bg-[#b8924b] text-[#092C29] font-bold text-xs tracking-wider uppercase transition-all shadow-md cursor-pointer"
+                    >
+                      <span>Try Live AR Demo Below</span>
+                      <span>↓</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ====================================================================
+            4B. INTERACTIVE AR DEMO SECTION — THE DISH, IN YOUR SPACE
+           ==================================================================== */}
+        <section
+          id="ar-demo"
+          className="py-24 sm:py-32 bg-[#FAF8F2] border-t border-[#D9D4C8]/80 relative overflow-hidden"
+        >
+          {/* Subtle Ambient Spatial Glow and Grid Matrix */}
+          <div
+            className="pointer-events-none absolute inset-0 -z-10"
+            aria-hidden="true"
+          >
+            {/* Soft Warm Radial Glow */}
+            <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(198,161,91,0.12)_0%,rgba(93,139,130,0.06)_45%,transparent_70%)] blur-2xl" />
+
+            {/* Subtle Surface Coordinate Grid */}
+            <svg
+              className="absolute inset-0 w-full h-full opacity-[0.035]"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <pattern id="spatial-demo-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#092C29" strokeWidth="1" />
+                  <circle cx="0" cy="0" r="1.5" fill="#C6A15B" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#spatial-demo-grid)" />
+            </svg>
+          </div>
+
+          <div className="max-w-7xl mx-auto px-5 sm:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+              {/* Left Column: Editorial Typography & Spatial Controls */}
+              <div className="lg:col-span-6 flex flex-col items-start pr-0 lg:pr-6">
+                {/* Eyebrow Label */}
+                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#123F38]/10 border border-[#123F38]/20 text-[#092C29] font-mono text-xs uppercase tracking-[0.2em] mb-6 backdrop-blur-sm">
+                  <span className="w-2 h-2 rounded-full bg-[#C6A15B] animate-pulse" />
+                  <span className="font-semibold text-[#092C29]">INTERACTIVE AR DEMO</span>
+                  <span className="text-[#5D8B82]">•</span>
+                  <span className="text-[#5D8B82]">THE DISH, IN YOUR SPACE</span>
+                </div>
+
+                {/* Primary Heading */}
+                <h2 className="text-3xl sm:text-5xl lg:text-[3.5rem] font-bold tracking-tight text-[#092C29] leading-[1.1] mb-6">
+                  Taste It Before <br />
+                  <span className="text-[#C6A15B]">You Order.</span>
+                </h2>
+
+                {/* Supporting Text */}
+                <p className="text-lg sm:text-xl text-[#17211F]/75 max-w-xl leading-relaxed mb-8">
+                  Step into the future of dining. Place a dish in your own space with augmented
+                  reality and explore it from every angle.
+                </p>
+
+                {/* Interactive Demo Dish Switcher */}
+                <div className="w-full max-w-lg mb-8">
+                  <div className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#5D8B82] mb-3 flex items-center justify-between">
+                    <span>SELECT DEMO DISH</span>
+                    <span className="text-emerald-700 font-semibold flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      2 MODELS READY
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 p-1.5 rounded-2xl bg-white border border-[#D9D4C8] shadow-xs">
+                    {AR_DEMO_DISHES.map((dish) => {
+                      const isCurrent = activeDemoDish.id === dish.id;
+                      return (
+                        <button
+                          key={dish.id}
+                          type="button"
+                          onClick={() => setActiveDemoDishId(dish.id)}
+                          className={`py-3 px-3.5 rounded-xl text-left transition-all duration-300 flex flex-col justify-between cursor-pointer ${
+                            isCurrent
+                              ? "bg-[#092C29] text-[#FAF8F2] shadow-sm"
+                              : "text-[#092C29] hover:bg-[#F5F2EA]"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-1 mb-1">
+                            <span
+                              className={`text-[10px] font-mono tracking-wider uppercase ${
+                                isCurrent ? "text-[#C6A15B]" : "text-[#5D8B82]"
+                              }`}
+                            >
+                              {dish.category}
+                            </span>
+                            <span
+                              className={`w-2 h-2 rounded-full ${
+                                dish.isVeg ? "bg-emerald-500" : "bg-red-500"
+                              }`}
+                            />
+                          </div>
+                          <span className="font-semibold text-sm truncate">
+                            {dish.name}
+                          </span>
+                          <span
+                            className={`font-mono text-xs font-bold mt-1 ${
+                              isCurrent ? "text-[#C6A15B]" : "text-[#092C29]"
+                            }`}
+                          >
+                            {dish.price}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Primary Launch Action */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-4">
+                  <button
+                    type="button"
+                    onClick={() => setArViewerDish(activeDemoDish)}
+                    className="inline-flex items-center justify-center gap-3.5 px-8 py-4.5 rounded-full bg-[#092C29] hover:bg-[#123F38] text-[#FAF8F2] font-semibold text-base transition-all duration-300 shadow-md hover:shadow-xl border border-[#C6A15B]/40 group cursor-pointer"
+                  >
+                    {/* Spatial 3D Cube Icon */}
+                    <svg
+                      className="w-5 h-5 text-[#C6A15B] group-hover:scale-110 transition-transform"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                      <path d="m3.3 7 8.7 5 8.7-5" />
+                      <path d="M12 22V12" />
+                    </svg>
+                    <span>VIEW IN AR</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#C6A15B] animate-ping" />
+                  </button>
+                </div>
+
+                {/* Secondary Micro Text */}
+                <div className="flex items-center gap-2 text-xs font-mono text-[#5D8B82] mb-8">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span>No login required • Camera enabled • Instant table placement</span>
+                </div>
+
+                {/* Spatial Standards Metadata */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full max-w-lg pt-6 border-t border-[#D9D4C8]/80">
+                  <div className="p-3 rounded-xl bg-white/80 border border-[#D9D4C8]/60">
+                    <span className="block font-mono text-[10px] text-[#5D8B82] uppercase tracking-wider">
+                      Tracking
+                    </span>
+                    <span className="font-semibold text-xs text-[#092C29] mt-0.5 block">
+                      6DoF World Anchor
+                    </span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/80 border border-[#D9D4C8]/60">
+                    <span className="block font-mono text-[10px] text-[#5D8B82] uppercase tracking-wider">
+                      Scale
+                    </span>
+                    <span className="font-semibold text-xs text-[#092C29] mt-0.5 block">
+                      1:1 True-to-Plate
+                    </span>
+                  </div>
+                  <div className="col-span-2 sm:col-span-1 p-3 rounded-xl bg-white/80 border border-[#D9D4C8]/60">
+                    <span className="block font-mono text-[10px] text-[#5D8B82] uppercase tracking-wider">
+                      Surface Status
+                    </span>
+                    <span className="font-semibold text-xs text-emerald-700 mt-0.5 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      SURFACE READY
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Spatial Frame Showcase (Asymmetric Composition) */}
+              <div className="lg:col-span-6 relative flex flex-col items-center">
+                {/* Outer Spatial Frame with Corner Crosshairs */}
+                <div className="relative w-full max-w-lg">
+                  {/* Coordinate Crosshairs */}
+                  <div className="pointer-events-none absolute -top-3.5 -left-3.5 font-mono text-sm text-[#C6A15B] select-none z-20">
+                    +
+                  </div>
+                  <div className="pointer-events-none absolute -top-3.5 -right-3.5 font-mono text-sm text-[#C6A15B] select-none z-20">
+                    +
+                  </div>
+                  <div className="pointer-events-none absolute -bottom-3.5 -left-3.5 font-mono text-sm text-[#C6A15B] select-none z-20">
+                    +
+                  </div>
+                  <div className="pointer-events-none absolute -bottom-3.5 -right-3.5 font-mono text-sm text-[#C6A15B] select-none z-20">
+                    +
+                  </div>
+
+                  {/* Thin Rotating AR Scanning Rings */}
+                  <div
+                    className="pointer-events-none absolute inset-0 flex items-center justify-center -z-10"
+                    aria-hidden="true"
+                  >
+                    <svg
+                      className="w-[125%] h-[125%] animate-scan-arc-sweep"
+                      viewBox="0 0 500 500"
+                      fill="none"
+                    >
+                      <circle
+                        cx="250"
+                        cy="250"
+                        r="215"
+                        stroke="#C6A15B"
+                        strokeWidth="1.2"
+                        strokeDasharray="14 26"
+                        opacity="0.4"
+                      />
+                      <circle
+                        cx="250"
+                        cy="250"
+                        r="240"
+                        stroke="#5D8B82"
+                        strokeWidth="0.8"
+                        strokeDasharray="6 32"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </div>
+
+                  {/* Main Hero Dish Card */}
+                  <div className="relative w-full rounded-3xl bg-white border border-[#D9D4C8] shadow-xl overflow-hidden group hover:shadow-2xl hover:border-[#C6A15B] transition-all duration-500">
+                    {/* Dish Photography with 4:3 Aspect Ratio */}
+                    <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F5F2EA]">
+                      <Image
+                        src={activeDemoDish.image}
+                        alt={activeDemoDish.name}
+                        width={1200}
+                        height={900}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                        priority
+                      />
+
+                      {/* Top Badges */}
+                      <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="px-3 py-1 rounded-full bg-[#092C29]/85 backdrop-blur-md text-[10px] font-mono tracking-widest text-[#FAF8F2] uppercase border border-[#C6A15B]/30">
+                            {activeDemoDish.category}
+                          </span>
+                          <span className="px-2.5 py-1 rounded-full bg-emerald-950/75 backdrop-blur-md text-[10px] font-mono tracking-wider text-emerald-300 uppercase border border-emerald-500/30 flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            SURFACE READY
+                          </span>
+                        </div>
+
+                        <div
+                          className="w-6 h-6 rounded-md border border-[#D9D4C8] bg-white flex items-center justify-center p-0.5 shadow-sm"
+                          title={activeDemoDish.isVeg ? "Vegetarian" : "Non-Vegetarian"}
+                        >
+                          <span
+                            className={`w-3 h-3 rounded-full ${
+                              activeDemoDish.isVeg ? "bg-[#16a34a]" : "bg-[#dc2626]"
+                            }`}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Subtle Spatial Coordinate Telemetry */}
+                      <div className="absolute bottom-3 left-4 font-mono text-[10px] text-white/95 bg-black/45 backdrop-blur-sm px-2.5 py-1 rounded-md tracking-wider">
+                        6DoF • [X: 0.00, Y: -0.42, Z: +0.65]
+                      </div>
+
+                      {/* Quick "VIEW IN AR" action over image */}
+                      <div className="absolute bottom-3 right-4">
+                        <button
+                          type="button"
+                          onClick={() => setArViewerDish(activeDemoDish)}
+                          className="px-4 py-2 rounded-full bg-[#C6A15B] hover:bg-[#b8924b] text-[#092C29] font-bold text-xs shadow-lg hover:shadow-xl transition-all flex items-center gap-1.5 cursor-pointer border border-[#C6A15B]"
+                        >
+                          <span>VIEW IN AR</span>
+                          <svg
+                            className="w-3.5 h-3.5"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Dish Content Details */}
+                    <div className="p-6 sm:p-7">
+                      <div className="flex items-baseline justify-between mb-1.5">
+                        <h3 className="font-bold text-2xl text-[#092C29]">
+                          {activeDemoDish.name}
+                        </h3>
+                        <span className="font-mono font-bold text-2xl text-[#092C29]">
+                          {activeDemoDish.price}
+                        </span>
+                      </div>
+
+                      <p className="text-xs font-mono text-[#5D8B82] uppercase tracking-wider mb-3">
+                        {activeDemoDish.subtitle}
+                      </p>
+
+                      <p className="text-sm text-[#17211F]/75 leading-relaxed mb-5">
+                        {activeDemoDish.description}
+                      </p>
+
+                      <div className="pt-4 border-t border-[#D9D4C8]/60 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#FAF8F2] text-[#092C29] border border-[#D9D4C8]">
+                            3D MODEL READY
+                          </span>
+                          <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#C6A15B]/15 text-[#092C29] border border-[#C6A15B]/30">
+                            {activeDemoDish.scaleMetric}
+                          </span>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => setArViewerDish(activeDemoDish)}
+                          className="text-xs font-semibold text-[#092C29] hover:text-[#C6A15B] inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                        >
+                          <span>Launch Table AR</span>
+                          <span>→</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Second Smaller Demo Dish (Asymmetric Overlapping Card) */}
+                  <div
+                    onClick={() => setActiveDemoDishId(secondaryDemoDish.id)}
+                    className="mt-6 sm:-mt-8 sm:-mr-6 sm:self-end w-full sm:max-w-md rounded-2xl bg-white/95 backdrop-blur-md p-4 sm:p-4.5 border border-[#C6A15B]/50 shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-4 cursor-pointer group hover:border-[#092C29] relative z-10"
+                  >
+                    {/* Thumbnail */}
+                    <div className="relative w-18 h-18 rounded-xl overflow-hidden bg-[#F5F2EA] shrink-0 border border-[#D9D4C8]">
+                      <Image
+                        src={secondaryDemoDish.image}
+                        alt={secondaryDemoDish.name}
+                        width={160}
+                        height={160}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute top-1 left-1">
+                        <span
+                          className={`w-2 h-2 rounded-full block ${
+                            secondaryDemoDish.isVeg ? "bg-emerald-500" : "bg-red-500"
+                          }`}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2 mb-0.5">
+                        <span className="text-[10px] font-mono tracking-wider text-[#5D8B82] uppercase">
+                          ALSO IN AR • DEMO 2
+                        </span>
+                        <span className="font-mono font-bold text-sm text-[#092C29]">
+                          {secondaryDemoDish.price}
+                        </span>
+                      </div>
+                      <h4 className="font-bold text-sm sm:text-base text-[#092C29] truncate group-hover:text-[#C6A15B] transition-colors">
+                        {secondaryDemoDish.name}
+                      </h4>
+                      <p className="text-xs text-[#17211F]/70 truncate mt-0.5">
+                        {secondaryDemoDish.subtitle}
+                      </p>
+                    </div>
+
+                    {/* Direct AR Action */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setArViewerDish(secondaryDemoDish);
+                      }}
+                      aria-label={`View ${secondaryDemoDish.name} in AR`}
+                      className="px-3.5 py-2.5 rounded-xl bg-[#092C29] hover:bg-[#123F38] text-[#FAF8F2] text-xs font-semibold shrink-0 transition-all flex items-center gap-1 shadow-sm group-hover:scale-105 cursor-pointer"
+                    >
+                      <span>AR</span>
+                      <svg
+                        className="w-3 h-3 text-[#C6A15B]"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                      >
+                        <path d="M5 12h14" />
+                        <path d="m12 5 7 7-7 7" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1717,6 +2184,18 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ====================================================================
+          11. INTERACTIVE AR DEMO VIEWER (REUSING components/ar/ARViewer.tsx)
+         ==================================================================== */}
+      {arViewerDish && (
+        <ARViewer
+          modelUrl={arViewerDish.modelUrl}
+          itemName={arViewerDish.name}
+          poster={arViewerDish.image}
+          onClose={() => setArViewerDish(null)}
+        />
       )}
     </div>
   );
