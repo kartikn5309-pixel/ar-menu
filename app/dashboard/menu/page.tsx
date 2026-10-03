@@ -1,9 +1,20 @@
 "use client";
 
-import type { FormEvent, ReactNode } from "react";
+import type { FormEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import {
+  SearchIcon,
+  PlusIcon,
+  VegBadge,
+  NonVegBadge,
+  EditIcon,
+  TrashIcon,
+  ArCubeIcon,
+  CloseIcon,
+} from "@/components/ui/Icons";
 
 type Restaurant = {
   id: string;
@@ -13,6 +24,7 @@ type Restaurant = {
   phone: string | null;
   address: string | null;
 };
+
 type Category = {
   id: string;
   name: string;
@@ -20,6 +32,7 @@ type Category = {
   sort_order: number;
   is_active: boolean;
 };
+
 type MenuItem = {
   id: string;
   category_id: string | null;
@@ -33,6 +46,7 @@ type MenuItem = {
   is_veg: boolean;
   sort_order: number;
 };
+
 type RestaurantForm = Omit<Restaurant, "id" | "owner_id">;
 type CategoryForm = Omit<Category, "id">;
 type MenuItemForm = Omit<MenuItem, "id">;
@@ -43,12 +57,14 @@ const emptyRestaurant: RestaurantForm = {
   phone: "",
   address: "",
 };
+
 const emptyCategory: CategoryForm = {
   name: "",
   description: "",
   sort_order: 0,
   is_active: true,
 };
+
 const emptyMenuItem: MenuItemForm = {
   category_id: "",
   name: "",
@@ -61,6 +77,7 @@ const emptyMenuItem: MenuItemForm = {
   is_veg: false,
   sort_order: 0,
 };
+
 const MODEL_BUCKET = "menu-3d-models";
 const MAX_MODEL_SIZE = 50 * 1024 * 1024;
 
@@ -87,16 +104,61 @@ export default function MenuManagementPage() {
   const [uploadingModel, setUploadingModel] = useState(false);
   const [removeExistingModel, setRemoveExistingModel] = useState(false);
 
-  const groupedItems = useMemo(
-    () =>
-      categories.map((category) => ({
-        category,
-        items: items
-          .filter((item) => item.category_id === category.id)
-          .sort((a, b) => a.sort_order - b.sort_order),
-      })),
-    [categories, items],
-  );
+  // Search & Filter state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("all");
+  const [availabilityFilter, setAvailabilityFilter] = useState<"all" | "available" | "unavailable">("all");
+  const [dietFilter, setDietFilter] = useState<"all" | "veg" | "non-veg">("all");
+  const [arOnlyFilter, setArOnlyFilter] = useState(false);
+
+  // Filtered menu items
+  const filteredItems = useMemo(() => {
+    return items.filter((item) => {
+      // Search query
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchesName = item.name.toLowerCase().includes(q);
+        const matchesDesc = (item.description || "").toLowerCase().includes(q);
+        if (!matchesName && !matchesDesc) return false;
+      }
+      // Category filter
+      if (selectedCategoryId !== "all" && item.category_id !== selectedCategoryId) {
+        return false;
+      }
+      // Availability filter
+      if (availabilityFilter === "available" && !item.is_available) return false;
+      if (availabilityFilter === "unavailable" && item.is_available) return false;
+      // Diet filter
+      if (dietFilter === "veg" && !item.is_veg) return false;
+      if (dietFilter === "non-veg" && item.is_veg) return false;
+      // AR filter
+      if (arOnlyFilter && !item.has_3d_model) return false;
+
+      return true;
+    });
+  }, [items, searchQuery, selectedCategoryId, availabilityFilter, dietFilter, arOnlyFilter]);
+
+  // Group filtered items by category
+  const groupedItems = useMemo(() => {
+    const activeCats = selectedCategoryId === "all" 
+      ? categories 
+      : categories.filter((c) => c.id === selectedCategoryId);
+
+    return activeCats.map((category) => ({
+      category,
+      items: filteredItems
+        .filter((item) => item.category_id === category.id)
+        .sort((a, b) => a.sort_order - b.sort_order),
+    }));
+  }, [categories, filteredItems, selectedCategoryId]);
+
+  // Items with uncategorized or missing category
+  const uncategorizedItems = useMemo(() => {
+    if (selectedCategoryId !== "all") return [];
+    return filteredItems.filter(
+      (item) => !item.category_id || !categories.some((c) => c.id === item.category_id)
+    );
+  }, [filteredItems, categories, selectedCategoryId]);
 
   useEffect(() => {
     void loadPage();
@@ -105,17 +167,18 @@ export default function MenuManagementPage() {
   useEffect(() => {
     if (!restaurant || typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
-    if (params.get("action") !== "add") return;
-    openItemForm();
-    window.history.replaceState(null, "", "/dashboard/menu");
+    if (params.get("action") === "add") {
+      openItemForm();
+      window.history.replaceState(null, "", "/dashboard/menu");
+    } else if (params.get("action") === "category") {
+      openCategoryForm();
+      window.history.replaceState(null, "", "/dashboard/menu");
+    }
   }, [restaurant]);
 
   async function loadPage() {
     setLoading(true);
     setError("");
-    setRestaurant(null);
-    setCategories([]);
-    setItems([]);
     const { data: authData, error: authError } = await supabase.auth.getUser();
     if (authError || !authData.user) {
       setLoading(false);
@@ -129,6 +192,7 @@ export default function MenuManagementPage() {
       .select("id, owner_id, name, description, phone, address")
       .eq("owner_id", currentUserId)
       .maybeSingle();
+
     if (restaurantError) {
       setError(restaurantError.message);
       setLoading(false);
@@ -139,14 +203,7 @@ export default function MenuManagementPage() {
       setLoading(false);
       return;
     }
-    const belongsToCurrentUser = data.owner_id === currentUserId;
-    if (!belongsToCurrentUser) {
-      setError(
-        "The restaurant record does not belong to the currently signed-in account.",
-      );
-      setLoading(false);
-      return;
-    }
+
     setRestaurant(data as Restaurant);
     await loadMenuData(data.id);
     setLoading(false);
@@ -161,20 +218,16 @@ export default function MenuManagementPage() {
         .order("sort_order", { ascending: true }),
       supabase
         .from("menu_items")
-        .select(
-          "id, category_id, name, description, price, image_url, model_url, has_3d_model, is_available, is_veg, sort_order",
-        )
+        .select("id, category_id, name, description, price, image_url, model_url, has_3d_model, is_available, is_veg, sort_order")
         .eq("restaurant_id", restaurantId)
         .order("sort_order", { ascending: true }),
     ]);
+
     if (categoryResult.error || itemResult.error) {
-      setError(
-        categoryResult.error?.message ??
-          itemResult.error?.message ??
-          "Could not load menu data.",
-      );
+      setError(categoryResult.error?.message ?? itemResult.error?.message ?? "Could not load menu data.");
       return;
     }
+
     setCategories((categoryResult.data ?? []) as Category[]);
     setItems((itemResult.data ?? []) as MenuItem[]);
   }
@@ -189,7 +242,7 @@ export default function MenuManagementPage() {
     setSaving(true);
     setError("");
     const { data: authData } = await supabase.auth.getUser();
-    if (!authData.user) {
+    if (!authData?.user) {
       router.replace("/login");
       return;
     }
@@ -198,8 +251,10 @@ export default function MenuManagementPage() {
       .insert({ ...restaurantForm, owner_id: authData.user.id })
       .select("id, owner_id, name, description, phone, address")
       .single();
-    if (createError) setError(createError.message);
-    else {
+
+    if (createError) {
+      setError(createError.message);
+    } else {
       setRestaurant(data as Restaurant);
       notify("Restaurant created successfully.");
     }
@@ -211,6 +266,7 @@ export default function MenuManagementPage() {
     if (!restaurant) return;
     setSaving(true);
     setError("");
+
     const result = editingCategory
       ? await supabase
           .from("categories")
@@ -220,8 +276,10 @@ export default function MenuManagementPage() {
       : await supabase
           .from("categories")
           .insert({ ...categoryForm, restaurant_id: restaurant.id });
-    if (result.error) setError(result.error.message);
-    else {
+
+    if (result.error) {
+      setError(result.error.message);
+    } else {
       closeCategoryForm();
       await loadMenuData(restaurant.id);
       notify(editingCategory ? "Category updated." : "Category created.");
@@ -234,31 +292,23 @@ export default function MenuManagementPage() {
     if (!restaurant) return;
     setSaving(true);
     setError("");
+
     if (
       itemForm.category_id &&
       !categories.some((category) => category.id === itemForm.category_id)
     ) {
-      setError("Choose a category belonging to this restaurant.");
+      setError("Choose a valid category belonging to this restaurant.");
       setSaving(false);
       return;
     }
+
     const { data: authData, error: authError } = await supabase.auth.getUser();
     if (authError || !authData.user) {
-      setError(
-        "Your session has expired. Please sign in again before editing menu items.",
-      );
+      setError("Your session has expired. Please sign in again.");
       setSaving(false);
       return;
     }
-    const authenticatedUserId = authData.user.id;
-    const belongsToCurrentUser = restaurant.owner_id === authenticatedUserId;
-    if (!belongsToCurrentUser) {
-      setError(
-        "This restaurant does not belong to the currently signed-in account.",
-      );
-      setSaving(false);
-      return;
-    }
+
     const existingModelUrl = editingItem?.model_url ?? null;
     const payload = {
       ...itemForm,
@@ -268,12 +318,13 @@ export default function MenuManagementPage() {
         selectedModelFile && editingItem
           ? existingModelUrl
           : selectedModelFile || removeExistingModel
-            ? null
-            : existingModelUrl,
+          ? null
+          : existingModelUrl,
       has_3d_model: selectedModelFile
         ? Boolean(existingModelUrl)
         : !removeExistingModel && Boolean(existingModelUrl),
     };
+
     const result = editingItem
       ? await supabase
           .from("menu_items")
@@ -287,6 +338,7 @@ export default function MenuManagementPage() {
           .insert({ ...payload, restaurant_id: restaurant.id })
           .select("id, image_url, model_url, has_3d_model")
           .single();
+
     if (result.error || !result.data) {
       setError(result.error?.message ?? "Could not save menu item.");
       setSaving(false);
@@ -296,31 +348,10 @@ export default function MenuManagementPage() {
     let imageUrl = result.data.image_url as string | null;
     if (selectedImageFile) {
       setUploadingImage(true);
-      const extension =
-        selectedImageFile.name.split(".").pop()?.toLowerCase() || "jpg";
+      const extension = selectedImageFile.name.split(".").pop()?.toLowerCase() || "jpg";
       const imagePath = `restaurant/${restaurant.id}/menu/${crypto.randomUUID()}.${extension}`;
       const bucketName = "menu-images";
-      const { data: ownershipCheck } = await supabase
-        .from("restaurants")
-        .select("id")
-        .eq("id", restaurant.id)
-        .eq("owner_id", authenticatedUserId)
-        .maybeSingle();
-      const restaurantBelongsToUser = ownershipCheck?.id === restaurant.id;
-      console.info("[menu-image-upload] pre-upload", {
-        userId: authenticatedUserId,
-        restaurantId: restaurant.id,
-        restaurantBelongsToUser,
-        imagePath,
-        bucketName,
-      });
-      console.info("[menu-image-upload] file", {
-        fileName: selectedImageFile.name,
-        fileType: selectedImageFile.type,
-        fileSize: selectedImageFile.size,
-        imagePath,
-        bucketName,
-      });
+
       const { error: uploadError } = await supabase.storage
         .from(bucketName)
         .upload(imagePath, selectedImageFile, {
@@ -328,25 +359,17 @@ export default function MenuManagementPage() {
           contentType: selectedImageFile.type,
           upsert: false,
         });
+
       if (uploadError) {
-        console.error("[menu-image-upload] storage error", {
-          message: uploadError.message,
-          name: uploadError.name,
-          statusCode: uploadError.statusCode,
-        });
-        if (!editingItem)
-          await supabase
-            .from("menu_items")
-            .delete()
-            .eq("id", result.data.id)
-            .eq("restaurant_id", restaurant.id);
+        if (!editingItem) {
+          await supabase.from("menu_items").delete().eq("id", result.data.id).eq("restaurant_id", restaurant.id);
+        }
         setError(`Image upload failed: ${uploadError.message}`);
         setUploadingImage(false);
         setSaving(false);
         return;
       }
-      imageUrl = supabase.storage.from("menu-images").getPublicUrl(imagePath)
-        .data.publicUrl;
+      imageUrl = supabase.storage.from("menu-images").getPublicUrl(imagePath).data.publicUrl;
     }
 
     if (imageUrl !== result.data.image_url) {
@@ -355,6 +378,7 @@ export default function MenuManagementPage() {
         .update({ image_url: imageUrl })
         .eq("id", result.data.id)
         .eq("restaurant_id", restaurant.id);
+
       if (imageUpdateError) {
         setError(imageUpdateError.message);
         setUploadingImage(false);
@@ -362,16 +386,15 @@ export default function MenuManagementPage() {
         return;
       }
     }
+
     let modelUrl = result.data.model_url as string | null;
     const previousModelUrl = editingItem?.model_url ?? null;
     if (selectedModelFile) {
       setUploadingModel(true);
-      const extension =
-        selectedModelFile.name.split(".").pop()?.toLowerCase() || "glb";
+      const extension = selectedModelFile.name.split(".").pop()?.toLowerCase() || "glb";
       const modelPath = `restaurant/${restaurant.id}/models/${crypto.randomUUID()}.${extension}`;
-      const contentType =
-        selectedModelFile.type ||
-        (extension === "gltf" ? "model/gltf+json" : "model/gltf-binary");
+      const contentType = selectedModelFile.type || (extension === "gltf" ? "model/gltf+json" : "model/gltf-binary");
+
       const { error: uploadError } = await supabase.storage
         .from(MODEL_BUCKET)
         .upload(modelPath, selectedModelFile, {
@@ -379,56 +402,81 @@ export default function MenuManagementPage() {
           contentType,
           upsert: false,
         });
+
       if (uploadError) {
-        if (!editingItem)
-          await supabase
-            .from("menu_items")
-            .delete()
-            .eq("id", result.data.id)
-            .eq("restaurant_id", restaurant.id);
+        if (!editingItem) {
+          await supabase.from("menu_items").delete().eq("id", result.data.id).eq("restaurant_id", restaurant.id);
+        }
         setError(`3D model upload failed: ${uploadError.message}`);
         setUploadingModel(false);
         setSaving(false);
         return;
       }
-      modelUrl = supabase.storage.from(MODEL_BUCKET).getPublicUrl(modelPath)
-        .data.publicUrl;
+
+      modelUrl = supabase.storage.from(MODEL_BUCKET).getPublicUrl(modelPath).data.publicUrl;
       const { error: modelUpdateError } = await supabase
         .from("menu_items")
         .update({ model_url: modelUrl, has_3d_model: true })
         .eq("id", result.data.id)
         .eq("restaurant_id", restaurant.id);
+
       if (modelUpdateError) {
         setError(modelUpdateError.message);
         setUploadingModel(false);
         setSaving(false);
         return;
       }
-      if (previousModelUrl) await removeModelObject(previousModelUrl);
-    } else if (removeExistingModel && previousModelUrl) {
-      await removeModelObject(previousModelUrl);
+      if (previousModelUrl && previousModelUrl !== modelUrl) {
+        void removeModelObject(previousModelUrl);
+      }
     }
-    setUploadingModel(false);
-    setUploadingImage(false);
+
+    if (removeExistingModel && previousModelUrl) {
+      const { error: clearModelError } = await supabase
+        .from("menu_items")
+        .update({ model_url: null, has_3d_model: false })
+        .eq("id", result.data.id)
+        .eq("restaurant_id", restaurant.id);
+
+      if (clearModelError) {
+        setError(clearModelError.message);
+        setSaving(false);
+        return;
+      }
+      void removeModelObject(previousModelUrl);
+    }
+
     closeItemForm();
     await loadMenuData(restaurant.id);
-    notify(editingItem ? "Menu item updated." : "Menu item created.");
+    notify(editingItem ? "Menu item updated." : "Menu item added.");
     setSaving(false);
+    setUploadingImage(false);
+    setUploadingModel(false);
+  }
+
+  async function toggleCategory(category: Category) {
+    if (!restaurant) return;
+    setError("");
+    const { error: toggleError } = await supabase
+      .from("categories")
+      .update({ is_active: !category.is_active })
+      .eq("id", category.id)
+      .eq("restaurant_id", restaurant.id);
+
+    if (toggleError) setError(toggleError.message);
+    else await loadMenuData(restaurant.id);
   }
 
   async function deleteCategory(category: Category) {
-    if (
-      !restaurant ||
-      !window.confirm(
-        `Delete "${category.name}"? Items in this category may also be affected.`,
-      )
-    )
-      return;
+    if (!restaurant) return;
+    if (!confirm(`Are you sure you want to delete "${category.name}"? Items in this category will be uncategorized.`)) return;
+    setError("");
     const { error: deleteError } = await supabase
       .from("categories")
       .delete()
       .eq("id", category.id)
       .eq("restaurant_id", restaurant.id);
+
     if (deleteError) setError(deleteError.message);
     else {
       await loadMenuData(restaurant.id);
@@ -436,66 +484,87 @@ export default function MenuManagementPage() {
     }
   }
 
-  async function deleteItem(item: MenuItem) {
-    if (!restaurant || !window.confirm(`Delete "${item.name}"?`)) return;
-    const { error: deleteError } = await supabase
-      .from("menu_items")
-      .delete()
-      .eq("id", item.id)
-      .eq("restaurant_id", restaurant.id);
-    if (deleteError) setError(deleteError.message);
-    else {
-      if (item.model_url) await removeModelObject(item.model_url);
-      await loadMenuData(restaurant.id);
-      notify("Menu item deleted.");
-    }
-  }
-
-  async function toggleCategory(category: Category) {
-    if (!restaurant) return;
-    const { error: toggleError } = await supabase
-      .from("categories")
-      .update({ is_active: !category.is_active })
-      .eq("id", category.id)
-      .eq("restaurant_id", restaurant.id);
-    if (toggleError) setError(toggleError.message);
-    else await loadMenuData(restaurant.id);
-  }
-
   async function toggleItem(item: MenuItem) {
     if (!restaurant) return;
+    setError("");
     const { error: toggleError } = await supabase
       .from("menu_items")
       .update({ is_available: !item.is_available })
       .eq("id", item.id)
       .eq("restaurant_id", restaurant.id);
+
     if (toggleError) setError(toggleError.message);
     else await loadMenuData(restaurant.id);
   }
 
+  async function deleteItem(item: MenuItem) {
+    if (!restaurant) return;
+    if (!confirm(`Are you sure you want to delete "${item.name}"?`)) return;
+    setError("");
+    const { error: deleteError } = await supabase
+      .from("menu_items")
+      .delete()
+      .eq("id", item.id)
+      .eq("restaurant_id", restaurant.id);
+
+    if (deleteError) setError(deleteError.message);
+    else {
+      if (item.model_url) void removeModelObject(item.model_url);
+      await loadMenuData(restaurant.id);
+      notify("Menu item deleted.");
+    }
+  }
+
   function openCategoryForm(category?: Category) {
     setEditingCategory(category ?? null);
-    setCategoryForm(category ? { ...category } : { ...emptyCategory });
+    setCategoryForm(
+      category
+        ? {
+            name: category.name,
+            description: category.description ?? "",
+            sort_order: category.sort_order,
+            is_active: category.is_active,
+          }
+        : { ...emptyCategory, sort_order: categories.length }
+    );
     setShowCategoryForm(true);
   }
+
   function closeCategoryForm() {
     setShowCategoryForm(false);
     setEditingCategory(null);
     setCategoryForm({ ...emptyCategory });
   }
+
   function openItemForm(item?: MenuItem) {
     setEditingItem(item ?? null);
     setItemForm(
       item
-        ? { ...item, category_id: item.category_id ?? "" }
-        : { ...emptyMenuItem },
+        ? {
+            category_id: item.category_id ?? "",
+            name: item.name,
+            description: item.description ?? "",
+            price: item.price,
+            image_url: item.image_url ?? "",
+            model_url: item.model_url ?? "",
+            has_3d_model: item.has_3d_model,
+            is_available: item.is_available,
+            is_veg: item.is_veg,
+            sort_order: item.sort_order,
+          }
+        : {
+            ...emptyMenuItem,
+            category_id: categories[0]?.id ?? "",
+            sort_order: items.length,
+          }
     );
+    setImagePreview(item?.image_url ?? "");
     setSelectedImageFile(null);
     setSelectedModelFile(null);
     setRemoveExistingModel(false);
-    setImagePreview(item?.image_url ?? "");
     setShowItemForm(true);
   }
+
   function closeItemForm() {
     if (imagePreview.startsWith("blob:")) URL.revokeObjectURL(imagePreview);
     setShowItemForm(false);
@@ -506,6 +575,7 @@ export default function MenuManagementPage() {
     setRemoveExistingModel(false);
     setImagePreview("");
   }
+
   function selectImage(file: File | undefined) {
     if (!file) return;
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
@@ -521,12 +591,14 @@ export default function MenuManagementPage() {
     setImagePreview(URL.createObjectURL(file));
     setError("");
   }
+
   function removeImage() {
     if (imagePreview.startsWith("blob:")) URL.revokeObjectURL(imagePreview);
     setSelectedImageFile(null);
     setImagePreview("");
     setItemForm({ ...itemForm, image_url: "" });
   }
+
   function selectModel(file: File | undefined) {
     if (!file) return;
     const extension = file.name.split(".").pop()?.toLowerCase();
@@ -542,751 +614,825 @@ export default function MenuManagementPage() {
     setRemoveExistingModel(false);
     setError("");
   }
+
   function removeModel() {
     setSelectedModelFile(null);
     setRemoveExistingModel(true);
     setItemForm({ ...itemForm, model_url: "", has_3d_model: false });
   }
+
   function getModelFilename(modelUrl: string | null | undefined) {
     if (!modelUrl) return "Uploaded 3D model";
     return decodeURIComponent(modelUrl.split("/").pop() ?? "Uploaded 3D model");
   }
+
   async function removeModelObject(modelUrl: string) {
     const marker = `/storage/v1/object/public/${MODEL_BUCKET}/`;
     const markerIndex = modelUrl.indexOf(marker);
-    if (markerIndex >= 0)
+    if (markerIndex >= 0) {
       await supabase.storage
         .from(MODEL_BUCKET)
-        .remove([
-          decodeURIComponent(modelUrl.slice(markerIndex + marker.length)),
-        ]);
+        .remove([decodeURIComponent(modelUrl.slice(markerIndex + marker.length))]);
+    }
   }
 
-  if (loading) return <StatusScreen message="Loading your menu..." />;
-
-  if (!restaurant)
+  if (loading) {
     return (
-      <SetupRestaurant
-        form={restaurantForm}
-        setForm={setRestaurantForm}
-        saving={saving}
-        error={error}
-        onSubmit={createRestaurant}
-      />
-    );
-
-  return (
-    <main className="min-h-screen bg-slate-100 text-slate-900">
-      <header className="border-b bg-white px-4 py-5 sm:px-6 md:px-10">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-          <div>
-            <p className="text-sm text-slate-500">{restaurant.name}</p>
-            <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
-              Menu Management
-            </h1>
-            <p className="mt-2 text-sm text-slate-500">
-              Organize categories and keep every dish current.
-            </p>
-          </div>
-          <button
-            onClick={() => openCategoryForm()}
-            className="hidden rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-orange-300 hover:text-orange-600 sm:block"
-          >
-            + Add Category
-          </button>
-        </div>
-      </header>
-      <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 md:px-10 md:py-8">
-        {error && <Alert message={error} />}
-        {success && (
-          <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
-            {success}
-          </div>
-        )}
-        <div className="flex gap-3 sm:hidden">
-          <button
-            onClick={() => openCategoryForm()}
-            className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-semibold text-slate-700"
-          >
-            + Category
-          </button>
-          <button
-            onClick={() => openItemForm()}
-            className="flex-1 rounded-xl bg-orange-500 px-3 py-3 text-sm font-semibold text-white"
-          >
-            + Menu Item
-          </button>
-        </div>
-        <section className="grid gap-4 sm:grid-cols-3">
-          <SummaryCard label="Categories" value={categories.length} />
-          <SummaryCard label="Menu items" value={items.length} />
-          <SummaryCard
-            label="Available now"
-            value={items.filter((item) => item.is_available).length}
-          />
-        </section>
-        <section className="overflow-hidden rounded-2xl border bg-white shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b px-5 py-4 sm:px-6">
-            <div>
-              <h2 className="font-bold">Your menu</h2>
-              <p className="mt-1 text-sm text-slate-500">
-                Items are grouped by category.
-              </p>
-            </div>
-            <button
-              onClick={() => openItemForm()}
-              className="hidden rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600 sm:block"
-            >
-              + Add Menu Item
-            </button>
-          </div>
-          {categories.length === 0 ? (
-            <EmptyState
-              title="Your menu is ready for its first category"
-              description="Create a category such as Starters, Mains, or Drinks, then add dishes to it."
-              action="Add your first category"
-              onClick={() => openCategoryForm()}
-            />
-          ) : (
-            <div className="divide-y">
-              {groupedItems.map(({ category, items: categoryItems }) => (
-                <div key={category.id} className="p-5 sm:p-6">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-lg font-bold">{category.name}</h3>
-                        <span
-                          className={`rounded-full px-2 py-0.5 text-xs font-semibold ${category.is_active ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}
-                        >
-                          {category.is_active ? "Active" : "Hidden"}
-                        </span>
-                      </div>
-                      {category.description && (
-                        <p className="mt-1 text-sm text-slate-500">
-                          {category.description}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1 text-sm">
-                      <button
-                        onClick={() => toggleCategory(category)}
-                        className="rounded-lg px-2 py-1.5 text-slate-500 hover:bg-slate-100"
-                      >
-                        {category.is_active ? "Hide" : "Show"}
-                      </button>
-                      <button
-                        onClick={() => openCategoryForm(category)}
-                        className="rounded-lg px-2 py-1.5 text-slate-500 hover:bg-slate-100"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => deleteCategory(category)}
-                        className="rounded-lg px-2 py-1.5 text-red-500 hover:bg-red-50"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                  {categoryItems.length === 0 ? (
-                    <p className="mt-5 rounded-xl border border-dashed px-4 py-5 text-sm text-slate-400">
-                      No items in this category yet.
-                    </p>
-                  ) : (
-                    <div className="mt-5 divide-y rounded-xl border">
-                      {categoryItems.map((item) => (
-                        <MenuItemRow
-                          key={item.id}
-                          item={item}
-                          onToggle={() => toggleItem(item)}
-                          onEdit={() => openItemForm(item)}
-                          onDelete={() => deleteItem(item)}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+      <div className="p-12 text-center text-sm font-mono text-zinc-400">
+        Loading restaurant menu...
       </div>
-      {showCategoryForm && (
-        <Modal
-          title={editingCategory ? "Edit category" : "Add category"}
-          onClose={closeCategoryForm}
-        >
-          <form onSubmit={saveCategory} className="space-y-5">
-            <TextField
-              label="Name"
-              value={categoryForm.name}
-              required
-              onChange={(value) =>
-                setCategoryForm({ ...categoryForm, name: value })
-              }
-            />
-            <TextArea
-              label="Description"
-              value={categoryForm.description ?? ""}
-              onChange={(value) =>
-                setCategoryForm({ ...categoryForm, description: value })
-              }
-            />
-            <NumberField
-              label="Sort order"
-              value={categoryForm.sort_order}
-              onChange={(value) =>
-                setCategoryForm({ ...categoryForm, sort_order: value })
-              }
-            />
-            <Checkbox
-              label="Category is active"
-              checked={categoryForm.is_active}
-              onChange={(checked) =>
-                setCategoryForm({ ...categoryForm, is_active: checked })
-              }
-            />
-            <FormActions
-              saving={saving}
-              onCancel={closeCategoryForm}
-              submitLabel={editingCategory ? "Save changes" : "Create category"}
-            />
-          </form>
-        </Modal>
-      )}
-      {showItemForm && (
-        <Modal
-          title={editingItem ? "Edit menu item" : "Add menu item"}
-          onClose={closeItemForm}
-        >
-          <form onSubmit={saveItem} className="space-y-5">
-            <TextField
-              label="Name"
-              value={itemForm.name}
-              required
-              onChange={(value) => setItemForm({ ...itemForm, name: value })}
-            />
-            <TextArea
-              label="Description"
-              value={itemForm.description ?? ""}
-              onChange={(value) =>
-                setItemForm({ ...itemForm, description: value })
-              }
-            />
-            <div className="grid gap-5 sm:grid-cols-2">
-              <NumberField
-                label="Price"
-                value={itemForm.price}
-                min={0}
-                step={0.01}
-                onChange={(value) => setItemForm({ ...itemForm, price: value })}
-              />
-              <NumberField
-                label="Sort order"
-                value={itemForm.sort_order}
-                onChange={(value) =>
-                  setItemForm({ ...itemForm, sort_order: value })
-                }
-              />
-            </div>
-            <SelectField
-              label="Category"
-              value={itemForm.category_id ?? ""}
-              options={categories.map((category) => ({
-                label: category.name,
-                value: category.id,
-              }))}
-              onChange={(value) =>
-                setItemForm({ ...itemForm, category_id: value })
-              }
-            />
-            <div>
-              <span className="mb-2 block text-sm font-medium text-slate-700">
-                Food image
-              </span>
-              {imagePreview && (
-                <div className="mb-3 flex items-center gap-3">
-                  <div
-                    role="img"
-                    aria-label="Food preview"
-                    className="h-24 w-24 rounded-xl bg-cover bg-center"
-                    style={{ backgroundImage: `url("${imagePreview}")` }}
-                  />
-                  <button
-                    type="button"
-                    onClick={removeImage}
-                    className="text-sm font-semibold text-red-500 hover:text-red-600"
-                  >
-                    Remove image
-                  </button>
-                </div>
-              )}
-              <label className="block cursor-pointer rounded-xl border border-dashed border-slate-300 px-4 py-3 text-sm font-semibold text-slate-600 transition hover:border-orange-300 hover:text-orange-600">
-                <span>
-                  {uploadingImage
-                    ? "Uploading image..."
-                    : imagePreview
-                      ? "Replace image"
-                      : "Upload image"}
-                </span>
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  onChange={(event) => selectImage(event.target.files?.[0])}
-                  className="sr-only"
-                  disabled={saving}
-                />
-              </label>
-              <p className="mt-2 text-xs text-slate-400">
-                JPG, PNG, or WebP up to 5 MB.
-              </p>
-            </div>
-            <TextField
-              label="Image URL (optional)"
-              type="url"
-              value={itemForm.image_url ?? ""}
-              onChange={(value) => {
-                setItemForm({ ...itemForm, image_url: value });
-                setImagePreview(value);
-                setSelectedImageFile(null);
-              }}
-            />
-            <div>
-              <span className="mb-2 block text-sm font-medium text-slate-700">
-                3D Model
-              </span>
-              {(selectedModelFile ||
-                (editingItem?.has_3d_model && !removeExistingModel)) && (
-                <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border border-orange-100 bg-orange-50 px-3 py-3">
-                  <span className="min-w-0 truncate text-sm font-medium text-orange-900">
-                    {selectedModelFile?.name ??
-                      getModelFilename(editingItem?.model_url)}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={removeModel}
-                    className="shrink-0 text-sm font-semibold text-red-500 hover:text-red-600"
-                  >
-                    Remove model
-                  </button>
-                </div>
-              )}
-              <label className="block cursor-pointer rounded-xl border border-dashed border-slate-300 px-4 py-3 text-sm font-semibold text-slate-600 transition hover:border-orange-300 hover:text-orange-600">
-                <span>
-                  {uploadingModel
-                    ? "Uploading 3D model..."
-                    : selectedModelFile ||
-                        (editingItem?.has_3d_model && !removeExistingModel)
-                      ? "Replace 3D model"
-                      : "Upload 3D model"}
-                </span>
-                <input
-                  type="file"
-                  accept=".glb,.gltf,model/gltf-binary,model/gltf+json"
-                  onChange={(event) => selectModel(event.target.files?.[0])}
-                  className="sr-only"
-                  disabled={saving}
-                />
-              </label>
-              <p className="mt-2 text-xs text-slate-400">
-                GLB or GLTF up to 50 MB.
-              </p>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Checkbox
-                label="Available to order"
-                checked={itemForm.is_available}
-                onChange={(checked) =>
-                  setItemForm({ ...itemForm, is_available: checked })
-                }
-              />
-              <Checkbox
-                label="Vegetarian"
-                checked={itemForm.is_veg}
-                onChange={(checked) =>
-                  setItemForm({ ...itemForm, is_veg: checked })
-                }
-              />
-            </div>
-            <FormActions
-              saving={saving}
-              onCancel={closeItemForm}
-              submitLabel={editingItem ? "Save changes" : "Create menu item"}
-            />
-          </form>
-        </Modal>
-      )}
-    </main>
-  );
-}
+    );
+  }
 
-function SetupRestaurant({
-  form,
-  setForm,
-  saving,
-  error,
-  onSubmit,
-}: {
-  form: RestaurantForm;
-  setForm: (form: RestaurantForm) => void;
-  saving: boolean;
-  error: string;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
-}) {
-  return (
-    <main className="min-h-screen bg-slate-100 px-4 py-8 text-slate-900 sm:px-6">
-      <div className="mx-auto max-w-2xl rounded-3xl border bg-white p-6 shadow-sm sm:p-10">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-500">
-          First things first
+  if (!restaurant) {
+    return (
+      <div className="max-w-2xl mx-auto p-6 sm:p-8 rounded-2xl border border-zinc-200 bg-white shadow-2xs">
+        <h1 className="text-xl font-bold text-zinc-900">Set Up Restaurant Profile</h1>
+        <p className="text-sm text-zinc-500 mt-1 mb-6">
+          Add your restaurant details to start creating your digital menu and QR codes.
         </p>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight">
-          Set Up Restaurant
-        </h1>
-        <p className="mt-3 max-w-xl text-slate-500">
-          Add your restaurant details to start building a menu your guests can
-          explore.
-        </p>
-        {error && <Alert message={error} />}
-        <form onSubmit={onSubmit} className="mt-8 grid gap-5 sm:grid-cols-2">
-          <TextField
-            label="Restaurant name"
-            value={form.name}
-            required
-            onChange={(value) => setForm({ ...form, name: value })}
-            className="sm:col-span-2"
-          />
-          <TextField
-            label="Phone"
-            value={form.phone ?? ""}
-            onChange={(value) => setForm({ ...form, phone: value })}
-          />
-          <TextField
-            label="Address"
-            value={form.address ?? ""}
-            onChange={(value) => setForm({ ...form, address: value })}
-          />
-          <TextArea
-            label="Description"
-            value={form.description ?? ""}
-            onChange={(value) => setForm({ ...form, description: value })}
-            className="sm:col-span-2"
-          />
+        <form onSubmit={createRestaurant} className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+              Restaurant Name *
+            </label>
+            <input
+              type="text"
+              required
+              value={restaurantForm.name}
+              onChange={(e) => setRestaurantForm({ ...restaurantForm, name: e.target.value })}
+              className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+              placeholder="e.g. The Grand Bistro"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+              Phone
+            </label>
+            <input
+              type="tel"
+              value={restaurantForm.phone ?? ""}
+              onChange={(e) => setRestaurantForm({ ...restaurantForm, phone: e.target.value })}
+              className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+              placeholder="+91 98765 43210"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+              Address
+            </label>
+            <input
+              type="text"
+              value={restaurantForm.address ?? ""}
+              onChange={(e) => setRestaurantForm({ ...restaurantForm, address: e.target.value })}
+              className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+              placeholder="123 Luxury Blvd, Indiranagar"
+            />
+          </div>
           <button
+            type="submit"
             disabled={saving}
-            className="rounded-xl bg-orange-500 px-5 py-3 font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2"
+            className="w-full py-2.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm transition"
           >
-            {saving ? "Creating..." : "Create restaurant"}
+            {saving ? "Creating..." : "Create Restaurant"}
           </button>
         </form>
       </div>
-    </main>
-  );
-}
-function StatusScreen({ message }: { message: string }) {
+    );
+  }
+
+  const model3dCount = items.filter((i) => i.has_3d_model).length;
+  const availableCount = items.filter((i) => i.is_available).length;
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-100 px-6">
-      <div className="rounded-2xl border bg-white px-8 py-7 text-center shadow-sm">
-        <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-orange-200 border-t-orange-500" />
-        <p className="mt-4 text-sm text-slate-500">{message}</p>
-      </div>
-    </main>
-  );
-}
-function Alert({ message }: { message: string }) {
-  return (
-    <div className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-      {message}
-    </div>
-  );
-}
-function SummaryCard({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-2xl border bg-white p-5 shadow-sm">
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className="mt-2 text-3xl font-bold">{value}</p>
-    </div>
-  );
-}
-function EmptyState({
-  title,
-  description,
-  action,
-  onClick,
-}: {
-  title: string;
-  description: string;
-  action: string;
-  onClick: () => void;
-}) {
-  return (
-    <div className="px-6 py-16 text-center">
-      <p className="text-lg font-bold">{title}</p>
-      <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
-        {description}
-      </p>
-      <button
-        onClick={onClick}
-        className="mt-6 rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white"
-      >
-        {action}
-      </button>
-    </div>
-  );
-}
-function MenuItemRow({
-  item,
-  onToggle,
-  onEdit,
-  onDelete,
-}: {
-  item: MenuItem;
-  onToggle: () => void;
-  onEdit: () => void;
-  onDelete: () => void;
-}) {
-  return (
-    <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2">
-          <p className="font-semibold">{item.name}</p>
-          <span className="text-sm font-medium text-orange-600">
-            ₹{Number(item.price).toFixed(2)}
-          </span>
-          {item.is_veg && (
-            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
-              Veg
-            </span>
-          )}
-          {item.has_3d_model && (
-            <span className="rounded-full bg-orange-100 px-2 py-0.5 text-xs font-semibold text-orange-700">
-              3D Model Added
-            </span>
-          )}
-          <span
-            className={`rounded-full px-2 py-0.5 text-xs font-semibold ${item.is_available ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}
-          >
-            {item.is_available ? "Available" : "Unavailable"}
-          </span>
-        </div>
-        {item.description && (
-          <p className="mt-1 truncate text-sm text-slate-500">
-            {item.description}
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-zinc-200">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-zinc-900">
+            Menu Management
+          </h1>
+          <p className="text-sm text-zinc-500 mt-0.5">
+            Organize categories, dishes, prices, and 3D spatial models.
           </p>
-        )}
-      </div>
-      <div className="flex shrink-0 items-center gap-1 text-sm">
-        <button
-          onClick={onToggle}
-          className="rounded-lg px-2 py-1.5 text-slate-500 hover:bg-slate-100"
-        >
-          {item.is_available ? "Disable" : "Enable"}
-        </button>
-        <button
-          onClick={onEdit}
-          className="rounded-lg px-2 py-1.5 text-slate-500 hover:bg-slate-100"
-        >
-          Edit
-        </button>
-        <button
-          onClick={onDelete}
-          className="rounded-lg px-2 py-1.5 text-red-500 hover:bg-red-50"
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  );
-}
-function Modal({
-  title,
-  onClose,
-  children,
-}: {
-  title: string;
-  onClose: () => void;
-  children: ReactNode;
-}) {
-  return (
-    <div className="fixed inset-0 z-10 flex items-end justify-center bg-slate-950/40 p-0 sm:items-center sm:p-6">
-      <div className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-2xl bg-white p-5 shadow-2xl sm:rounded-2xl sm:p-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold">{title}</h2>
+        </div>
+
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
-            onClick={onClose}
-            aria-label="Close dialog"
-            className="rounded-lg px-2 py-1 text-2xl leading-none text-slate-400 hover:bg-slate-100"
+            onClick={() => openCategoryForm()}
+            className="px-3.5 py-2 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-semibold transition shadow-2xs"
           >
-            ×
+            + Add Category
+          </button>
+          <button
+            type="button"
+            onClick={() => openItemForm()}
+            className="px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold transition shadow-xs flex items-center gap-1.5"
+          >
+            <PlusIcon className="w-3.5 h-3.5" />
+            <span>Add Dish</span>
           </button>
         </div>
-        <div className="mt-6">{children}</div>
       </div>
-    </div>
-  );
-}
-function TextField({
-  label,
-  value,
-  onChange,
-  required,
-  type = "text",
-  className = "",
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  required?: boolean;
-  type?: string;
-  className?: string;
-}) {
-  return (
-    <label className={`block ${className}`}>
-      <span className="mb-2 block text-sm font-medium text-slate-700">
-        {label}
-        {required && " *"}
-      </span>
-      <input
-        type={type}
-        value={value}
-        required={required}
-        onChange={(event) => onChange(event.target.value)}
-        className="w-full rounded-xl border border-slate-200 px-3.5 py-3 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
-      />
-    </label>
-  );
-}
-function TextArea({
-  label,
-  value,
-  onChange,
-  className = "",
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  className?: string;
-}) {
-  return (
-    <label className={`block ${className}`}>
-      <span className="mb-2 block text-sm font-medium text-slate-700">
-        {label}
-      </span>
-      <textarea
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        rows={3}
-        className="w-full resize-y rounded-xl border border-slate-200 px-3.5 py-3 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
-      />
-    </label>
-  );
-}
-function NumberField({
-  label,
-  value,
-  onChange,
-  min,
-  step = 1,
-}: {
-  label: string;
-  value: number;
-  onChange: (value: number) => void;
-  min?: number;
-  step?: number;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-2 block text-sm font-medium text-slate-700">
-        {label}
-      </span>
-      <input
-        type="number"
-        value={value}
-        min={min}
-        step={step}
-        onChange={(event) => onChange(Number(event.target.value))}
-        className="w-full rounded-xl border border-slate-200 px-3.5 py-3 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
-      />
-    </label>
-  );
-}
-function SelectField({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  options: { label: string; value: string }[];
-  onChange: (value: string) => void;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-2 block text-sm font-medium text-slate-700">
-        {label}
-      </span>
-      <select
-        value={value}
-        required
-        onChange={(event) => onChange(event.target.value)}
-        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
-      >
-        <option value="">Choose a category</option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}
-function Checkbox({
-  label,
-  checked,
-  onChange,
-}: {
-  label: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-}) {
-  return (
-    <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(event) => onChange(event.target.checked)}
-        className="h-4 w-4 accent-orange-500"
-      />
-      {label}
-    </label>
-  );
-}
-function FormActions({
-  saving,
-  onCancel,
-  submitLabel,
-}: {
-  saving: boolean;
-  onCancel: () => void;
-  submitLabel: string;
-}) {
-  return (
-    <div className="flex justify-end gap-3 border-t pt-5">
-      <button
-        type="button"
-        onClick={onCancel}
-        className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100"
-      >
-        Cancel
-      </button>
-      <button
-        disabled={saving}
-        className="rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-60"
-      >
-        {saving ? "Saving..." : submitLabel}
-      </button>
+
+      {error && (
+        <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm">
+          {success}
+        </div>
+      )}
+
+      {/* Metrics Row */}
+      <section className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="p-3.5 rounded-xl bg-white border border-zinc-200 shadow-2xs">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold block">
+            Total Dishes
+          </span>
+          <span className="text-xl font-bold text-zinc-900 mt-1 block">
+            {items.length}
+          </span>
+        </div>
+
+        <div className="p-3.5 rounded-xl bg-white border border-zinc-200 shadow-2xs">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold block">
+            Available Now
+          </span>
+          <span className="text-xl font-bold text-emerald-600 mt-1 block">
+            {availableCount}
+          </span>
+        </div>
+
+        <div className="p-3.5 rounded-xl bg-white border border-zinc-200 shadow-2xs">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold block">
+            Spatial 3D Ready
+          </span>
+          <span className="text-xl font-bold text-zinc-900 mt-1 block flex items-center gap-1.5">
+            <span>{model3dCount}</span>
+            <span className="text-xs font-mono font-normal text-zinc-400">models</span>
+          </span>
+        </div>
+
+        <div className="p-3.5 rounded-xl bg-white border border-zinc-200 shadow-2xs">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold block">
+            Categories
+          </span>
+          <span className="text-xl font-bold text-zinc-900 mt-1 block">
+            {categories.length}
+          </span>
+        </div>
+      </section>
+
+      {/* Search & Filter Toolbar */}
+      <section className="p-3.5 rounded-xl bg-white border border-zinc-200 shadow-2xs space-y-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {/* Search Input */}
+          <div className="relative flex-1">
+            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search dishes by name or description..."
+              className="w-full pl-9 pr-4 py-2 rounded-lg border border-zinc-200 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-400"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* Category Dropdown */}
+          <select
+            value={selectedCategoryId}
+            onChange={(e) => setSelectedCategoryId(e.target.value)}
+            className="px-3 py-2 rounded-lg border border-zinc-200 bg-white text-xs font-medium text-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+          >
+            <option value="all">All Categories ({categories.length})</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+
+          {/* Availability Filter */}
+          <select
+            value={availabilityFilter}
+            onChange={(e) => setAvailabilityFilter(e.target.value as "all" | "available" | "unavailable")}
+            className="px-3 py-2 rounded-lg border border-zinc-200 bg-white text-xs font-medium text-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+          >
+            <option value="all">All Availability</option>
+            <option value="available">Available Only</option>
+            <option value="unavailable">Unavailable Only</option>
+          </select>
+
+          {/* Dietary Filter */}
+          <select
+            value={dietFilter}
+            onChange={(e) => setDietFilter(e.target.value as "all" | "veg" | "non-veg")}
+            className="px-3 py-2 rounded-lg border border-zinc-200 bg-white text-xs font-medium text-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+          >
+            <option value="all">All Diets</option>
+            <option value="veg">Vegetarian</option>
+            <option value="non-veg">Non-Vegetarian</option>
+          </select>
+
+          {/* 3D Model Toggle */}
+          <button
+            type="button"
+            onClick={() => setArOnlyFilter(!arOnlyFilter)}
+            className={`px-3 py-2 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition ${
+              arOnlyFilter
+                ? "bg-emerald-50 border-emerald-300 text-emerald-800"
+                : "border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-600"
+            }`}
+          >
+            <ArCubeIcon className="w-3.5 h-3.5" />
+            <span>3D Ready</span>
+          </button>
+        </div>
+      </section>
+
+      {/* Menu Categories & Items List */}
+      <section className="space-y-6">
+        {categories.length === 0 ? (
+          <div className="rounded-xl border border-zinc-200 bg-white p-12 text-center shadow-2xs">
+            <p className="text-base font-bold text-zinc-900">
+              No categories created yet
+            </p>
+            <p className="text-xs text-zinc-500 mt-1 max-w-sm mx-auto">
+              Start by creating menu categories like Starters, Mains, Desserts, or Beverages.
+            </p>
+            <button
+              type="button"
+              onClick={() => openCategoryForm()}
+              className="mt-4 px-4 py-2 rounded-lg bg-zinc-900 text-white font-semibold text-xs hover:bg-zinc-800 transition"
+            >
+              + Create Category
+            </button>
+          </div>
+        ) : filteredItems.length === 0 && (searchQuery || selectedCategoryId !== "all" || availabilityFilter !== "all" || dietFilter !== "all" || arOnlyFilter) ? (
+          <div className="rounded-xl border border-zinc-200 bg-white p-10 text-center shadow-2xs">
+            <p className="text-sm font-semibold text-zinc-700">No matching dishes found</p>
+            <p className="text-xs text-zinc-400 mt-1">
+              Try adjusting your search terms or filters.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery("");
+                setSelectedCategoryId("all");
+                setAvailabilityFilter("all");
+                setDietFilter("all");
+                setArOnlyFilter(false);
+              }}
+              className="mt-3 px-3 py-1.5 rounded-lg border border-zinc-200 text-xs font-medium text-zinc-600 hover:bg-zinc-50"
+            >
+              Clear filters
+            </button>
+          </div>
+        ) : (
+          groupedItems.map(({ category, items: categoryItems }) => {
+            if (categoryItems.length === 0 && selectedCategoryId === "all" && (searchQuery || arOnlyFilter || availabilityFilter !== "all" || dietFilter !== "all")) {
+              return null; // Don't show empty categories during active search if they have no matches
+            }
+
+            return (
+              <div
+                key={category.id}
+                className="rounded-xl border border-zinc-200 bg-white shadow-2xs overflow-hidden"
+              >
+                {/* Category Header */}
+                <div className="px-5 py-4 border-b border-zinc-200 bg-zinc-50/60 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <h2 className="text-base font-bold text-zinc-900">
+                      {category.name}
+                    </h2>
+                    <span className="text-xs font-mono text-zinc-400">
+                      ({categoryItems.length} {categoryItems.length === 1 ? "item" : "items"})
+                    </span>
+                    {!category.is_active && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-zinc-200 text-zinc-600">
+                        HIDDEN
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => toggleCategory(category)}
+                      className="px-2.5 py-1 rounded-md border border-zinc-200 bg-white hover:bg-zinc-50 text-[11px] font-medium text-zinc-600 transition"
+                    >
+                      {category.is_active ? "Hide" : "Show"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => openCategoryForm(category)}
+                      className="p-1.5 rounded-md hover:bg-zinc-200 text-zinc-500 hover:text-zinc-900 transition"
+                      title="Edit Category"
+                    >
+                      <EditIcon className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => deleteCategory(category)}
+                      className="p-1.5 rounded-md hover:bg-red-50 text-zinc-400 hover:text-red-600 transition"
+                      title="Delete Category"
+                    >
+                      <TrashIcon className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Category Items List */}
+                {categoryItems.length === 0 ? (
+                  <div className="p-8 text-center text-xs text-zinc-400">
+                    No items in this category yet. Click &quot;Add Dish&quot; above to add one.
+                  </div>
+                ) : (
+                  <div className="divide-y divide-zinc-100">
+                    {categoryItems.map((item) => (
+                      <div
+                        key={item.id}
+                        className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${
+                          !item.is_available ? "opacity-60 bg-zinc-50/40" : "hover:bg-zinc-50/50"
+                        }`}
+                      >
+                        {/* Dish Details & Thumbnail */}
+                        <div className="flex items-start sm:items-center gap-3.5 min-w-0">
+                          {/* Image Thumbnail */}
+                          <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-lg overflow-hidden bg-zinc-100 border border-zinc-200 shrink-0">
+                            {item.image_url ? (
+                              <Image
+                                src={item.image_url}
+                                alt={item.name}
+                                fill
+                                unoptimized
+                                className="object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-xs font-mono text-zinc-400">
+                                NO PIC
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Info */}
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              {item.is_veg ? <VegBadge /> : <NonVegBadge />}
+                              <h3 className="font-semibold text-sm text-zinc-900 truncate">
+                                {item.name}
+                              </h3>
+                              <span className="font-mono font-bold text-sm text-zinc-900">
+                                ₹{Number(item.price).toFixed(2)}
+                              </span>
+                            </div>
+
+                            {item.description && (
+                              <p className="text-xs text-zinc-500 line-clamp-1 mt-0.5 max-w-xl">
+                                {item.description}
+                              </p>
+                            )}
+
+                            {/* Tags */}
+                            <div className="flex items-center gap-2 mt-1.5">
+                              {item.has_3d_model ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                  <ArCubeIcon className="w-3 h-3 text-emerald-600" />
+                                  <span>Spatial 3D Ready</span>
+                                </span>
+                              ) : (
+                                <span className="text-[10px] font-mono text-zinc-400">
+                                  Photo Only
+                                </span>
+                              )}
+
+                              <span
+                                className={`text-[10px] font-mono px-2 py-0.5 rounded ${
+                                  item.is_available
+                                    ? "bg-zinc-100 text-zinc-700"
+                                    : "bg-rose-50 text-rose-700 border border-rose-200"
+                                }`}
+                              >
+                                {item.is_available ? "In Stock" : "Unavailable"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => toggleItem(item)}
+                            className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition ${
+                              item.is_available
+                                ? "border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700"
+                                : "border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800"
+                            }`}
+                          >
+                            {item.is_available ? "Disable" : "Enable"}
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => openItemForm(item)}
+                            className="p-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-600 transition"
+                            title="Edit dish"
+                          >
+                            <EditIcon className="w-4 h-4" />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => deleteItem(item)}
+                            className="p-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-red-50 text-zinc-400 hover:text-red-600 transition"
+                            title="Delete dish"
+                          >
+                            <TrashIcon className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+
+        {/* Uncategorized Items (if any) */}
+        {uncategorizedItems.length > 0 && (
+          <div className="rounded-xl border border-zinc-200 bg-white shadow-2xs overflow-hidden">
+            <div className="px-5 py-4 border-b border-zinc-200 bg-zinc-50/60">
+              <h2 className="text-base font-bold text-zinc-900">
+                Uncategorized Items ({uncategorizedItems.length})
+              </h2>
+            </div>
+            <div className="divide-y divide-zinc-100">
+              {uncategorizedItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="p-4 flex items-center justify-between gap-4"
+                >
+                  <div className="flex items-center gap-3">
+                    {item.is_veg ? <VegBadge /> : <NonVegBadge />}
+                    <span className="font-semibold text-sm">{item.name}</span>
+                    <span className="font-mono text-sm">₹{Number(item.price).toFixed(2)}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => openItemForm(item)}
+                      className="px-3 py-1.5 rounded-lg border border-zinc-200 text-xs font-semibold text-zinc-700"
+                    >
+                      Assign Category
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* ====================================================================
+          CATEGORY MODAL
+         ==================================================================== */}
+      {showCategoryForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-xl bg-white border border-zinc-200 shadow-xl p-6">
+            <div className="flex items-center justify-between pb-3 border-b border-zinc-200 mb-4">
+              <h3 className="font-bold text-base text-zinc-900">
+                {editingCategory ? "Edit Category" : "Add New Category"}
+              </h3>
+              <button
+                type="button"
+                onClick={closeCategoryForm}
+                className="text-zinc-400 hover:text-zinc-700"
+              >
+                <CloseIcon className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={saveCategory} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                  Category Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={categoryForm.name}
+                  onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
+                  placeholder="e.g. Starters, Main Course, Artisanal Hearth"
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                  Description (Optional)
+                </label>
+                <textarea
+                  rows={2}
+                  value={categoryForm.description ?? ""}
+                  onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
+                  placeholder="Brief description shown to guests..."
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="cat-active"
+                  checked={categoryForm.is_active}
+                  onChange={(e) => setCategoryForm({ ...categoryForm, is_active: e.target.checked })}
+                  className="w-4 h-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+                />
+                <label htmlFor="cat-active" className="text-sm font-medium text-zinc-700 select-none">
+                  Category is visible to customers
+                </label>
+              </div>
+
+              <div className="flex justify-end gap-2.5 pt-3 border-t border-zinc-200">
+                <button
+                  type="button"
+                  onClick={closeCategoryForm}
+                  className="px-4 py-2 rounded-lg border border-zinc-200 text-xs font-semibold text-zinc-700 hover:bg-zinc-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold transition"
+                >
+                  {saving ? "Saving..." : editingCategory ? "Save Changes" : "Create Category"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ====================================================================
+          MENU ITEM MODAL
+         ==================================================================== */}
+      {showItemForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs overflow-y-auto">
+          <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-xl bg-white border border-zinc-200 shadow-xl p-6 my-8">
+            <div className="flex items-center justify-between pb-3 border-b border-zinc-200 mb-4 sticky top-0 bg-white z-10">
+              <h3 className="font-bold text-base text-zinc-900">
+                {editingItem ? "Edit Menu Dish" : "Add Menu Dish"}
+              </h3>
+              <button
+                type="button"
+                onClick={closeItemForm}
+                className="text-zinc-400 hover:text-zinc-700"
+              >
+                <CloseIcon className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={saveItem} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                  Dish Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={itemForm.name}
+                  onChange={(e) => setItemForm({ ...itemForm, name: e.target.value })}
+                  placeholder="e.g. Artisanal Paneer Tikka"
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                  Category *
+                </label>
+                <select
+                  required
+                  value={itemForm.category_id ?? ""}
+                  onChange={(e) => setItemForm({ ...itemForm, category_id: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                >
+                  <option value="">Select Category...</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                    Price (₹) *
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    required
+                    value={itemForm.price}
+                    onChange={(e) => setItemForm({ ...itemForm, price: parseFloat(e.target.value) || 0 })}
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                    Sort Order
+                  </label>
+                  <input
+                    type="number"
+                    value={itemForm.sort_order}
+                    onChange={(e) => setItemForm({ ...itemForm, sort_order: parseInt(e.target.value, 10) || 0 })}
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                  Description
+                </label>
+                <textarea
+                  rows={3}
+                  value={itemForm.description ?? ""}
+                  onChange={(e) => setItemForm({ ...itemForm, description: e.target.value })}
+                  placeholder="Ingredients, preparation, and culinary notes..."
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                />
+              </div>
+
+              {/* Food Image Upload */}
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                  Food Photography
+                </label>
+
+                {imagePreview ? (
+                  <div className="flex items-center gap-3 p-3 rounded-lg border border-zinc-200 bg-zinc-50">
+                    <div className="relative w-16 h-16 rounded-md overflow-hidden bg-zinc-100 border border-zinc-300 shrink-0">
+                      <Image
+                        src={imagePreview}
+                        alt="Preview"
+                        fill
+                        unoptimized
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold text-zinc-900 truncate">
+                        {selectedImageFile?.name || "Uploaded Photo"}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={removeImage}
+                        className="text-xs font-medium text-red-600 hover:underline mt-1"
+                      >
+                        Remove photo
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <label className="block p-4 border border-dashed border-zinc-300 rounded-lg text-center cursor-pointer hover:bg-zinc-50 transition">
+                    <span className="text-xs font-semibold text-zinc-700 block">
+                      Click to upload dish photo
+                    </span>
+                    <span className="text-[11px] text-zinc-400 block mt-0.5">
+                      JPG, PNG, or WebP up to 5 MB
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={(e) => selectImage(e.target.files?.[0])}
+                      className="sr-only"
+                    />
+                  </label>
+                )}
+              </div>
+
+              {/* 3D Spatial Model Upload */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-zinc-600 flex items-center gap-1.5">
+                    <ArCubeIcon className="w-3.5 h-3.5 text-zinc-500" />
+                    <span>Spatial 3D Model (.GLB)</span>
+                  </label>
+                  <span className="text-[10px] font-mono text-zinc-400">
+                    Optional for AR view
+                  </span>
+                </div>
+
+                {(selectedModelFile || (editingItem?.has_3d_model && !removeExistingModel)) ? (
+                  <div className="flex items-center justify-between gap-3 p-3 rounded-lg border border-emerald-200 bg-emerald-50/60">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <ArCubeIcon className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span className="text-xs font-mono font-medium text-emerald-900 truncate">
+                        {selectedModelFile?.name ?? getModelFilename(editingItem?.model_url)}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={removeModel}
+                      className="text-xs font-semibold text-red-600 hover:underline shrink-0"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <label className="block p-4 border border-dashed border-zinc-300 rounded-lg text-center cursor-pointer hover:bg-zinc-50 transition">
+                    <span className="text-xs font-semibold text-zinc-700 block">
+                      Click to upload .GLB 3D model
+                    </span>
+                    <span className="text-[11px] text-zinc-400 block mt-0.5">
+                      Standard GLB model up to 50 MB
+                    </span>
+                    <input
+                      type="file"
+                      accept=".glb,.gltf"
+                      onChange={(e) => selectModel(e.target.files?.[0])}
+                      className="sr-only"
+                    />
+                  </label>
+                )}
+              </div>
+
+              {/* Checkboxes */}
+              <div className="grid grid-cols-2 gap-4 pt-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="item-avail"
+                    checked={itemForm.is_available}
+                    onChange={(e) => setItemForm({ ...itemForm, is_available: e.target.checked })}
+                    className="w-4 h-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+                  />
+                  <label htmlFor="item-avail" className="text-xs font-medium text-zinc-700 select-none">
+                    Available to order
+                  </label>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="item-veg"
+                    checked={itemForm.is_veg}
+                    onChange={(e) => setItemForm({ ...itemForm, is_veg: e.target.checked })}
+                    className="w-4 h-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+                  />
+                  <label htmlFor="item-veg" className="text-xs font-medium text-zinc-700 select-none flex items-center gap-1.5">
+                    <VegBadge className="h-3 w-3" />
+                    <span>Vegetarian</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2.5 pt-4 border-t border-zinc-200">
+                <button
+                  type="button"
+                  onClick={closeItemForm}
+                  className="px-4 py-2 rounded-lg border border-zinc-200 text-xs font-semibold text-zinc-700 hover:bg-zinc-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving || uploadingImage || uploadingModel}
+                  className="px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold transition"
+                >
+                  {saving || uploadingImage || uploadingModel
+                    ? "Saving Dish..."
+                    : editingItem
+                    ? "Save Changes"
+                    : "Create Dish"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

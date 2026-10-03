@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ARViewer from "@/components/ar/ARViewer";
+import { supabase } from "@/lib/supabase";
 
 /* --------------------------------------------------------------------------
    Data & Configuration — Spatial Luxury Design System
@@ -128,30 +129,34 @@ type ARDemoDish = {
   arReady: boolean;
 };
 
-const AR_DEMO_DISHES: ARDemoDish[] = [
+const DEMO_RESTAURANT_ID = "923d62b5-7d99-495f-9d9a-c4bbc1602cd0";
+const DEMO_PANEER_TIKKA_ID = "68b6adef-f946-45f8-aa71-d516690d2fec";
+const DEMO_BURGER_ID = "86bf2bf1-581a-4e52-9643-650bce9f7a3f";
+
+const INITIAL_DEMO_DISHES: ARDemoDish[] = [
   {
-    id: "paneer-tikka",
-    name: "Tandoori Paneer Tikka",
+    id: DEMO_PANEER_TIKKA_ID,
+    name: "Paneer Tikka",
     subtitle: "Clay Oven Charred Cottage Cheese",
     category: "Signature Clay Oven",
     description:
-      "Tender cubes of cottage cheese marinated in hung curd, Kashmiri chilli, and roasted cumin, charred with bell peppers in a clay oven. Experience the aroma and texture directly on your table in 1:1 scale.",
+      "Tender cubes of cottage cheese marinated in hung curd, spices, and mustard oil, charred to perfection in a traditional clay oven with crisp bell peppers.",
     price: "₹250",
     isVeg: true,
     image: "/images/paneer-tikka.jpg",
     modelUrl:
-      "https://xwyofduioqxruycjpaih.supabase.co/storage/v1/object/public/menu-3d-models/restaurant/923d62b5-7d99-495f-9d9a-c4bbc1602cd0/models/f4858bb8-ebf3-4017-bff3-510bce582316.glb",
+      "https://xwyofduioqxruycjpaih.supabase.co/storage/v1/object/public/menu-3d-models/restaurant/923d62b5-7d99-495f-9d9a-c4bbc1602cd0/models/afa94f26-bce4-43e0-b1b3-a12b662f6174.glb",
     badge: "AR READY",
     scaleMetric: "1:1 Physical Scale",
     arReady: true,
   },
   {
-    id: "signature-burger",
-    name: "Signature Gourmet Burger",
+    id: DEMO_BURGER_ID,
+    name: "Burger",
     subtitle: "Dry-Aged Brioche Gourmet Stack",
     category: "Artisanal Mains",
     description:
-      "A crafted gourmet patty layered with melted aged cheddar, caramelized shallot glaze, crisp micro greens, and toasted golden brioche. Test 360° walkaround inspection in your physical dining space.",
+      "A crafted gourmet patty layered with melted aged cheddar, caramelized shallot glaze, crisp micro greens, and toasted golden brioche.",
     price: "₹80",
     isVeg: true,
     image: "/images/hero-dish.jpg",
@@ -228,14 +233,63 @@ export default function HomePage() {
   const [activeDashboardTab, setActiveDashboardTab] = useState<DashboardTab>("menu");
   const [selectedDishForModal, setSelectedDishForModal] = useState<MenuDish | null>(null);
 
-  // Interactive AR Demo Section state (Static Showcase Data)
-  const [activeDemoDishId, setActiveDemoDishId] = useState<string>("paneer-tikka");
+  // Interactive AR Demo Section state (Dynamically synced from demo restaurant menu_items)
+  const [demoDishes, setDemoDishes] = useState<ARDemoDish[]>(INITIAL_DEMO_DISHES);
+  const [activeDemoDishId, setActiveDemoDishId] = useState<string>(DEMO_PANEER_TIKKA_ID);
   const [arViewerDish, setArViewerDish] = useState<ARDemoDish | null>(null);
 
   const activeDemoDish =
-    AR_DEMO_DISHES.find((dish) => dish.id === activeDemoDishId) ?? AR_DEMO_DISHES[0];
+    demoDishes.find((dish) => dish.id === activeDemoDishId) ?? demoDishes[0];
   const secondaryDemoDish =
-    AR_DEMO_DISHES.find((dish) => dish.id !== activeDemoDishId) ?? AR_DEMO_DISHES[1];
+    demoDishes.find((dish) => dish.id !== activeDemoDishId) ?? demoDishes[1];
+
+  // Fetch live menu items for designated demo dishes from Supabase
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadLiveDemoDishes() {
+      try {
+        const { data, error } = await supabase
+          .from("menu_items")
+          .select("id, name, description, price, image_url, model_url, has_3d_model, is_veg, is_available")
+          .eq("restaurant_id", DEMO_RESTAURANT_ID)
+          .in("id", [DEMO_PANEER_TIKKA_ID, DEMO_BURGER_ID]);
+
+        if (error || !data || !isMounted) return;
+
+        setDemoDishes((prev) =>
+          prev.map((fallback) => {
+            const liveItem = data.find((row) => row.id === fallback.id);
+            if (!liveItem) return fallback;
+
+            const hasModel = Boolean(liveItem.has_3d_model && liveItem.model_url);
+            return {
+              ...fallback,
+              name: liveItem.name?.trim() || fallback.name,
+              description: liveItem.description?.trim() || fallback.description,
+              price:
+                liveItem.price !== null && liveItem.price !== undefined
+                  ? `₹${liveItem.price}`
+                  : fallback.price,
+              isVeg: Boolean(liveItem.is_veg),
+              image: liveItem.image_url?.trim() || fallback.image,
+              modelUrl: liveItem.model_url || "",
+              arReady: hasModel,
+              badge: hasModel ? "AR READY" : "AR MODEL UNAVAILABLE",
+            };
+          })
+        );
+      } catch (err) {
+        console.warn("[homepage-demo] Live dish sync error:", err);
+      }
+    }
+
+    void loadLiveDemoDishes();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Cinematic Living Food Background state
   const [activeSceneIndex, setActiveSceneIndex] = useState(0);
@@ -1101,12 +1155,12 @@ export default function HomePage() {
                     <span>SELECT DEMO DISH</span>
                     <span className="text-emerald-700 font-semibold flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      2 MODELS READY
+                      {demoDishes.filter((d) => d.arReady && d.modelUrl).length} MODELS READY
                     </span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 p-1.5 rounded-2xl bg-white border border-[#D9D4C8] shadow-xs">
-                    {AR_DEMO_DISHES.map((dish) => {
+                    {demoDishes.map((dish) => {
                       const isCurrent = activeDemoDish.id === dish.id;
                       return (
                         <button
@@ -1153,8 +1207,17 @@ export default function HomePage() {
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-4">
                   <button
                     type="button"
-                    onClick={() => setArViewerDish(activeDemoDish)}
-                    className="inline-flex items-center justify-center gap-3.5 px-8 py-4.5 rounded-full bg-[#092C29] hover:bg-[#123F38] text-[#FAF8F2] font-semibold text-base transition-all duration-300 shadow-md hover:shadow-xl border border-[#C6A15B]/40 group cursor-pointer"
+                    disabled={!activeDemoDish.arReady || !activeDemoDish.modelUrl}
+                    onClick={() => {
+                      if (activeDemoDish.arReady && activeDemoDish.modelUrl) {
+                        setArViewerDish(activeDemoDish);
+                      }
+                    }}
+                    className={`inline-flex items-center justify-center gap-3.5 px-8 py-4.5 rounded-full font-semibold text-base transition-all duration-300 shadow-md ${
+                      activeDemoDish.arReady && activeDemoDish.modelUrl
+                        ? "bg-[#092C29] hover:bg-[#123F38] text-[#FAF8F2] hover:shadow-xl border border-[#C6A15B]/40 group cursor-pointer"
+                        : "bg-[#D9D4C8]/60 text-[#17211F]/50 border border-[#D9D4C8] cursor-not-allowed opacity-80"
+                    }`}
                   >
                     {/* Spatial 3D Cube Icon */}
                     <svg
@@ -1171,8 +1234,14 @@ export default function HomePage() {
                       <path d="m3.3 7 8.7 5 8.7-5" />
                       <path d="M12 22V12" />
                     </svg>
-                    <span>VIEW IN AR</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#C6A15B] animate-ping" />
+                    <span>
+                      {activeDemoDish.arReady && activeDemoDish.modelUrl
+                        ? "VIEW IN AR"
+                        : "AR MODEL UNAVAILABLE"}
+                    </span>
+                    {activeDemoDish.arReady && activeDemoDish.modelUrl && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#C6A15B] animate-ping" />
+                    )}
                   </button>
                 </div>
 
@@ -1204,9 +1273,23 @@ export default function HomePage() {
                     <span className="block font-mono text-[10px] text-[#5D8B82] uppercase tracking-wider">
                       Surface Status
                     </span>
-                    <span className="font-semibold text-xs text-emerald-700 mt-0.5 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      SURFACE READY
+                    <span
+                      className={`font-semibold text-xs mt-0.5 flex items-center gap-1.5 ${
+                        activeDemoDish.arReady && activeDemoDish.modelUrl
+                          ? "text-emerald-700"
+                          : "text-amber-700"
+                      }`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          activeDemoDish.arReady && activeDemoDish.modelUrl
+                            ? "bg-emerald-500 animate-pulse"
+                            : "bg-amber-500"
+                        }`}
+                      />
+                      {activeDemoDish.arReady && activeDemoDish.modelUrl
+                        ? "SURFACE READY"
+                        : "MODEL PENDING"}
                     </span>
                   </div>
                 </div>
@@ -1280,10 +1363,17 @@ export default function HomePage() {
                           <span className="px-3 py-1 rounded-full bg-[#092C29]/85 backdrop-blur-md text-[10px] font-mono tracking-widest text-[#FAF8F2] uppercase border border-[#C6A15B]/30">
                             {activeDemoDish.category}
                           </span>
-                          <span className="px-2.5 py-1 rounded-full bg-emerald-950/75 backdrop-blur-md text-[10px] font-mono tracking-wider text-emerald-300 uppercase border border-emerald-500/30 flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                            SURFACE READY
-                          </span>
+                          {activeDemoDish.arReady && activeDemoDish.modelUrl ? (
+                            <span className="px-2.5 py-1 rounded-full bg-emerald-950/75 backdrop-blur-md text-[10px] font-mono tracking-wider text-emerald-300 uppercase border border-emerald-500/30 flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                              SURFACE READY
+                            </span>
+                          ) : (
+                            <span className="px-2.5 py-1 rounded-full bg-amber-950/75 backdrop-blur-md text-[10px] font-mono tracking-wider text-amber-300 uppercase border border-amber-500/30 flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                              AR MODEL PENDING
+                            </span>
+                          )}
                         </div>
 
                         <div
@@ -1307,20 +1397,35 @@ export default function HomePage() {
                       <div className="absolute bottom-3 right-4">
                         <button
                           type="button"
-                          onClick={() => setArViewerDish(activeDemoDish)}
-                          className="px-4 py-2 rounded-full bg-[#C6A15B] hover:bg-[#b8924b] text-[#092C29] font-bold text-xs shadow-lg hover:shadow-xl transition-all flex items-center gap-1.5 cursor-pointer border border-[#C6A15B]"
+                          disabled={!activeDemoDish.arReady || !activeDemoDish.modelUrl}
+                          onClick={() => {
+                            if (activeDemoDish.arReady && activeDemoDish.modelUrl) {
+                              setArViewerDish(activeDemoDish);
+                            }
+                          }}
+                          className={`px-4 py-2 rounded-full font-bold text-xs shadow-lg transition-all flex items-center gap-1.5 border ${
+                            activeDemoDish.arReady && activeDemoDish.modelUrl
+                              ? "bg-[#C6A15B] hover:bg-[#b8924b] text-[#092C29] border-[#C6A15B] hover:shadow-xl cursor-pointer"
+                              : "bg-[#092C29]/80 text-[#FAF8F2]/60 border-[#D9D4C8]/30 cursor-not-allowed opacity-80"
+                          }`}
                         >
-                          <span>VIEW IN AR</span>
-                          <svg
-                            className="w-3.5 h-3.5"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2.5"
-                          >
-                            <path d="M5 12h14" />
-                            <path d="m12 5 7 7-7 7" />
-                          </svg>
+                          <span>
+                            {activeDemoDish.arReady && activeDemoDish.modelUrl
+                              ? "VIEW IN AR"
+                              : "AR UNAVAILABLE"}
+                          </span>
+                          {activeDemoDish.arReady && activeDemoDish.modelUrl && (
+                            <svg
+                              className="w-3.5 h-3.5"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                            >
+                              <path d="M5 12h14" />
+                              <path d="m12 5 7 7-7 7" />
+                            </svg>
+                          )}
                         </button>
                       </div>
                     </div>
@@ -1347,7 +1452,9 @@ export default function HomePage() {
                       <div className="pt-4 border-t border-[#D9D4C8]/60 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#FAF8F2] text-[#092C29] border border-[#D9D4C8]">
-                            3D MODEL READY
+                            {activeDemoDish.arReady && activeDemoDish.modelUrl
+                              ? "3D MODEL READY"
+                              : "3D MODEL PENDING"}
                           </span>
                           <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#C6A15B]/15 text-[#092C29] border border-[#C6A15B]/30">
                             {activeDemoDish.scaleMetric}
@@ -1356,11 +1463,24 @@ export default function HomePage() {
 
                         <button
                           type="button"
-                          onClick={() => setArViewerDish(activeDemoDish)}
-                          className="text-xs font-semibold text-[#092C29] hover:text-[#C6A15B] inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                          disabled={!activeDemoDish.arReady || !activeDemoDish.modelUrl}
+                          onClick={() => {
+                            if (activeDemoDish.arReady && activeDemoDish.modelUrl) {
+                              setArViewerDish(activeDemoDish);
+                            }
+                          }}
+                          className={`text-xs font-semibold inline-flex items-center gap-1.5 transition-colors ${
+                            activeDemoDish.arReady && activeDemoDish.modelUrl
+                              ? "text-[#092C29] hover:text-[#C6A15B] cursor-pointer"
+                              : "text-[#17211F]/40 cursor-not-allowed"
+                          }`}
                         >
-                          <span>Launch Table AR</span>
-                          <span>→</span>
+                          <span>
+                            {activeDemoDish.arReady && activeDemoDish.modelUrl
+                              ? "Launch Table AR"
+                              : "AR Model Unavailable"}
+                          </span>
+                          {activeDemoDish.arReady && activeDemoDish.modelUrl && <span>→</span>}
                         </button>
                       </div>
                     </div>
@@ -1410,24 +1530,37 @@ export default function HomePage() {
                     {/* Direct AR Action */}
                     <button
                       type="button"
+                      disabled={!secondaryDemoDish.arReady || !secondaryDemoDish.modelUrl}
                       onClick={(e) => {
                         e.stopPropagation();
-                        setArViewerDish(secondaryDemoDish);
+                        if (secondaryDemoDish.arReady && secondaryDemoDish.modelUrl) {
+                          setArViewerDish(secondaryDemoDish);
+                        }
                       }}
                       aria-label={`View ${secondaryDemoDish.name} in AR`}
-                      className="px-3.5 py-2.5 rounded-xl bg-[#092C29] hover:bg-[#123F38] text-[#FAF8F2] text-xs font-semibold shrink-0 transition-all flex items-center gap-1 shadow-sm group-hover:scale-105 cursor-pointer"
+                      className={`px-3.5 py-2.5 rounded-xl text-xs font-semibold shrink-0 transition-all flex items-center gap-1 shadow-sm ${
+                        secondaryDemoDish.arReady && secondaryDemoDish.modelUrl
+                          ? "bg-[#092C29] hover:bg-[#123F38] text-[#FAF8F2] group-hover:scale-105 cursor-pointer"
+                          : "bg-[#D9D4C8]/50 text-[#17211F]/40 cursor-not-allowed"
+                      }`}
                     >
-                      <span>AR</span>
-                      <svg
-                        className="w-3 h-3 text-[#C6A15B]"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                      >
-                        <path d="M5 12h14" />
-                        <path d="m12 5 7 7-7 7" />
-                      </svg>
+                      <span>
+                        {secondaryDemoDish.arReady && secondaryDemoDish.modelUrl
+                          ? "AR"
+                          : "PENDING"}
+                      </span>
+                      {secondaryDemoDish.arReady && secondaryDemoDish.modelUrl && (
+                        <svg
+                          className="w-3.5 h-3.5 text-[#C6A15B]"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                        >
+                          <path d="M5 12h14" />
+                          <path d="m12 5 7 7-7 7" />
+                        </svg>
+                      )}
                     </button>
                   </div>
                 </div>
