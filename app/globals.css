@@ -1,19 +1,35 @@
 @import "tailwindcss";
 
 :root {
-  --background: #faf8f2;
-  --foreground: #17211f;
-  --surface: #ffffff;
-  --surface-raised: #faf8f2;
-  --surface-subtle: #f5f2ea;
-  --border-subtle: #eae6df;
-  --border-warm: #d9d4c8;
+  /* Legacy & Hospitality Base Variables */
+  --background: #0b1120;
+  --foreground: #f8fafc;
+  --surface: #0f172a;
+  --surface-raised: #1e293b;
+  --surface-subtle: #111827;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-warm: rgba(255, 255, 255, 0.15);
   --forest-emerald: #092c29;
   --emerald-deep: #123f38;
   --champagne-gold: #c6a15b;
   --muted-sage: #5d8b82;
-  --veg-green: #15803d;
-  --nonveg-red: #b91c1c;
+  --veg-green: #22c55e;
+  --nonveg-red: #ef4444;
+
+  /* Modern High-Value SaaS Identity Tokens */
+  --navy-950: #070b14;
+  --navy-900: #0b1120;
+  --navy-850: #0f172a;
+  --navy-800: #1e293b;
+  --navy-700: #334155;
+  --electric-indigo: #6366f1;
+  --electric-indigo-hover: #4f46e5;
+  --electric-purple: #8b5cf6;
+  --electric-violet: #7c3aed;
+  --electric-cyan: #38bdf8;
+  --electric-blue: #3b82f6;
+  --warm-gold: #f59e0b;
+
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
 }
@@ -27,11 +43,12 @@
 }
 
 body {
-  background-color: var(--background);
+  background-color: var(--navy-900);
   color: var(--foreground);
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 /* Tabular numbers for price accuracy */
@@ -80,36 +97,29 @@ body {
   animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .animate-gold-line-glide,
-  .animate-fadeIn {
-    animation: none !important;
-  }
-}
-
 /* ===================================================
-   Spatial Luxury — Living Background System
+   Spatial SaaS — Ambient Glows & Dynamic Micro-Animations
    =================================================== */
 
 @keyframes ambientGlow1 {
-  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.16; }
-  50% { transform: translate(32px, -20px) scale(1.10); opacity: 0.26; }
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.18; }
+  50% { transform: translate(36px, -24px) scale(1.12); opacity: 0.32; }
 }
 
 @keyframes ambientGlow2 {
-  0%, 100% { transform: translate(0, 0) scale(1.06); opacity: 0.12; }
-  50% { transform: translate(-28px, 24px) scale(0.96); opacity: 0.22; }
+  0%, 100% { transform: translate(0, 0) scale(1.08); opacity: 0.14; }
+  50% { transform: translate(-32px, 28px) scale(0.94); opacity: 0.26; }
 }
 
 @keyframes ambientGlow3 {
-  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.10; }
-  50% { transform: translate(20px, 28px) scale(1.08); opacity: 0.20; }
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.12; }
+  50% { transform: translate(24px, 32px) scale(1.10); opacity: 0.24; }
 }
 
 @keyframes scanArcSweep {
-  0% { transform: rotate(0deg); opacity: 0.30; }
-  50% { opacity: 0.70; }
-  100% { transform: rotate(360deg); opacity: 0.30; }
+  0% { transform: rotate(0deg); opacity: 0.35; }
+  50% { opacity: 0.75; }
+  100% { transform: rotate(360deg); opacity: 0.35; }
 }
 
 @keyframes scanArcReverse {
@@ -118,23 +128,23 @@ body {
 }
 
 @keyframes contourDrift {
-  0%, 100% { transform: translateY(0) scale(1); opacity: 0.06; }
-  50% { transform: translateY(-8px) scale(1.015); opacity: 0.12; }
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.08; }
+  50% { transform: translateY(-10px) scale(1.02); opacity: 0.16; }
 }
 
-@keyframes moteFloat1 {
-  0%, 100% { transform: translate(0, 0); opacity: 0.08; }
-  50% { transform: translate(14px, -22px); opacity: 0.35; }
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
 }
 
-@keyframes moteFloat2 {
-  0%, 100% { transform: translate(0, 0); opacity: 0.06; }
-  50% { transform: translate(-16px, -28px); opacity: 0.30; }
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.06); }
 }
 
-@keyframes moteFloat3 {
-  0%, 100% { transform: translate(0, 0); opacity: 0.10; }
-  50% { transform: translate(12px, 18px); opacity: 0.38; }
+@keyframes shimmerSweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
 }
 
 .animate-ambient-glow-1 {
@@ -161,31 +171,12 @@ body {
   animation: contourDrift 16s ease-in-out infinite;
 }
 
-.animate-mote-1 {
-  animation: moteFloat1 9s ease-in-out infinite;
+.animate-float-gentle {
+  animation: floatGentle 5s ease-in-out infinite;
 }
 
-.animate-mote-2 {
-  animation: moteFloat2 12s ease-in-out infinite;
-}
-
-.animate-mote-3 {
-  animation: moteFloat3 10s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-ambient-glow-1,
-  .animate-ambient-glow-2,
-  .animate-ambient-glow-3,
-  .animate-scan-arc-sweep,
-  .animate-scan-arc-reverse,
-  .animate-contour-drift,
-  .animate-mote-1,
-  .animate-mote-2,
-  .animate-mote-3,
-  .animate-ken-burns {
-    animation: none !important;
-  }
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
 }
 
 @keyframes kenBurnsSlow {
@@ -197,5 +188,49 @@ body {
   animation: kenBurnsSlow 4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Modern High-End Glassmorphism Utilities */
+.glass-panel-dark {
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
 
+.glass-panel-subtle {
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
 
+.glass-card-interactive {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-interactive:hover {
+  transform: translateY(-4px);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.15);
+}
+
+/* Reduced Motion Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .animate-gold-line-glide,
+  .animate-fadeIn,
+  .animate-ambient-glow-1,
+  .animate-ambient-glow-2,
+  .animate-ambient-glow-3,
+  .animate-scan-arc-sweep,
+  .animate-scan-arc-reverse,
+  .animate-contour-drift,
+  .animate-float-gentle,
+  .animate-pulse-glow,
+  .animate-ken-burns,
+  .glass-card-interactive:hover,
+  .scroll-reveal-item {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+  }
+}

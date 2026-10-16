@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-[#FAF8F2] text-[#17211F] selection:bg-[#092C29]/15 selection:text-[#092C29]">
+      <body className="min-h-full flex flex-col font-sans bg-[#0B1120] text-slate-100 selection:bg-indigo-500/30 selection:text-indigo-200">
         {children}
       </body>
     </html>

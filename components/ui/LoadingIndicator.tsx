@@ -30,7 +30,7 @@ export default function LoadingIndicator({
     >
       {/* Refined Brand Emblem */}
       <div
-        className={`relative flex items-center justify-center rounded-2xl bg-[#092C29] border border-[#C6A15B]/40 shadow-sm shadow-stone-900/10 transition-transform ${
+        className={`relative flex items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white border border-indigo-400/30 shadow-lg shadow-indigo-500/25 transition-transform ${
           isSm
             ? "h-9 w-9 rounded-xl"
             : isLg
@@ -39,7 +39,7 @@ export default function LoadingIndicator({
         }`}
       >
         <span
-          className={`font-mono font-bold tracking-wider text-[#C6A15B] ${
+          className={`font-mono font-bold tracking-wider text-white ${
             isSm ? "text-xs" : isLg ? "text-base" : "text-sm"
           }`}
         >
@@ -51,7 +51,7 @@ export default function LoadingIndicator({
       <div className={`${isSm ? "mt-2" : "mt-3"} text-center`}>
         <div className="flex items-center justify-center gap-1.5">
           <span
-            className={`font-extrabold tracking-tight text-[#092C29] leading-none ${
+            className={`font-extrabold tracking-tight text-white leading-none ${
               isSm ? "text-xs" : isLg ? "text-base" : "text-sm"
             }`}
           >
@@ -59,7 +59,7 @@ export default function LoadingIndicator({
           </span>
         </div>
         <p
-          className={`font-mono uppercase tracking-[0.22em] text-[#5D8B82] font-semibold mt-1 ${
+          className={`font-mono uppercase tracking-[0.22em] text-indigo-400 font-semibold mt-1 ${
             isSm ? "text-[8px]" : "text-[9px]"
           }`}
         >
@@ -67,9 +67,9 @@ export default function LoadingIndicator({
         </p>
       </div>
 
-      {/* Subtle Champagne Gold-Line Animation */}
+      {/* Subtle Electric Indigo Line Animation */}
       <div
-        className={`relative overflow-hidden rounded-full bg-[#EAE6DF] ${
+        className={`relative overflow-hidden rounded-full bg-slate-800 ${
           isSm
             ? "mt-2.5 h-[1.5px] w-20"
             : isLg
@@ -78,13 +78,13 @@ export default function LoadingIndicator({
         }`}
         aria-hidden="true"
       >
-        <div className="absolute inset-y-0 w-1/2 rounded-full bg-gradient-to-r from-transparent via-[#C6A15B] to-transparent animate-gold-line-glide" />
+        <div className="absolute inset-y-0 w-1/2 rounded-full bg-gradient-to-r from-transparent via-indigo-500 to-transparent animate-gold-line-glide" />
       </div>
 
       {/* Optional Contextual Message */}
       {message && (
         <p
-          className={`font-medium text-stone-500 transition-opacity duration-300 ${
+          className={`font-medium text-slate-400 transition-opacity duration-300 ${
             isSm ? "mt-2 text-[11px]" : "mt-2.5 text-xs"
           }`}
         >
@@ -98,7 +98,7 @@ export default function LoadingIndicator({
 
   if (fullScreen) {
     return (
-      <main className="fixed inset-0 z-50 flex items-center justify-center bg-[#FAF8F2] px-6 py-12 transition-opacity duration-300 animate-fadeIn">
+      <main className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B1120] text-slate-100 px-6 py-12 transition-opacity duration-300 animate-fadeIn">
         {content}
       </main>
     );
