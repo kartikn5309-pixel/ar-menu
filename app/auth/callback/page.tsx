@@ -17,13 +17,15 @@ function AuthCallbackContent() {
 
     async function processAuth() {
       try {
-        // 1. Check for OAuth error parameters in query string
-        const errorParam = searchParams.get("error");
-        const errorDesc = searchParams.get("error_description");
-        if (errorParam || errorDesc) {
-          const message = errorDesc || errorParam || "Authentication could not be completed.";
+        // 1. Check for OAuth error parameters in query string or URL hash
+        let errorMsg = searchParams.get("error_description") || searchParams.get("error");
+        if (!errorMsg && typeof window !== "undefined" && window.location.hash) {
+          const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+          errorMsg = hashParams.get("error_description") || hashParams.get("error");
+        }
+        if (errorMsg) {
           if (isMounted) {
-            router.replace(`/login?error=${encodeURIComponent(message)}`);
+            router.replace(`/login?error=${encodeURIComponent(errorMsg)}`);
           }
           return;
         }
@@ -35,6 +37,18 @@ function AuthCallbackContent() {
           const { data: exchangeData, error: exchangeError } =
             await supabase.auth.exchangeCodeForSession(code);
 
+          if (!exchangeError && exchangeData.session?.user) {
+            await finalizeAuth(exchangeData.session.user.id);
+            return;
+          }
+
+          // If exchangeCodeForSession failed, detectSessionInUrl may have already exchanged it
+          const { data: fallbackSession } = await supabase.auth.getSession();
+          if (fallbackSession.session?.user) {
+            await finalizeAuth(fallbackSession.session.user.id);
+            return;
+          }
+
           if (exchangeError) {
             console.error("[auth-callback] exchangeCodeForSession failed:", exchangeError);
             if (isMounted) {
@@ -44,11 +58,6 @@ function AuthCallbackContent() {
                 )}`
               );
             }
-            return;
-          }
-
-          if (exchangeData.session?.user) {
-            await finalizeAuth(exchangeData.session.user.id);
             return;
           }
         }
