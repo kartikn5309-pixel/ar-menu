@@ -37,11 +37,34 @@ type ARViewerProps = {
 
 type ARStatus = "not-presenting" | "session-started" | "object-placed" | "failed";
 
+// Realistic default tabletop serving size: 25 cm (0.25 m)
+const DEFAULT_SERVING_SPAN_METERS = 0.25;
+const DEFAULT_FALLBACK_SCALE = "0.25 0.25 0.25";
+
 export default function ARViewer({ modelUrl, itemName, poster, onClose }: ARViewerProps) {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [arStatus, setArStatus] = useState<ARStatus>("not-presenting");
+  const [modelScale, setModelScale] = useState<string>(DEFAULT_FALLBACK_SCALE);
+  const [scaleFactor, setScaleFactor] = useState<number>(0.25);
   const modelViewerRef = useRef<HTMLElement | null>(null);
+
+  const [prevModelUrl, setPrevModelUrl] = useState(modelUrl);
+  if (modelUrl !== prevModelUrl) {
+    setPrevModelUrl(modelUrl);
+    setLoading(true);
+    setLoadError(false);
+    setModelScale(DEFAULT_FALLBACK_SCALE);
+    setScaleFactor(0.25);
+  }
+
+  useEffect(() => {
+    const el = modelViewerRef.current as (HTMLElement & { scale?: string }) | null;
+    if (el) {
+      el.setAttribute("scale", modelScale);
+      el.scale = modelScale;
+    }
+  }, [modelScale]);
 
   useEffect(() => {
     const modelViewer = modelViewerRef.current;
@@ -62,6 +85,49 @@ export default function ARViewer({ modelUrl, itemName, poster, onClose }: ARView
       : arStatus === "object-placed"
       ? "Dish anchored to table! Walk 360° around your table to inspect plating & portion size."
       : "Point your camera toward your table or a flat dining surface.";
+
+  const handleModelLoad = () => {
+    setLoading(false);
+    try {
+      const el = modelViewerRef.current as (HTMLElement & {
+        scale?: string;
+        getDimensions?: () => { x: number; y: number; z: number };
+      }) | null;
+
+      if (el && typeof el.getDimensions === "function") {
+        const dims = el.getDimensions();
+        if (dims && typeof dims.x === "number" && typeof dims.z === "number") {
+          // Bounding box returned by model-viewer reflects the current applied scale factor
+          const currentFactor = scaleFactor || 0.25;
+          const scaledHorizontalSpan = Math.max(dims.x, dims.z);
+          const rawHorizontalSpan = scaledHorizontalSpan / currentFactor;
+
+          if (rawHorizontalSpan > 0.001) {
+            let newFactor: number;
+            // If the model was already authored within a realistic tabletop serving size (18cm to 35cm),
+            // respect the author's real-world scale
+            if (rawHorizontalSpan >= 0.18 && rawHorizontalSpan <= 0.35) {
+              newFactor = 1.0;
+            } else {
+              // Otherwise, scale uniformly so the primary tabletop footprint is ~25 cm (0.25 m)
+              newFactor = DEFAULT_SERVING_SPAN_METERS / rawHorizontalSpan;
+            }
+
+            // Clamp factor to realistic bounds
+            newFactor = Math.max(0.0001, Math.min(newFactor, 50.0));
+            const formatted = Math.round(newFactor * 10000) / 10000;
+            const newScaleStr = `${formatted} ${formatted} ${formatted}`;
+            setScaleFactor(formatted);
+            setModelScale(newScaleStr);
+            el.setAttribute("scale", newScaleStr);
+            el.scale = newScaleStr;
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("[ARViewer] Could not compute dynamic serving scale:", err);
+    }
+  };
 
   return (
     <div
@@ -85,7 +151,7 @@ export default function ARViewer({ modelUrl, itemName, poster, onClose }: ARView
               </span>
               <span className="text-zinc-300">•</span>
               <span className="text-[11px] font-mono text-[#5D8B82] uppercase tracking-wider">
-                1:1 Scale
+                Tabletop Scale
               </span>
             </div>
             <h2 className="mt-0.5 truncate font-serif text-xl sm:text-2xl font-bold tracking-tight text-[#092C29]">
@@ -144,14 +210,14 @@ export default function ARViewer({ modelUrl, itemName, poster, onClose }: ARView
               camera-controls
               auto-rotate
               ar
-              ar-modes="scene-viewer webxr quick-look"
+              ar-modes="webxr scene-viewer quick-look"
               ar-scale="auto"
               ar-placement="floor"
               touch-action="pan-y"
               shadow-intensity="1.2"
               loading="eager"
               reveal="auto"
-              onLoad={() => setLoading(false)}
+              onLoad={handleModelLoad}
               onError={() => setLoadError(true)}
               className="h-full min-h-[min(68vh,560px)] w-full"
             >
