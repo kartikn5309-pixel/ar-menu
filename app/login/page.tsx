@@ -129,6 +129,7 @@ function LoginContent() {
         provider,
         options: {
           redirectTo,
+          queryParams: provider === "google" ? { prompt: "select_account" } : undefined,
         },
       });
 
