@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, Suspense, useEffect, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -22,19 +22,6 @@ type OAuthProvider = "google" | "facebook" | "apple";
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  // If user already has an active session, redirect directly to dashboard
-  useEffect(() => {
-    let isMounted = true;
-    supabase.auth.getSession().then(({ data }) => {
-      if (isMounted && data.session?.user) {
-        router.replace("/dashboard");
-      }
-    });
-    return () => {
-      isMounted = false;
-    };
-  }, [router]);
 
   // Form states
   const [email, setEmail] = useState("");
