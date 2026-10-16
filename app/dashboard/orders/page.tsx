@@ -9,6 +9,7 @@ import {
   CloseIcon,
   RefreshCwIcon,
 } from "@/components/ui/Icons";
+import LoadingIndicator from "@/components/ui/LoadingIndicator";
 
 type OrderStatus =
   | "pending"
@@ -325,8 +326,8 @@ export default function OrdersPage() {
 
   if (loading) {
     return (
-      <div className="p-12 text-center text-sm font-mono text-zinc-400">
-        Loading live orders...
+      <div className="py-20 flex justify-center">
+        <LoadingIndicator message="Syncing live kitchen orders..." />
       </div>
     );
   }
@@ -334,27 +335,27 @@ export default function OrdersPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-zinc-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#EAE6DF]">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#092C29]">
             Order Management
           </h1>
-          <p className="text-sm text-zinc-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-stone-500 mt-1 font-medium">
             Incoming dining orders with real-time status dispatch.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <div
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono font-medium border ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono font-bold border ${
               realtimeConnected
-                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                : "bg-zinc-100 text-zinc-600 border-zinc-200"
+                ? "bg-[#EBF4F1] text-[#092C29] border-[#CDE3DC]"
+                : "bg-stone-100 text-stone-600 border-stone-200"
             }`}
           >
             <span
               className={`w-2 h-2 rounded-full ${
-                realtimeConnected ? "bg-emerald-500 animate-pulse" : "bg-zinc-400"
+                realtimeConnected ? "bg-emerald-500 animate-pulse" : "bg-stone-400"
               }`}
             />
             <span>{realtimeConnected ? "Real-time Live" : "Polling Sync"}</span>
@@ -363,7 +364,7 @@ export default function OrdersPage() {
           <button
             type="button"
             onClick={() => void loadOrders(true)}
-            className="p-2 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-600 transition shadow-2xs"
+            className="p-2 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-600 transition shadow-xs cursor-pointer"
             title="Refresh orders"
           >
             <RefreshCwIcon className="w-4 h-4" />
@@ -377,15 +378,15 @@ export default function OrdersPage() {
           {notifications.map((n) => (
             <div
               key={n.id}
-              className="pointer-events-auto p-4 rounded-xl bg-zinc-900 text-white shadow-2xl border border-zinc-700 animate-in slide-in-from-top-2"
+              className="pointer-events-auto p-4 rounded-2xl bg-[#092C29] text-[#FAF8F2] shadow-2xl border border-[#193A34] animate-in slide-in-from-top-2"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <span className="text-[10px] font-mono tracking-wider uppercase text-[#C6A15B] font-bold block mb-1">
                     NEW ORDER RECEIVED
                   </span>
-                  <p className="font-bold text-sm">{n.order.order_number}</p>
-                  <p className="text-xs text-zinc-300 mt-0.5">
+                  <p className="font-bold text-sm text-[#FAF8F2]">{n.order.order_number}</p>
+                  <p className="text-xs text-stone-300 mt-0.5 font-medium">
                     {n.tableName} • ₹{Number(n.order.total).toFixed(2)}
                   </p>
                 </div>
@@ -394,7 +395,7 @@ export default function OrdersPage() {
                   onClick={() =>
                     setNotifications((prev) => prev.filter((item) => item.id !== n.id))
                   }
-                  className="text-zinc-400 hover:text-white"
+                  className="text-stone-400 hover:text-white"
                 >
                   ✕
                 </button>
@@ -405,7 +406,7 @@ export default function OrdersPage() {
                   viewOrder(n.order);
                   setNotifications((prev) => prev.filter((item) => item.id !== n.id));
                 }}
-                className="mt-3 w-full py-1.5 px-3 rounded-lg bg-[#C6A15B] text-zinc-950 font-bold text-xs hover:bg-[#b8924b] transition"
+                className="mt-3 w-full py-2 px-3 rounded-xl bg-[#C6A15B] text-[#092C29] font-bold text-xs hover:bg-[#d4b068] transition cursor-pointer"
               >
                 View Ticket
               </button>
@@ -415,13 +416,13 @@ export default function OrdersPage() {
       )}
 
       {error && (
-        <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-medium">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm">
+        <div className="p-4 rounded-2xl bg-[#EBF4F1] border border-[#CDE3DC] text-[#092C29] text-sm font-medium">
           {success}
         </div>
       )}
@@ -430,28 +431,28 @@ export default function OrdersPage() {
       <section className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         <div
           onClick={() => setStatusFilter("all")}
-          className={`p-3.5 rounded-xl border cursor-pointer transition shadow-2xs ${
+          className={`p-4 rounded-2xl border cursor-pointer transition shadow-sm shadow-stone-900/5 ${
             statusFilter === "all"
-              ? "bg-zinc-900 text-white border-zinc-900"
-              : "bg-white text-zinc-900 border-zinc-200 hover:border-zinc-300"
+              ? "bg-[#092C29] text-[#FAF8F2] border-[#092C29]"
+              : "bg-white text-stone-900 border-[#EAE6DF] hover:border-stone-400"
           }`}
         >
-          <span className={`text-[10px] font-mono uppercase tracking-wider block ${statusFilter === "all" ? "text-zinc-400" : "text-zinc-400"}`}>
+          <span className={`text-[10px] font-mono uppercase tracking-wider block font-bold ${statusFilter === "all" ? "text-stone-300" : "text-stone-400"}`}>
             Total Orders
           </span>
-          <span className="text-xl font-bold mt-1 block">{counts.total}</span>
+          <span className="text-2xl font-black mt-1 block">{counts.total}</span>
         </div>
 
         <div
           onClick={() => setStatusFilter("pending")}
-          className={`p-3.5 rounded-xl border cursor-pointer transition shadow-2xs ${
+          className={`p-4 rounded-2xl border cursor-pointer transition shadow-sm shadow-stone-900/5 ${
             statusFilter === "pending"
-              ? "bg-amber-600 text-white border-amber-600"
-              : "bg-white text-zinc-900 border-zinc-200 hover:border-amber-300"
+              ? "bg-amber-700 text-white border-amber-700"
+              : "bg-white text-stone-900 border-[#EAE6DF] hover:border-amber-300"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className={`text-[10px] font-mono uppercase tracking-wider block ${statusFilter === "pending" ? "text-amber-100" : "text-zinc-400"}`}>
+            <span className={`text-[10px] font-mono uppercase tracking-wider block font-bold ${statusFilter === "pending" ? "text-amber-100" : "text-stone-400"}`}>
               Pending
             </span>
             {counts.pending > 0 && (

@@ -476,19 +476,21 @@ export default function HomePage() {
           </nav>
 
           {/* Action CTAs */}
-          <div className="hidden sm:flex items-center gap-4">
+          <div className="hidden sm:flex items-center gap-3.5">
             <Link
               href="/login"
-              className="text-sm font-medium text-[#092C29] hover:text-[#123F38] px-4 py-2 rounded-full hover:bg-[#F5F2EA] transition-all"
+              className="text-xs sm:text-sm font-semibold text-[#092C29] hover:text-[#123F38] px-4 py-2 rounded-full hover:bg-[#F5F2EA] transition-all"
             >
               Restaurant Login
             </Link>
-            <Link
-              href="/signup"
-              className="text-sm font-semibold text-[#092C29] bg-[#C6A15B] hover:bg-[#b8924b] px-5 py-2.5 rounded-full shadow-sm hover:shadow transition-all border border-[#C6A15B]"
+            <button
+              type="button"
+              onClick={() => scrollToSection("ar-demo")}
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#FAF8F2] bg-[#092C29] hover:bg-[#123F38] px-5 py-2.5 rounded-full shadow-sm hover:shadow-md transition-all border border-[#C6A15B]/40 active:scale-95 cursor-pointer"
             >
-              Get Started
-            </Link>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C6A15B] animate-pulse" />
+              <span>Bring Your Menu to Life</span>
+            </button>
           </div>
 
           {/* Mobile Menu Toggle Button */}
@@ -550,16 +552,19 @@ export default function HomePage() {
             <div className="flex flex-col gap-2.5 pt-2">
               <Link
                 href="/login"
-                className="w-full text-center py-3 rounded-xl border border-[#D9D4C8] font-medium text-[#092C29] bg-white"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full text-center py-3 rounded-xl border border-[#D9D4C8] font-semibold text-[#092C29] bg-white shadow-2xs"
               >
                 Restaurant Login
               </Link>
-              <Link
-                href="/signup"
-                className="w-full text-center py-3 rounded-xl bg-[#C6A15B] text-[#092C29] font-semibold"
+              <button
+                type="button"
+                onClick={() => scrollToSection("ar-demo")}
+                className="w-full text-center py-3 rounded-xl bg-[#092C29] text-[#FAF8F2] font-semibold flex items-center justify-center gap-2 shadow-sm border border-[#C6A15B]/40"
               >
-                Get Started
-              </Link>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C6A15B] animate-pulse" />
+                <span>Bring Your Menu to Life</span>
+              </button>
             </div>
           </div>
         )}
@@ -648,26 +653,27 @@ export default function HomePage() {
                 </div>
 
                 {/* Primary Headline */}
-                <h1 className="text-4xl sm:text-6xl lg:text-[4.25rem] font-bold tracking-tight leading-[1.08] mb-6">
-                  <span className="text-[#321F1A]">Your Menu.</span> <br />
-                  <span className="text-[#5A2928]">Now in the Real World.</span>
+                <h1 className="font-serif text-4xl sm:text-6xl lg:text-[4.5rem] font-bold tracking-tight leading-[1.06] mb-6">
+                  <span className="text-[#092C29]">Your Menu.</span> <br />
+                  <span className="italic font-normal text-[#123F38]">Beyond the Table.</span>
                 </h1>
 
                 {/* Supporting Description */}
-                <p className="text-lg sm:text-xl text-[#17211F]/75 max-w-xl leading-relaxed mb-8">
-                  Turn a simple table QR code into an interactive dining experience where guests
-                  explore signature dishes, visualize them directly on the table in true-to-scale AR,
-                  and place their orders with zero friction.
+                <p className="text-lg sm:text-xl text-[#17211F]/80 max-w-xl leading-relaxed mb-8">
+                  Experience food before you order. AR MENU transforms physical dining into an
+                  immersive culinary journey. Guests explore chef-crafted dishes in true-scale 3D,
+                  anchor food directly onto their physical dining table in Augmented Reality, and order
+                  in seconds—with zero app download.
                 </p>
 
                 {/* CTA Row */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-8">
                   <button
                     type="button"
-                    onClick={() => scrollToSection("experience")}
-                    className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#092C29] text-[#FAF8F2] hover:bg-[#123F38] font-semibold text-base transition-all duration-300 shadow-sm hover:shadow-md border border-[#C6A15B]/30"
+                    onClick={() => scrollToSection("ar-demo")}
+                    className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#092C29] text-[#FAF8F2] hover:bg-[#123F38] font-semibold text-base transition-all duration-300 shadow-md hover:shadow-xl border border-[#C6A15B]/40 active:scale-95 cursor-pointer"
                   >
-                    <span>Experience Table AR</span>
+                    <span>Bring Your Menu to Life</span>
                     <svg
                       className="w-4 h-4 text-[#C6A15B]"
                       viewBox="0 0 24 24"
@@ -684,10 +690,10 @@ export default function HomePage() {
                   </button>
 
                   <Link
-                    href="/signup"
-                    className="inline-flex items-center justify-center px-7 py-4 rounded-full border border-[#D9D4C8] hover:border-[#092C29] text-[#092C29] hover:bg-white font-medium text-base transition-all bg-white/60 backdrop-blur-sm"
+                    href="/login"
+                    className="inline-flex items-center justify-center px-7 py-4 rounded-full border border-[#D9D4C8] hover:border-[#092C29] text-[#092C29] hover:bg-white font-medium text-base transition-all bg-white/70 backdrop-blur-sm active:scale-95"
                   >
-                    For Restaurants
+                    Restaurant Portal
                   </Link>
                 </div>
 
@@ -897,8 +903,8 @@ export default function HomePage() {
               <span className="font-mono text-xs text-[#C6A15B] uppercase tracking-[0.25em] block mb-2">
                 THE TRANSFORMATION JOURNEY
               </span>
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#092C29]">
-                From physical table to interactive dining.
+              <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#092C29]">
+                From physical table to <span className="italic font-normal text-[#123F38]">interactive dining.</span>
               </h2>
               <p className="text-[#17211F]/70 mt-3 text-base sm:text-lg">
                 Four seamless steps engineered for guest delight and zero operational friction.
@@ -1028,9 +1034,9 @@ export default function HomePage() {
                   SPATIAL DINING EXPERIENCE
                 </span>
 
-                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight mb-6">
+                <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight mb-6">
                   Don&apos;t just read the menu. <br />
-                  <span className="text-[#C6A15B]">See it.</span>
+                  <span className="italic font-normal text-[#C6A15B]">See it on your table.</span>
                 </h2>
 
                 <p className="text-lg text-[#D9D4C8] leading-relaxed mb-8">
@@ -1138,9 +1144,9 @@ export default function HomePage() {
                 </div>
 
                 {/* Primary Heading */}
-                <h2 className="text-3xl sm:text-5xl lg:text-[3.5rem] font-bold tracking-tight text-[#092C29] leading-[1.1] mb-6">
+                <h2 className="font-serif text-3xl sm:text-5xl lg:text-[3.75rem] font-bold tracking-tight text-[#092C29] leading-[1.08] mb-6">
                   Taste It Before <br />
-                  <span className="text-[#C6A15B]">You Order.</span>
+                  <span className="italic font-normal text-[#C6A15B]">You Order.</span>
                 </h2>
 
                 {/* Supporting Text */}
@@ -1580,8 +1586,8 @@ export default function HomePage() {
                 <span className="font-mono text-xs text-[#C6A15B] uppercase tracking-[0.25em] block mb-2">
                   CURATED COLLECTION
                 </span>
-                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#092C29]">
-                  Crafted for the senses.
+                <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#092C29]">
+                  Crafted for the <span className="italic font-normal text-[#123F38]">senses.</span>
                 </h2>
               </div>
               <p className="text-[#17211F]/70 max-w-md text-base">
@@ -1700,9 +1706,9 @@ export default function HomePage() {
               <span className="font-mono text-xs text-[#C6A15B] uppercase tracking-[0.25em] block mb-2">
                 RESTAURANT MANAGEMENT CONSOLE
               </span>
-              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#092C29]">
+              <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#092C29]">
                 One platform. <br />
-                Your entire digital menu.
+                <span className="italic font-normal text-[#123F38]">Your entire dining room.</span>
               </h2>
               <p className="text-[#17211F]/70 mt-4 text-base sm:text-lg">
                 Empower your culinary and floor team with real-time menu synchronization, 3D model
@@ -2004,8 +2010,8 @@ export default function HomePage() {
               <span className="font-mono text-xs text-[#C6A15B] uppercase tracking-[0.25em] block mb-2">
                 THE PARADIGM SHIFT
               </span>
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#092C29]">
-                A fundamental upgrade to the dining ritual.
+              <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#092C29]">
+                A fundamental upgrade to the <span className="italic font-normal text-[#123F38]">dining ritual.</span>
               </h2>
             </div>
 
@@ -2098,8 +2104,8 @@ export default function HomePage() {
               BEGIN YOUR RESTAURANT ELEVATION
             </span>
 
-            <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-white mb-6">
-              Make your menu worth exploring.
+            <h2 className="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-white mb-6">
+              Make your menu <span className="italic font-normal text-[#C6A15B]">worth exploring.</span>
             </h2>
 
             <p className="text-lg sm:text-xl text-[#D9D4C8] max-w-2xl mx-auto mb-10 leading-relaxed">

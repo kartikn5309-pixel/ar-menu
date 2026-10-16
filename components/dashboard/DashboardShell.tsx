@@ -118,32 +118,32 @@ export function DashboardShell({ children }: DashboardShellProps) {
     ) ?? DASHBOARD_NAV_ITEMS[0];
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] text-zinc-900 flex flex-col font-sans selection:bg-zinc-200">
+    <div className="min-h-screen bg-[#FAF8F2] text-stone-900 flex flex-col font-sans selection:bg-[#C6A15B]/20">
       <div className="flex flex-1 min-h-screen">
         {/* ====================================================================
             DESKTOP SIDEBAR (Clean, Polished, Professional SaaS Shell)
            ==================================================================== */}
-        <aside className="hidden lg:flex w-64 flex-col bg-zinc-950 text-white border-r border-zinc-800/70 select-none z-20 shrink-0">
+        <aside className="hidden lg:flex w-64 flex-col bg-[#091A18] text-white border-r border-[#142E2A] select-none z-20 shrink-0">
           {/* Header Brand */}
-          <div className="h-16 px-5 border-b border-zinc-800/70 flex items-center justify-between">
+          <div className="h-16 px-5 border-b border-[#142E2A] flex items-center justify-between">
             <Link
               href="/dashboard"
               className="flex items-center gap-3 group focus:outline-none"
             >
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/80 flex items-center justify-center font-mono font-bold text-xs text-[#C6A15B] shadow-xs group-hover:border-[#C6A15B] transition-colors">
+              <div className="w-8 h-8 rounded-lg bg-[#122A26] border border-[#254F48] flex items-center justify-center font-mono font-bold text-xs text-[#C6A15B] shadow-xs group-hover:border-[#C6A15B] transition-colors">
                 AR
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-sm tracking-tight text-white leading-tight">
                   AR MENU
                 </span>
-                <span className="text-[10px] font-mono tracking-widest text-zinc-400 uppercase">
+                <span className="text-[10px] font-mono tracking-widest text-stone-400 uppercase">
                   OPERATIONS
                 </span>
               </div>
             </Link>
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-800/40 text-[10px] font-medium text-emerald-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#053229]/80 border border-[#0F5A4B] text-[10px] font-semibold text-emerald-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               LIVE
             </span>
           </div>
@@ -151,7 +151,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
           {/* Navigation Items */}
           <div className="flex-1 px-3 py-5 overflow-y-auto space-y-6">
             <div>
-              <p className="px-3 text-[11px] font-mono uppercase tracking-[0.16em] text-zinc-300 font-semibold mb-2">
+              <p className="px-3 text-[10px] font-mono uppercase tracking-[0.2em] text-stone-400 font-semibold mb-2.5">
                 MANAGEMENT
               </p>
               <nav className="space-y-1">
@@ -165,10 +165,10 @@ export function DashboardShell({ children }: DashboardShellProps) {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group ${
+                      className={`flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${
                         isActive
-                          ? "bg-zinc-800/90 text-white shadow-xs border border-zinc-700/60"
-                          : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/60"
+                          ? "bg-[#142E2A] text-white shadow-xs border-l-2 border-[#C6A15B]"
+                          : "text-stone-300 hover:text-white hover:bg-[#122522]"
                       }`}
                     >
                       <div className="flex items-center gap-3">
@@ -181,7 +181,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
                         className={`w-4 h-4 transition-transform ${
                           isActive
                             ? "text-[#C6A15B]"
-                            : "text-zinc-500 group-hover:text-zinc-300"
+                            : "text-stone-500 group-hover:text-stone-300"
                         }`}
                       />
                     </Link>
@@ -192,36 +192,36 @@ export function DashboardShell({ children }: DashboardShellProps) {
           </div>
 
           {/* Bottom Account & Meta Card */}
-          <div className="p-3 border-t border-zinc-800/70 bg-zinc-950/80">
-            <div className="p-3 rounded-lg bg-zinc-900/80 border border-zinc-800/80">
+          <div className="p-3 border-t border-[#142E2A] bg-[#071513]">
+            <div className="p-3 rounded-xl bg-[#0D221F] border border-[#193A34]">
               <div className="flex items-center justify-between gap-2 mb-1">
-                <span className="text-xs font-semibold text-zinc-200 truncate">
+                <span className="text-xs font-semibold text-stone-200 truncate">
                   {restaurantName}
                 </span>
-                <span className="text-[10px] font-mono text-zinc-300 shrink-0">
+                <span className="text-[10px] font-mono text-[#C6A15B] shrink-0 font-bold">
                   OWNER
                 </span>
               </div>
-              <p className="text-[11px] text-zinc-400 truncate mb-3">
+              <p className="text-[11px] text-stone-400 truncate mb-3">
                 {userEmail || "Signed in"}
               </p>
 
-              <div className="flex items-center gap-2 pt-2 border-t border-zinc-800/60">
+              <div className="flex items-center gap-2 pt-2 border-t border-[#193A34]">
                 {restaurantId && (
                   <Link
                     href={`/menu/${restaurantId}/1`}
                     target="_blank"
-                    className="flex-1 py-1.5 px-2 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs font-medium transition flex items-center justify-center gap-1.5"
+                    className="flex-1 py-1.5 px-2 rounded-lg bg-[#142E2A] hover:bg-[#1D403A] text-stone-200 hover:text-white text-xs font-medium transition flex items-center justify-center gap-1.5"
                     title="Preview customer table menu"
                   >
                     <span>View Menu</span>
-                    <ExternalLinkIcon className="w-3 h-3 text-zinc-400" />
+                    <ExternalLinkIcon className="w-3 h-3 text-stone-400" />
                   </Link>
                 )}
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="py-1.5 px-2.5 rounded-md hover:bg-red-950/50 text-zinc-400 hover:text-red-400 text-xs font-medium transition flex items-center justify-center gap-1 border border-transparent hover:border-red-900/40"
+                  className="py-1.5 px-2.5 rounded-lg hover:bg-red-950/50 text-stone-400 hover:text-red-400 text-xs font-medium transition flex items-center justify-center gap-1 border border-transparent hover:border-red-900/40"
                   title="Sign out of dashboard"
                 >
                   <LogOutIcon className="w-3.5 h-3.5" />
@@ -325,15 +325,15 @@ export function DashboardShell({ children }: DashboardShellProps) {
         {/* ====================================================================
             MAIN WORKSPACE AREA
            ==================================================================== */}
-        <div className="flex-1 flex flex-col min-w-0 bg-[#F8F9FA]">
+        <div className="flex-1 flex flex-col min-w-0 bg-[#FAF8F2]">
           {/* Top Operational Bar */}
-          <header className="h-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-zinc-200/80 flex items-center justify-between shrink-0 sticky top-0 z-10">
+          <header className="h-16 px-4 sm:px-6 lg:px-8 bg-white/90 backdrop-blur-md border-b border-[#EAE6DF] flex items-center justify-between shrink-0 sticky top-0 z-10">
             <div className="flex items-center gap-3">
               {/* Mobile Menu Button */}
               <button
                 type="button"
                 onClick={() => setMobileOpen(true)}
-                className="lg:hidden p-2 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 border border-zinc-200"
+                className="lg:hidden p-2 rounded-xl text-stone-600 hover:text-stone-900 hover:bg-[#FAF8F2] border border-[#EAE6DF]"
                 aria-label="Open sidebar navigation"
               >
                 <MenuToggleIcon className="w-5 h-5" />
@@ -341,11 +341,11 @@ export function DashboardShell({ children }: DashboardShellProps) {
 
               {/* Breadcrumb / Section Header */}
               <div className="flex items-center gap-2 text-xs sm:text-sm">
-                <span className="text-zinc-400 font-medium hidden sm:inline">
+                <span className="text-stone-400 font-medium hidden sm:inline">
                   Management
                 </span>
-                <span className="text-zinc-300 hidden sm:inline">/</span>
-                <span className="font-semibold text-zinc-900">
+                <span className="text-stone-300 hidden sm:inline">/</span>
+                <span className="font-bold text-[#092C29]">
                   {currentNav.label}
                 </span>
               </div>
@@ -354,9 +354,9 @@ export function DashboardShell({ children }: DashboardShellProps) {
             {/* Right Status Actions */}
             <div className="flex items-center gap-3">
               {/* Restaurant Status Badge */}
-              <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-zinc-50 border border-zinc-200 text-xs font-medium text-zinc-700">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                <span className="truncate max-w-[150px]">{restaurantName}</span>
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-[#FAF8F2] border border-[#EAE6DF] text-xs font-medium text-stone-700">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="truncate max-w-[150px] font-semibold">{restaurantName}</span>
               </div>
 
               {/* Quick Customer Menu Test Link */}
@@ -364,17 +364,17 @@ export function DashboardShell({ children }: DashboardShellProps) {
                 <Link
                   href={`/menu/${restaurantId}/1`}
                   target="_blank"
-                  className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-semibold transition shadow-2xs"
+                  className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-700 text-xs font-semibold transition shadow-xs"
                 >
                   <span>Customer Menu</span>
-                  <ExternalLinkIcon className="w-3.5 h-3.5 text-zinc-400" />
+                  <ExternalLinkIcon className="w-3.5 h-3.5 text-stone-400" />
                 </Link>
               )}
 
               {/* User Avatar / Logout */}
               <div className="flex items-center gap-2">
                 <div
-                  className="w-8 h-8 rounded-full bg-zinc-900 text-white flex items-center justify-center font-bold text-xs select-none shadow-xs"
+                  className="w-8 h-8 rounded-full bg-[#092C29] text-[#FAF8F2] flex items-center justify-center font-bold text-xs select-none shadow-xs border border-[#C6A15B]/30"
                   title={userEmail || "Restaurant Admin"}
                 >
                   {restaurantName ? restaurantName.charAt(0).toUpperCase() : "R"}
@@ -382,7 +382,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition"
+                  className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-medium text-stone-500 hover:text-stone-900 hover:bg-[#FAF8F2] transition"
                   title="Sign out"
                 >
                   <LogOutIcon className="w-3.5 h-3.5" />

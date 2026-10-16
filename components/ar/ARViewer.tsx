@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
+import { ArCubeIcon, CloseIcon, SparklesIcon } from "@/components/ui/Icons";
 
 type ModelViewerElementProps = DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> & {
   src?: string;
@@ -55,34 +56,84 @@ export default function ARViewer({ modelUrl, itemName, poster, onClose }: ARView
     return () => modelViewer?.removeEventListener("ar-status", handleARStatus);
   }, []);
 
-  const arInstruction = arStatus === "session-started"
-    ? "Move your phone slowly to find a surface, then tap to place your dish."
-    : arStatus === "object-placed"
-      ? "Move around your table to view the dish from different angles."
-      : "Point your camera at a table or flat surface.";
+  const arInstruction =
+    arStatus === "session-started"
+      ? "Slowly scan your table surface with the camera, then tap to place the dish."
+      : arStatus === "object-placed"
+      ? "Dish anchored to table! Walk 360° around your table to inspect plating & portion size."
+      : "Point your camera toward your table or a flat dining surface.";
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/80 p-4 backdrop-blur-sm sm:p-6" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-3 sm:p-6 backdrop-blur-md transition-opacity duration-300"
+      onClick={onClose}
+    >
       <section
         role="dialog"
         aria-modal="true"
         aria-label={`${itemName} 3D and AR viewer`}
-        className="mx-auto flex max-h-[94vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl"
+        className="relative flex max-h-[94vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl bg-[#FAF8F2] border border-[#E7E2D6] shadow-2xl transition-all"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between gap-4 border-b border-slate-200 px-5 py-4 sm:px-6">
+        {/* Header Bar */}
+        <div className="flex items-center justify-between gap-4 border-b border-[#E7E2D6] bg-white px-5 py-4 sm:px-6">
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500">3D & AR dish</p>
-            <h2 className="mt-1 truncate text-xl font-bold text-slate-950">{itemName}</h2>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-[#C6A15B]">
+                <SparklesIcon className="w-3.5 h-3.5 text-[#C6A15B]" />
+                <span>Spatial 3D & AR</span>
+              </span>
+              <span className="text-zinc-300">•</span>
+              <span className="text-[11px] font-mono text-[#5D8B82] uppercase tracking-wider">
+                1:1 Scale
+              </span>
+            </div>
+            <h2 className="mt-0.5 truncate font-serif text-xl sm:text-2xl font-bold tracking-tight text-[#092C29]">
+              {itemName}
+            </h2>
           </div>
-          <button type="button" onClick={onClose} aria-label="Close AR viewer" className="flex h-10 shrink-0 items-center justify-center rounded-full bg-slate-100 px-4 text-sm font-semibold text-slate-600 hover:bg-slate-200">Close AR</button>
+
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close AR viewer"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900 transition-colors"
+          >
+            <CloseIcon className="w-4 h-4" />
+          </button>
         </div>
 
-        <div className="relative min-h-[min(68vh,560px)] bg-[#f3efe7]">
+        {/* 3D / AR Viewport */}
+        <div className="relative min-h-[min(68vh,560px)] bg-gradient-to-b from-[#F5F2EA] to-[#EBE7DC] overflow-hidden">
+          {/* Subtle Surface Coordinate Grid Lines */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.06]"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle, #092C29 1px, transparent 1px), linear-gradient(to right, #092C29 1px, transparent 1px), linear-gradient(to bottom, #092C29 1px, transparent 1px)",
+              backgroundSize: "32px 32px, 96px 96px, 96px 96px",
+            }}
+            aria-hidden="true"
+          />
+
           {loadError ? (
             <div className="flex h-full min-h-[min(68vh,560px)] flex-col items-center justify-center px-6 text-center">
-              <p className="text-lg font-bold text-slate-900">This dish could not be loaded</p>
-              <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500">Please check your connection and try opening the AR viewer again.</p>
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center text-xl mb-3">
+                🍽️
+              </div>
+              <p className="text-lg font-bold text-zinc-900">
+                This 3D model could not be loaded
+              </p>
+              <p className="mt-1.5 max-w-sm text-sm text-zinc-500">
+                Please check your internet connection or try opening the AR viewer again.
+              </p>
+              <button
+                type="button"
+                onClick={onClose}
+                className="mt-4 px-4 py-2 rounded-xl bg-zinc-900 text-white text-xs font-semibold hover:bg-zinc-800 transition"
+              >
+                Return to Menu
+              </button>
             </div>
           ) : (
             <model-viewer
@@ -97,27 +148,77 @@ export default function ARViewer({ modelUrl, itemName, poster, onClose }: ARView
               ar-scale="auto"
               ar-placement="floor"
               touch-action="pan-y"
-              shadow-intensity="1"
+              shadow-intensity="1.2"
               loading="eager"
               reveal="auto"
               onLoad={() => setLoading(false)}
               onError={() => setLoadError(true)}
               className="h-full min-h-[min(68vh,560px)] w-full"
             >
-              <button slot="ar-button" type="button" className="absolute bottom-5 left-1/2 min-h-12 -translate-x-1/2 rounded-full bg-orange-500 px-6 text-sm font-bold text-white shadow-lg shadow-orange-950/20 transition hover:bg-orange-600">
-                Place on table
+              {/* Native AR Launch Button */}
+              <button
+                slot="ar-button"
+                type="button"
+                className="absolute bottom-6 left-1/2 -translate-x-1/2 flex min-h-12 items-center gap-2.5 rounded-full bg-[#092C29] px-6 py-3 text-sm font-semibold text-white shadow-xl hover:bg-[#123F38] border border-[#C6A15B]/50 transition-all active:scale-95 cursor-pointer"
+              >
+                <ArCubeIcon className="w-4 h-4 text-[#C6A15B]" />
+                <span>Place On Table in AR</span>
               </button>
             </model-viewer>
           )}
-          {loading && !loadError && <div className="pointer-events-none absolute inset-0 flex items-center justify-center"><div className="rounded-full bg-white/90 px-5 py-3 text-sm font-semibold text-slate-700 shadow-lg">Loading 3D dish...</div></div>}
-          {!loading && !loadError && arStatus !== "object-placed" && <div className="pointer-events-none absolute left-1/2 top-4 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-2xl bg-slate-950/75 px-4 py-3 text-center text-sm font-semibold text-white shadow-lg">{arInstruction}</div>}
-          {!loading && !loadError && arStatus === "object-placed" && <div className="pointer-events-none absolute left-1/2 top-4 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-2xl bg-emerald-950/80 px-4 py-3 text-center text-sm font-semibold text-white shadow-lg">{arInstruction}</div>}
-          {arStatus === "failed" && <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-red-200 bg-white p-4 text-center shadow-lg"><p className="text-sm font-semibold text-red-700">AR could not start on this device.</p><p className="mt-1 text-xs text-slate-500">You can still rotate and zoom the 3D dish here.</p></div>}
+
+          {/* Loading Indicator */}
+          {loading && !loadError && (
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <div className="flex items-center gap-3 rounded-full bg-[#FAF8F2]/95 px-5 py-2.5 text-xs font-semibold text-[#092C29] shadow-xl border border-[#C6A15B]/40 backdrop-blur-md">
+                <span className="w-3.5 h-3.5 border-2 border-[#C6A15B] border-t-transparent rounded-full animate-spin" />
+                <span className="tracking-wide">Loading true-scale 3D dish...</span>
+              </div>
+            </div>
+          )}
+
+          {/* Interactive Inspection Hint (When model is loaded and before AR active) */}
+          {!loading && !loadError && arStatus === "not-presenting" && (
+            <div className="pointer-events-none absolute top-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-[#E7E2D6] text-[11px] font-mono text-zinc-600 shadow-sm flex items-center gap-2">
+              <span className="text-zinc-400">✦</span>
+              <span>Drag to rotate 360° · Pinch to zoom</span>
+            </div>
+          )}
+
+          {/* AR Active Guidance Banners */}
+          {!loading && !loadError && arStatus !== "not-presenting" && (
+            <div
+              className={`pointer-events-none absolute left-1/2 top-4 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-2xl px-4 py-3 text-center text-xs font-semibold shadow-lg backdrop-blur-md border transition-all ${
+                arStatus === "object-placed"
+                  ? "bg-[#092C29]/95 text-[#FAF8F2] border-[#C6A15B]/40"
+                  : "bg-zinc-950/90 text-white border-zinc-800"
+              }`}
+            >
+              {arInstruction}
+            </div>
+          )}
+
+          {/* AR Failed Fallback Banner */}
+          {arStatus === "failed" && (
+            <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-amber-200 bg-amber-50 p-3.5 text-center shadow-lg">
+              <p className="text-xs font-semibold text-amber-800">
+                Native camera AR is not supported by this browser.
+              </p>
+              <p className="mt-0.5 text-[11px] text-amber-700/80">
+                You can still rotate, zoom, and inspect the true-scale 3D dish right here.
+              </p>
+            </div>
+          )}
         </div>
 
-        <div className="border-t border-slate-200 px-5 py-4 text-sm text-slate-500 sm:px-6">
-          <p>Tap <span className="font-semibold text-slate-700">Place on table</span> to start native AR when supported.</p>
-          <p className="mt-1 text-xs text-slate-400">On devices without AR support, rotate and zoom the 3D model here instead.</p>
+        {/* Footer Guidance */}
+        <div className="border-t border-[#E7E2D6] bg-white px-5 py-3.5 text-xs text-zinc-500 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <p className="text-[11px]">
+            Tap <strong className="text-zinc-800 font-semibold">Place On Table</strong> to project the dish into physical dining space.
+          </p>
+          <span className="text-[10px] font-mono text-[#5D8B82] tracking-wider uppercase">
+            6DoF World Anchor
+          </span>
         </div>
       </section>
     </div>

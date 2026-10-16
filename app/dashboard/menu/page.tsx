@@ -15,6 +15,7 @@ import {
   ArCubeIcon,
   CloseIcon,
 } from "@/components/ui/Icons";
+import LoadingIndicator from "@/components/ui/LoadingIndicator";
 
 type Restaurant = {
   id: string;
@@ -638,8 +639,8 @@ export default function MenuManagementPage() {
 
   if (loading) {
     return (
-      <div className="p-12 text-center text-sm font-mono text-zinc-400">
-        Loading restaurant menu...
+      <div className="py-20 flex justify-center">
+        <LoadingIndicator message="Loading menu catalog..." />
       </div>
     );
   }
@@ -707,13 +708,13 @@ export default function MenuManagementPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-zinc-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#EAE6DF]">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#092C29]">
             Menu Management
           </h1>
-          <p className="text-sm text-zinc-500 mt-0.5">
-            Organize categories, dishes, prices, and 3D spatial models.
+          <p className="text-xs sm:text-sm text-stone-500 mt-1 font-medium">
+            Curate menu categories, dishes, dynamic pricing, and true-scale 3D models.
           </p>
         </div>
 
@@ -721,14 +722,14 @@ export default function MenuManagementPage() {
           <button
             type="button"
             onClick={() => openCategoryForm()}
-            className="px-3.5 py-2 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-semibold transition shadow-2xs"
+            className="px-3.5 py-2.5 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-700 text-xs font-bold transition shadow-xs cursor-pointer"
           >
             + Add Category
           </button>
           <button
             type="button"
             onClick={() => openItemForm()}
-            className="px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold transition shadow-xs flex items-center gap-1.5"
+            className="px-4 py-2.5 rounded-xl bg-[#092C29] hover:bg-[#123F38] text-[#FAF8F2] text-xs font-bold transition shadow-md shadow-stone-900/10 flex items-center gap-1.5 cursor-pointer"
           >
             <PlusIcon className="w-3.5 h-3.5" />
             <span>Add Dish</span>
@@ -737,75 +738,75 @@ export default function MenuManagementPage() {
       </div>
 
       {error && (
-        <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-medium">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm">
+        <div className="p-4 rounded-2xl bg-[#EBF4F1] border border-[#CDE3DC] text-[#092C29] text-sm font-medium">
           {success}
         </div>
       )}
 
       {/* Metrics Row */}
-      <section className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="p-3.5 rounded-xl bg-white border border-zinc-200 shadow-2xs">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold block">
-            Total Dishes
+      <section className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+        <div className="p-4 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5">
+          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-stone-400 font-bold block">
+            TOTAL DISHES
           </span>
-          <span className="text-xl font-bold text-zinc-900 mt-1 block">
+          <span className="text-2xl font-black text-[#092C29] mt-1 block">
             {items.length}
           </span>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-white border border-zinc-200 shadow-2xs">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold block">
-            Available Now
+        <div className="p-4 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5">
+          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-stone-400 font-bold block">
+            AVAILABLE NOW
           </span>
-          <span className="text-xl font-bold text-emerald-600 mt-1 block">
+          <span className="text-2xl font-black text-[#123F38] mt-1 block">
             {availableCount}
           </span>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-white border border-zinc-200 shadow-2xs">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold block">
-            Spatial 3D Ready
+        <div className="p-4 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5">
+          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-stone-400 font-bold block">
+            SPATIAL 3D READY
           </span>
-          <span className="text-xl font-bold text-zinc-900 mt-1 block flex items-center gap-1.5">
+          <span className="text-2xl font-black text-[#092C29] mt-1 block flex items-center gap-1.5">
             <span>{model3dCount}</span>
-            <span className="text-xs font-mono font-normal text-zinc-400">models</span>
+            <span className="text-xs font-mono font-medium text-stone-400">models</span>
           </span>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-white border border-zinc-200 shadow-2xs">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold block">
-            Categories
+        <div className="p-4 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5">
+          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-stone-400 font-bold block">
+            CATEGORIES
           </span>
-          <span className="text-xl font-bold text-zinc-900 mt-1 block">
+          <span className="text-2xl font-black text-[#092C29] mt-1 block">
             {categories.length}
           </span>
         </div>
       </section>
 
       {/* Search & Filter Toolbar */}
-      <section className="p-3.5 rounded-xl bg-white border border-zinc-200 shadow-2xs space-y-3">
+      <section className="p-4 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5 space-y-3">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           {/* Search Input */}
           <div className="relative flex-1">
-            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+            <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search dishes by name or description..."
-              className="w-full pl-9 pr-4 py-2 rounded-lg border border-zinc-200 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-400"
+              placeholder="Search dishes by name or culinary notes..."
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#EAE6DF] text-xs text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#092C29]/10 focus:border-[#092C29]"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
               >
                 ✕
               </button>
@@ -816,7 +817,7 @@ export default function MenuManagementPage() {
           <select
             value={selectedCategoryId}
             onChange={(e) => setSelectedCategoryId(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-zinc-200 bg-white text-xs font-medium text-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+            className="px-3.5 py-2.5 rounded-xl border border-[#EAE6DF] bg-white text-xs font-bold text-stone-700 focus:outline-none focus:ring-2 focus:ring-[#092C29]/10"
           >
             <option value="all">All Categories ({categories.length})</option>
             {categories.map((c) => (
@@ -830,7 +831,7 @@ export default function MenuManagementPage() {
           <select
             value={availabilityFilter}
             onChange={(e) => setAvailabilityFilter(e.target.value as "all" | "available" | "unavailable")}
-            className="px-3 py-2 rounded-lg border border-zinc-200 bg-white text-xs font-medium text-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+            className="px-3.5 py-2.5 rounded-xl border border-[#EAE6DF] bg-white text-xs font-bold text-stone-700 focus:outline-none focus:ring-2 focus:ring-[#092C29]/10"
           >
             <option value="all">All Availability</option>
             <option value="available">Available Only</option>
@@ -841,7 +842,7 @@ export default function MenuManagementPage() {
           <select
             value={dietFilter}
             onChange={(e) => setDietFilter(e.target.value as "all" | "veg" | "non-veg")}
-            className="px-3 py-2 rounded-lg border border-zinc-200 bg-white text-xs font-medium text-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+            className="px-3.5 py-2.5 rounded-xl border border-[#EAE6DF] bg-white text-xs font-bold text-stone-700 focus:outline-none focus:ring-2 focus:ring-[#092C29]/10"
           >
             <option value="all">All Diets</option>
             <option value="veg">Vegetarian</option>
@@ -852,10 +853,10 @@ export default function MenuManagementPage() {
           <button
             type="button"
             onClick={() => setArOnlyFilter(!arOnlyFilter)}
-            className={`px-3 py-2 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition ${
+            className={`px-3.5 py-2.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition ${
               arOnlyFilter
-                ? "bg-emerald-50 border-emerald-300 text-emerald-800"
-                : "border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-600"
+                ? "bg-[#EBF4F1] border-[#CDE3DC] text-[#092C29]"
+                : "border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-600"
             }`}
           >
             <ArCubeIcon className="w-3.5 h-3.5" />
@@ -911,19 +912,19 @@ export default function MenuManagementPage() {
             return (
               <div
                 key={category.id}
-                className="rounded-xl border border-zinc-200 bg-white shadow-2xs overflow-hidden"
+                className="rounded-2xl border border-[#EAE6DF] bg-white shadow-sm shadow-stone-900/5 overflow-hidden"
               >
                 {/* Category Header */}
-                <div className="px-5 py-4 border-b border-zinc-200 bg-zinc-50/60 flex items-center justify-between gap-4">
+                <div className="px-5 py-4 border-b border-[#F0ECE1] bg-[#FAF8F2] flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <h2 className="text-base font-bold text-zinc-900">
+                    <h2 className="text-base font-bold text-[#092C29]">
                       {category.name}
                     </h2>
-                    <span className="text-xs font-mono text-zinc-400">
+                    <span className="text-xs font-mono text-stone-400 font-semibold">
                       ({categoryItems.length} {categoryItems.length === 1 ? "item" : "items"})
                     </span>
                     {!category.is_active && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-zinc-200 text-zinc-600">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-stone-200 text-stone-600 font-bold">
                         HIDDEN
                       </span>
                     )}
@@ -933,14 +934,14 @@ export default function MenuManagementPage() {
                     <button
                       type="button"
                       onClick={() => toggleCategory(category)}
-                      className="px-2.5 py-1 rounded-md border border-zinc-200 bg-white hover:bg-zinc-50 text-[11px] font-medium text-zinc-600 transition"
+                      className="px-3 py-1.5 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-[11px] font-bold text-stone-600 transition shadow-2xs cursor-pointer"
                     >
                       {category.is_active ? "Hide" : "Show"}
                     </button>
                     <button
                       type="button"
                       onClick={() => openCategoryForm(category)}
-                      className="p-1.5 rounded-md hover:bg-zinc-200 text-zinc-500 hover:text-zinc-900 transition"
+                      className="p-1.5 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-500 hover:text-stone-900 transition shadow-2xs cursor-pointer"
                       title="Edit Category"
                     >
                       <EditIcon className="w-3.5 h-3.5" />
@@ -948,7 +949,7 @@ export default function MenuManagementPage() {
                     <button
                       type="button"
                       onClick={() => deleteCategory(category)}
-                      className="p-1.5 rounded-md hover:bg-red-50 text-zinc-400 hover:text-red-600 transition"
+                      className="p-1.5 rounded-xl border border-transparent hover:border-rose-200 hover:bg-rose-50 text-stone-400 hover:text-rose-600 transition cursor-pointer"
                       title="Delete Category"
                     >
                       <TrashIcon className="w-3.5 h-3.5" />
@@ -958,22 +959,22 @@ export default function MenuManagementPage() {
 
                 {/* Category Items List */}
                 {categoryItems.length === 0 ? (
-                  <div className="p-8 text-center text-xs text-zinc-400">
+                  <div className="p-8 text-center text-xs text-stone-400">
                     No items in this category yet. Click &quot;Add Dish&quot; above to add one.
                   </div>
                 ) : (
-                  <div className="divide-y divide-zinc-100">
+                  <div className="divide-y divide-[#F0ECE1]">
                     {categoryItems.map((item) => (
                       <div
                         key={item.id}
                         className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${
-                          !item.is_available ? "opacity-60 bg-zinc-50/40" : "hover:bg-zinc-50/50"
+                          !item.is_available ? "opacity-60 bg-[#FAF8F2]/50" : "hover:bg-[#FAF8F2]/40"
                         }`}
                       >
                         {/* Dish Details & Thumbnail */}
-                        <div className="flex items-start sm:items-center gap-3.5 min-w-0">
+                        <div className="flex items-start sm:items-center gap-4 min-w-0">
                           {/* Image Thumbnail */}
-                          <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-lg overflow-hidden bg-zinc-100 border border-zinc-200 shrink-0">
+                          <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-stone-100 border border-[#EAE6DF] shrink-0 shadow-2xs">
                             {item.image_url ? (
                               <Image
                                 src={item.image_url}
@@ -983,7 +984,7 @@ export default function MenuManagementPage() {
                                 className="object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-xs font-mono text-zinc-400">
+                              <div className="w-full h-full flex items-center justify-center text-[10px] font-mono text-stone-400">
                                 NO PIC
                               </div>
                             )}
@@ -993,16 +994,16 @@ export default function MenuManagementPage() {
                           <div className="min-w-0">
                             <div className="flex items-center gap-2">
                               {item.is_veg ? <VegBadge /> : <NonVegBadge />}
-                              <h3 className="font-semibold text-sm text-zinc-900 truncate">
+                              <h3 className="font-bold text-sm text-[#092C29] truncate">
                                 {item.name}
                               </h3>
-                              <span className="font-mono font-bold text-sm text-zinc-900">
+                              <span className="font-bold text-sm text-[#092C29] tabular-nums">
                                 ₹{Number(item.price).toFixed(2)}
                               </span>
                             </div>
 
                             {item.description && (
-                              <p className="text-xs text-zinc-500 line-clamp-1 mt-0.5 max-w-xl">
+                              <p className="text-xs text-stone-500 line-clamp-1 mt-0.5 max-w-xl font-medium">
                                 {item.description}
                               </p>
                             )}
@@ -1010,20 +1011,20 @@ export default function MenuManagementPage() {
                             {/* Tags */}
                             <div className="flex items-center gap-2 mt-1.5">
                               {item.has_3d_model ? (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-emerald-50 text-emerald-800 border border-emerald-200">
-                                  <ArCubeIcon className="w-3 h-3 text-emerald-600" />
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#EBF4F1] text-[#092C29] border border-[#CDE3DC]">
+                                  <ArCubeIcon className="w-3 h-3 text-[#123F38]" />
                                   <span>Spatial 3D Ready</span>
                                 </span>
                               ) : (
-                                <span className="text-[10px] font-mono text-zinc-400">
+                                <span className="text-[10px] font-mono text-stone-400 font-medium">
                                   Photo Only
                                 </span>
                               )}
 
                               <span
-                                className={`text-[10px] font-mono px-2 py-0.5 rounded ${
+                                className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
                                   item.is_available
-                                    ? "bg-zinc-100 text-zinc-700"
+                                    ? "bg-stone-100 text-stone-700"
                                     : "bg-rose-50 text-rose-700 border border-rose-200"
                                 }`}
                               >
@@ -1038,10 +1039,10 @@ export default function MenuManagementPage() {
                           <button
                             type="button"
                             onClick={() => toggleItem(item)}
-                            className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition ${
+                            className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition cursor-pointer shadow-2xs ${
                               item.is_available
-                                ? "border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700"
-                                : "border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800"
+                                ? "border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-700"
+                                : "border-[#CDE3DC] bg-[#EBF4F1] hover:bg-[#D9EFE9] text-[#092C29]"
                             }`}
                           >
                             {item.is_available ? "Disable" : "Enable"}
@@ -1050,7 +1051,7 @@ export default function MenuManagementPage() {
                           <button
                             type="button"
                             onClick={() => openItemForm(item)}
-                            className="p-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-600 transition"
+                            className="p-2 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-600 transition shadow-2xs cursor-pointer"
                             title="Edit dish"
                           >
                             <EditIcon className="w-4 h-4" />
@@ -1059,7 +1060,7 @@ export default function MenuManagementPage() {
                           <button
                             type="button"
                             onClick={() => deleteItem(item)}
-                            className="p-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-red-50 text-zinc-400 hover:text-red-600 transition"
+                            className="p-2 rounded-xl border border-transparent hover:border-rose-200 hover:bg-rose-50 text-stone-400 hover:text-rose-600 transition cursor-pointer"
                             title="Delete dish"
                           >
                             <TrashIcon className="w-4 h-4" />

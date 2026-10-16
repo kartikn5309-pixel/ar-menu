@@ -12,6 +12,7 @@ import {
   CheckIcon,
   StoreIcon,
 } from "@/components/ui/Icons";
+import LoadingIndicator from "@/components/ui/LoadingIndicator";
 
 const IMAGE_BUCKET = "menu-images";
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
@@ -197,8 +198,8 @@ export default function RestaurantProfilePage() {
 
   if (loading) {
     return (
-      <div className="p-12 text-center text-sm font-mono text-zinc-400">
-        Loading restaurant profile...
+      <div className="py-20 flex justify-center">
+        <LoadingIndicator message="Loading restaurant profile..." />
       </div>
     );
   }
@@ -206,39 +207,39 @@ export default function RestaurantProfilePage() {
   return (
     <div className="space-y-6 max-w-4xl">
       {/* Page Header */}
-      <div className="pb-2 border-b border-zinc-200">
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-900">
+      <div className="pb-3 border-b border-[#EAE6DF]">
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#092C29]">
           Restaurant Profile
         </h1>
-        <p className="text-sm text-zinc-500 mt-0.5">
+        <p className="text-xs sm:text-sm text-stone-500 mt-1 font-medium">
           Public brand assets, contact information, and dining venue presentation.
         </p>
       </div>
 
       {error && (
-        <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-medium">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm">
+        <div className="p-4 rounded-2xl bg-[#EBF4F1] border border-[#CDE3DC] text-[#092C29] text-sm font-medium">
           {success}
         </div>
       )}
 
       {/* Customer Menu Link Quick Card */}
       {restaurant && (
-        <div className="p-4 rounded-xl bg-white border border-zinc-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0">
-              <StoreIcon className="w-5 h-5 text-zinc-600" />
+        <div className="p-5 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-xl bg-[#EBF4F1] border border-[#CDE3DC] flex items-center justify-center shrink-0 text-[#092C29]">
+              <StoreIcon className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-zinc-900">
+              <p className="text-xs font-bold text-[#092C29]">
                 Live Public Digital Menu
               </p>
-              <p className="text-[11px] font-mono text-zinc-400 truncate max-w-xs sm:max-w-md">
+              <p className="text-[11px] font-mono text-stone-400 truncate max-w-xs sm:max-w-md font-medium">
                 {typeof window !== "undefined" ? window.location.origin : ""}/menu/{restaurant.id}/1
               </p>
             </div>
@@ -248,16 +249,16 @@ export default function RestaurantProfilePage() {
             <button
               type="button"
               onClick={handleCopyMenuLink}
-              className="px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 text-xs font-medium text-zinc-700 flex items-center gap-1.5 transition"
+              className="px-3 py-2 rounded-xl border border-[#EAE6DF] hover:bg-[#FAF8F2] text-xs font-bold text-stone-700 flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
             >
               {copiedLink ? (
                 <>
-                  <CheckIcon className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="text-emerald-700 font-semibold">Copied</span>
+                  <CheckIcon className="w-3.5 h-3.5 text-[#123F38]" />
+                  <span className="text-[#092C29] font-bold">Copied</span>
                 </>
               ) : (
                 <>
-                  <CopyIcon className="w-3.5 h-3.5 text-zinc-500" />
+                  <CopyIcon className="w-3.5 h-3.5 text-stone-400" />
                   <span>Copy Link</span>
                 </>
               )}
@@ -266,10 +267,10 @@ export default function RestaurantProfilePage() {
             <Link
               href={`/menu/${restaurant.id}/1`}
               target="_blank"
-              className="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold flex items-center gap-1.5 transition"
+              className="px-3.5 py-2 rounded-xl bg-[#092C29] hover:bg-[#123F38] text-[#FAF8F2] text-xs font-bold flex items-center gap-1.5 transition shadow-sm cursor-pointer"
             >
               <span>Preview Menu</span>
-              <ExternalLinkIcon className="w-3.5 h-3.5 text-zinc-400" />
+              <ExternalLinkIcon className="w-3.5 h-3.5 text-stone-300" />
             </Link>
           </div>
         </div>
@@ -279,19 +280,19 @@ export default function RestaurantProfilePage() {
       {restaurant && (
         <form onSubmit={saveProfile} className="space-y-6">
           {/* Section 1: Brand Imagery */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-2xs space-y-5">
-            <h2 className="text-sm font-bold text-zinc-900 uppercase tracking-wider font-mono">
+          <div className="rounded-2xl border border-[#EAE6DF] bg-white p-6 shadow-sm shadow-stone-900/5 space-y-5">
+            <h2 className="text-sm font-bold text-[#092C29] uppercase tracking-wider font-mono">
               Brand Assets &amp; Media
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Logo Upload */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1.5">
                   Restaurant Logo
                 </label>
-                <div className="flex items-start gap-4 p-4 rounded-xl border border-zinc-200 bg-zinc-50/50">
-                  <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-white border border-zinc-200 shrink-0 shadow-2xs">
+                <div className="flex items-start gap-4 p-4 rounded-xl border border-[#EAE6DF] bg-[#FAF8F2]/60">
+                  <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-white border border-[#EAE6DF] shrink-0 shadow-2xs">
                     {logoFile ? (
                       <Image
                         src={URL.createObjectURL(logoFile)}
@@ -309,18 +310,18 @@ export default function RestaurantProfilePage() {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center font-mono font-bold text-lg text-zinc-400">
+                      <div className="w-full h-full flex items-center justify-center font-mono font-bold text-lg text-stone-400">
                         {form.name ? form.name.charAt(0).toUpperCase() : "R"}
                       </div>
                     )}
                   </div>
 
                   <div className="flex-1 min-w-0 space-y-2">
-                    <p className="text-xs text-zinc-500">
+                    <p className="text-xs text-stone-500 font-medium">
                       Square format (500×500px). JPG, PNG, or WebP up to 5 MB.
                     </p>
                     <div className="flex items-center gap-2">
-                      <label className="px-3 py-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-xs font-semibold text-zinc-700 cursor-pointer transition shadow-2xs">
+                      <label className="px-3 py-1.5 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-xs font-bold text-stone-700 cursor-pointer transition shadow-2xs">
                         <span>{logoFile || form.logo_url ? "Change" : "Upload"}</span>
                         <input
                           type="file"
@@ -345,7 +346,7 @@ export default function RestaurantProfilePage() {
                             setLogoFile(null);
                             setForm({ ...form, logo_url: "" });
                           }}
-                          className="px-2.5 py-1.5 text-xs font-medium text-red-600 hover:underline"
+                          className="px-2.5 py-1.5 text-xs font-semibold text-rose-600 hover:underline cursor-pointer"
                         >
                           Remove
                         </button>
@@ -357,11 +358,11 @@ export default function RestaurantProfilePage() {
 
               {/* Cover Banner Upload */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1.5">
                   Cover Banner
                 </label>
-                <div className="p-4 rounded-xl border border-zinc-200 bg-zinc-50/50 space-y-3">
-                  <div className="relative w-full h-20 rounded-lg overflow-hidden bg-white border border-zinc-200 shadow-2xs">
+                <div className="p-4 rounded-xl border border-[#EAE6DF] bg-[#FAF8F2]/60 space-y-3">
+                  <div className="relative w-full h-20 rounded-xl overflow-hidden bg-white border border-[#EAE6DF] shadow-2xs">
                     {coverFile ? (
                       <Image
                         src={URL.createObjectURL(coverFile)}
@@ -379,15 +380,15 @@ export default function RestaurantProfilePage() {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center font-mono text-xs text-zinc-400">
+                      <div className="w-full h-full flex items-center justify-center font-mono text-xs text-stone-400 font-medium">
                         No cover banner uploaded
                       </div>
                     )}
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-zinc-400">16:9 widescreen recommended</span>
-                    <label className="px-3 py-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-xs font-semibold text-zinc-700 cursor-pointer transition shadow-2xs">
+                    <span className="text-xs text-stone-400 font-medium">16:9 widescreen recommended</span>
+                    <label className="px-3 py-1.5 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-xs font-bold text-stone-700 cursor-pointer transition shadow-2xs">
                       <span>{coverFile || form.cover_image_url ? "Change Banner" : "Upload Banner"}</span>
                       <input
                         type="file"
@@ -412,13 +413,13 @@ export default function RestaurantProfilePage() {
           </div>
 
           {/* Section 2: General Details */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-2xs space-y-4">
-            <h2 className="text-sm font-bold text-zinc-900 uppercase tracking-wider font-mono">
+          <div className="rounded-2xl border border-[#EAE6DF] bg-white p-6 shadow-sm shadow-stone-900/5 space-y-4">
+            <h2 className="text-sm font-bold text-[#092C29] uppercase tracking-wider font-mono">
               Restaurant Details
             </h2>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1.5">
                 Restaurant Name *
               </label>
               <input
@@ -426,54 +427,54 @@ export default function RestaurantProfilePage() {
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                className="w-full px-4 py-2.5 rounded-xl border border-[#EAE6DF] text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#092C29]/10 focus:border-[#092C29]"
                 placeholder="e.g. The Grand Bistro"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1.5">
                 About &amp; Culinary Concept
               </label>
               <textarea
                 rows={3}
                 value={form.description ?? ""}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                className="w-full px-4 py-2.5 rounded-xl border border-[#EAE6DF] text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#092C29]/10 focus:border-[#092C29]"
                 placeholder="Short description of your culinary offerings and dining atmosphere..."
               />
             </div>
           </div>
 
           {/* Section 3: Contact & Address */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-2xs space-y-4">
-            <h2 className="text-sm font-bold text-zinc-900 uppercase tracking-wider font-mono">
+          <div className="rounded-2xl border border-[#EAE6DF] bg-white p-6 shadow-sm shadow-stone-900/5 space-y-4">
+            <h2 className="text-sm font-bold text-[#092C29] uppercase tracking-wider font-mono">
               Location &amp; Contact
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1.5">
                   Phone Number
                 </label>
                 <input
                   type="tel"
                   value={form.phone ?? ""}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                  className="w-full px-4 py-2.5 rounded-xl border border-[#EAE6DF] text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#092C29]/10 focus:border-[#092C29]"
                   placeholder="+91 98765 43210"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1.5">
                   Dining Address
                 </label>
                 <input
                   type="text"
                   value={form.address ?? ""}
                   onChange={(e) => setForm({ ...form, address: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                  className="w-full px-4 py-2.5 rounded-xl border border-[#EAE6DF] text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#092C29]/10 focus:border-[#092C29]"
                   placeholder="123 Luxury Blvd, Indiranagar"
                 />
               </div>
@@ -485,7 +486,7 @@ export default function RestaurantProfilePage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm transition shadow-xs disabled:opacity-60"
+              className="px-6 py-3 rounded-xl bg-[#092C29] hover:bg-[#123F38] text-[#FAF8F2] font-bold text-sm transition shadow-md shadow-stone-900/10 disabled:opacity-60 cursor-pointer"
             >
               {saving ? "Saving Changes..." : "Save Restaurant Profile"}
             </button>

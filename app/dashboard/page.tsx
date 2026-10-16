@@ -12,6 +12,7 @@ import {
   VegBadge,
   NonVegBadge,
 } from "@/components/ui/Icons";
+import LoadingIndicator from "@/components/ui/LoadingIndicator";
 
 type OverviewStats = {
   menuItemsTotal: number;
@@ -180,26 +181,26 @@ export default function DashboardOverviewPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-zinc-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#EAE6DF]">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#092C29]">
             Operations Overview
           </h1>
-          <p className="text-sm text-zinc-500 mt-0.5">
-            Real-time status of your menu, tables, and dining orders.
+          <p className="text-xs sm:text-sm text-stone-500 mt-1 font-medium">
+            Real-time status of your digital menu, tables, and live dining orders.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {lastUpdated && (
-            <span className="text-xs font-mono text-zinc-400">
+            <span className="text-xs font-mono text-stone-400 bg-white px-3 py-1.5 rounded-lg border border-[#EAE6DF]">
               Synced {lastUpdated}
             </span>
           )}
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="p-2 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-600 transition shadow-2xs"
+            className="p-2 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-600 transition shadow-xs cursor-pointer"
             title="Refresh statistics"
           >
             <RefreshCwIcon className="w-4 h-4" />
@@ -208,7 +209,7 @@ export default function DashboardOverviewPage() {
       </div>
 
       {error && (
-        <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-medium">
           {error}
         </div>
       )}
@@ -216,34 +217,42 @@ export default function DashboardOverviewPage() {
       {/* Key Metric Cards */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Metric 1: Today's Revenue */}
-        <div className="p-5 rounded-xl bg-white border border-zinc-200 shadow-2xs">
-          <div className="flex items-center justify-between text-xs font-medium text-zinc-500 mb-2">
+        <div className="p-5 sm:p-6 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5 hover:border-[#C6A15B]/50 transition relative overflow-hidden">
+          <div className="flex items-center justify-between text-xs font-semibold text-stone-500 mb-2">
             <span>Today&apos;s Revenue</span>
-            <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[11px] border border-emerald-200/50">
+            <span className="px-2 py-0.5 rounded-full bg-[#EBF4F1] text-[#092C29] font-mono text-[10px] font-bold border border-[#CDE3DC]">
               PAID
             </span>
           </div>
-          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900">
+          <div className="text-2xl sm:text-3xl font-black tracking-tight text-[#092C29]">
             {loading ? "..." : `₹${stats ? stats.salesToday.toFixed(2) : "0.00"}`}
           </div>
-          <p className="mt-1.5 text-xs text-zinc-400">
-            From completed dining orders today
-          </p>
+          <div className="mt-2 flex items-center justify-between">
+            <p className="text-[11px] text-stone-400 font-medium">
+              Completed dining orders today
+            </p>
+            {/* Visual Micro Trend Indicator */}
+            <div className="flex items-end gap-1 h-3.5">
+              <span className="w-1 h-2 rounded-full bg-[#CDE3DC]" />
+              <span className="w-1 h-3 rounded-full bg-[#5D8B82]" />
+              <span className="w-1 h-3.5 rounded-full bg-[#092C29]" />
+            </div>
+          </div>
         </div>
 
         {/* Metric 2: Today's Orders */}
         <Link
           href="/dashboard/orders"
-          className="p-5 rounded-xl bg-white border border-zinc-200 shadow-2xs hover:border-zinc-300 transition group block"
+          className="p-5 sm:p-6 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5 hover:border-[#092C29]/40 transition group block"
         >
-          <div className="flex items-center justify-between text-xs font-medium text-zinc-500 mb-2">
+          <div className="flex items-center justify-between text-xs font-semibold text-stone-500 mb-2">
             <span>Today&apos;s Orders</span>
-            <ReceiptIcon className="w-4 h-4 text-zinc-400 group-hover:text-zinc-600 transition" />
+            <ReceiptIcon className="w-4 h-4 text-stone-400 group-hover:text-[#092C29] transition" />
           </div>
-          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900">
+          <div className="text-2xl sm:text-3xl font-black tracking-tight text-[#092C29]">
             {loading ? "..." : stats?.ordersToday ?? 0}
           </div>
-          <p className="mt-1.5 text-xs text-zinc-400">
+          <p className="mt-2 text-[11px] text-stone-400 font-medium">
             Guest orders placed across all tables
           </p>
         </Link>
@@ -251,16 +260,17 @@ export default function DashboardOverviewPage() {
         {/* Metric 3: Menu Items */}
         <Link
           href="/dashboard/menu"
-          className="p-5 rounded-xl bg-white border border-zinc-200 shadow-2xs hover:border-zinc-300 transition group block"
+          className="p-5 sm:p-6 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5 hover:border-[#092C29]/40 transition group block"
         >
-          <div className="flex items-center justify-between text-xs font-medium text-zinc-500 mb-2">
+          <div className="flex items-center justify-between text-xs font-semibold text-stone-500 mb-2">
             <span>Menu Items</span>
-            <UtensilsIcon className="w-4 h-4 text-zinc-400 group-hover:text-zinc-600 transition" />
+            <UtensilsIcon className="w-4 h-4 text-stone-400 group-hover:text-[#092C29] transition" />
           </div>
-          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900">
+          <div className="text-2xl sm:text-3xl font-black tracking-tight text-[#092C29]">
             {loading ? "..." : stats?.menuItemsTotal ?? 0}
           </div>
-          <p className="mt-1.5 text-xs text-emerald-600 font-medium">
+          <p className="mt-2 text-[11px] text-[#123F38] font-semibold flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             {loading ? "..." : `${stats?.menuItemsAvailable ?? 0} active & available`}
           </p>
         </Link>
@@ -268,36 +278,36 @@ export default function DashboardOverviewPage() {
         {/* Metric 4: Tables */}
         <Link
           href="/dashboard/tables"
-          className="p-5 rounded-xl bg-white border border-zinc-200 shadow-2xs hover:border-zinc-300 transition group block"
+          className="p-5 sm:p-6 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5 hover:border-[#092C29]/40 transition group block"
         >
-          <div className="flex items-center justify-between text-xs font-medium text-zinc-500 mb-2">
+          <div className="flex items-center justify-between text-xs font-semibold text-stone-500 mb-2">
             <span>Dining Tables</span>
-            <QrCodeIcon className="w-4 h-4 text-zinc-400 group-hover:text-zinc-600 transition" />
+            <QrCodeIcon className="w-4 h-4 text-stone-400 group-hover:text-[#092C29] transition" />
           </div>
-          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900">
+          <div className="text-2xl sm:text-3xl font-black tracking-tight text-[#092C29]">
             {loading ? "..." : stats?.tablesTotal ?? 0}
           </div>
-          <p className="mt-1.5 text-xs text-zinc-400">
+          <p className="mt-2 text-[11px] text-stone-400 font-medium">
             Configured with unique QR codes
           </p>
         </Link>
       </section>
 
       {/* Quick Action Bar */}
-      <section className="p-4 rounded-xl bg-white border border-zinc-200 shadow-2xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-          <span className="text-xs font-mono uppercase tracking-wider text-zinc-400 font-semibold">
-            QUICK ACTIONS
+      <section className="p-4 sm:p-5 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-stone-400 font-bold">
+            QUICK SHORTCUTS
           </span>
-          <span className="text-xs text-zinc-500 hidden sm:inline">
-            Direct shortcuts for restaurant management
+          <span className="text-xs text-stone-500 font-medium hidden sm:inline">
+            Direct operations management
           </span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           <Link
             href="/dashboard/menu?action=add"
-            className="p-3 rounded-lg border border-zinc-200 bg-zinc-50/50 hover:bg-zinc-100 hover:border-zinc-300 text-zinc-800 transition flex items-center gap-2.5 text-xs font-semibold"
+            className="p-3 rounded-xl border border-[#EAE6DF] bg-[#FAF8F2] hover:bg-[#F2EFE8] hover:border-[#C6A15B]/50 text-stone-800 transition flex items-center gap-2.5 text-xs font-bold"
           >
             <span className="text-base select-none">🍔</span>
             <span className="truncate">Add Menu Item</span>
@@ -305,7 +315,7 @@ export default function DashboardOverviewPage() {
 
           <Link
             href="/dashboard/menu"
-            className="p-3 rounded-lg border border-zinc-200 bg-zinc-50/50 hover:bg-zinc-100 hover:border-zinc-300 text-zinc-800 transition flex items-center gap-2.5 text-xs font-semibold"
+            className="p-3 rounded-xl border border-[#EAE6DF] bg-[#FAF8F2] hover:bg-[#F2EFE8] hover:border-[#C6A15B]/50 text-stone-800 transition flex items-center gap-2.5 text-xs font-bold"
           >
             <span className="text-base select-none">📂</span>
             <span className="truncate">Categories</span>
@@ -313,7 +323,7 @@ export default function DashboardOverviewPage() {
 
           <Link
             href="/dashboard/tables"
-            className="p-3 rounded-lg border border-zinc-200 bg-zinc-50/50 hover:bg-zinc-100 hover:border-zinc-300 text-zinc-800 transition flex items-center gap-2.5 text-xs font-semibold"
+            className="p-3 rounded-xl border border-[#EAE6DF] bg-[#FAF8F2] hover:bg-[#F2EFE8] hover:border-[#C6A15B]/50 text-stone-800 transition flex items-center gap-2.5 text-xs font-bold"
           >
             <span className="text-base select-none">📱</span>
             <span className="truncate">Add Table</span>
@@ -321,7 +331,7 @@ export default function DashboardOverviewPage() {
 
           <Link
             href="/dashboard/tables"
-            className="p-3 rounded-lg border border-zinc-200 bg-zinc-50/50 hover:bg-zinc-100 hover:border-zinc-300 text-zinc-800 transition flex items-center gap-2.5 text-xs font-semibold"
+            className="p-3 rounded-xl border border-[#EAE6DF] bg-[#FAF8F2] hover:bg-[#F2EFE8] hover:border-[#C6A15B]/50 text-stone-800 transition flex items-center gap-2.5 text-xs font-bold"
           >
             <span className="text-base select-none">🖨️</span>
             <span className="truncate">Download QRs</span>
@@ -333,20 +343,20 @@ export default function DashboardOverviewPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Recent Orders (8 cols) */}
         <section className="lg:col-span-8 space-y-4">
-          <div className="rounded-xl border border-zinc-200 bg-white shadow-2xs overflow-hidden">
-            <div className="px-5 py-4 border-b border-zinc-200 flex items-center justify-between">
+          <div className="rounded-2xl border border-[#EAE6DF] bg-white shadow-sm shadow-stone-900/5 overflow-hidden">
+            <div className="px-5 py-4 border-b border-[#F0ECE1] flex items-center justify-between">
               <div>
-                <h2 className="text-base font-bold text-zinc-900">
+                <h2 className="text-base font-bold text-[#092C29]">
                   Recent Dining Orders
                 </h2>
-                <p className="text-xs text-zinc-500 mt-0.5">
+                <p className="text-xs text-stone-500 mt-0.5 font-medium">
                   Latest customer orders across all active tables
                 </p>
               </div>
 
               <Link
                 href="/dashboard/orders"
-                className="text-xs font-semibold text-zinc-700 hover:text-zinc-900 inline-flex items-center gap-1 transition"
+                className="text-xs font-bold text-[#092C29] hover:text-[#123F38] inline-flex items-center gap-1 transition"
               >
                 <span>View all</span>
                 <span>→</span>
@@ -354,21 +364,21 @@ export default function DashboardOverviewPage() {
             </div>
 
             {loading ? (
-              <div className="p-8 text-center text-sm text-zinc-400 font-mono">
-                Loading orders...
+              <div className="py-12 flex justify-center">
+                <LoadingIndicator size="sm" message="Loading live dining orders..." />
               </div>
             ) : recentOrders.length === 0 ? (
               <div className="p-12 text-center">
-                <ReceiptIcon className="w-8 h-8 text-zinc-300 mx-auto mb-2" />
-                <p className="text-sm font-semibold text-zinc-700">No orders yet</p>
-                <p className="text-xs text-zinc-400 mt-1 max-w-sm mx-auto">
+                <ReceiptIcon className="w-8 h-8 text-stone-300 mx-auto mb-2" />
+                <p className="text-sm font-bold text-[#092C29]">No orders yet</p>
+                <p className="text-xs text-stone-500 mt-1 max-w-sm mx-auto">
                   Customer orders will automatically appear here once guests scan their table QR code.
                 </p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-zinc-50/75 border-b border-zinc-200 font-mono uppercase tracking-wider text-zinc-400 text-[10px]">
+                  <thead className="bg-[#FAF8F2] border-b border-[#F0ECE1] font-mono uppercase tracking-wider text-stone-400 text-[10px]">
                     <tr>
                       <th className="px-4 py-3">Order</th>
                       <th className="px-4 py-3">Table</th>
@@ -378,25 +388,25 @@ export default function DashboardOverviewPage() {
                       <th className="px-4 py-3 text-right">Time</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-100">
+                  <tbody className="divide-y divide-[#F0ECE1]">
                     {recentOrders.map((order) => {
                       const statusColor =
                         order.status === "completed"
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          ? "bg-[#EBF4F1] text-[#092C29] border-[#CDE3DC]"
                           : order.status === "preparing"
-                          ? "bg-amber-50 text-amber-700 border-amber-200"
+                          ? "bg-amber-50 text-amber-800 border-amber-200"
                           : order.status === "confirmed"
-                          ? "bg-blue-50 text-blue-700 border-blue-200"
+                          ? "bg-blue-50 text-blue-800 border-blue-200"
                           : order.status === "cancelled"
-                          ? "bg-rose-50 text-rose-700 border-rose-200"
-                          : "bg-zinc-100 text-zinc-700 border-zinc-200";
+                          ? "bg-rose-50 text-rose-800 border-rose-200"
+                          : "bg-stone-100 text-stone-700 border-stone-200";
 
                       return (
                         <tr
                           key={order.id}
-                          className="hover:bg-zinc-50/70 transition-colors"
+                          className="hover:bg-[#FAF8F2]/60 transition-colors"
                         >
-                          <td className="px-4 py-3 font-mono font-semibold text-zinc-900">
+                          <td className="px-4 py-3 font-mono font-bold text-[#092C29]">
                             <Link
                               href="/dashboard/orders"
                               className="hover:underline hover:text-[#C6A15B]"
@@ -405,28 +415,28 @@ export default function DashboardOverviewPage() {
                             </Link>
                           </td>
                           <td className="px-4 py-3">
-                            <span className="font-medium text-zinc-700">
+                            <span className="font-semibold text-stone-700">
                               {order.tableName}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-zinc-600 max-w-[200px] truncate">
+                          <td className="px-4 py-3 text-stone-600 max-w-[200px] truncate">
                             {order.items.length > 0
                               ? order.items
                                   .map((i) => `${i.item_name} ×${i.quantity}`)
                                   .join(", ")
                               : "Order items"}
                           </td>
-                          <td className="px-4 py-3 font-semibold text-zinc-900">
+                          <td className="px-4 py-3 font-bold text-[#092C29] tabular-nums">
                             ₹{order.total.toFixed(2)}
                           </td>
                           <td className="px-4 py-3">
                             <span
-                              className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider border ${statusColor}`}
+                              className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${statusColor}`}
                             >
                               {order.status}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-right text-zinc-400 font-mono">
+                          <td className="px-4 py-3 text-right text-stone-400 font-mono">
                             {new Date(order.created_at).toLocaleTimeString([], {
                               hour: "2-digit",
                               minute: "2-digit",
@@ -445,24 +455,24 @@ export default function DashboardOverviewPage() {
         {/* Right Column: Menu Snapshot & Setup Guide (4 cols) */}
         <section className="lg:col-span-4 space-y-6">
           {/* Menu Snapshot */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-2xs">
-            <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-100">
+          <div className="rounded-2xl border border-[#EAE6DF] bg-white p-5 sm:p-6 shadow-sm shadow-stone-900/5">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#F0ECE1]">
               <div>
-                <h3 className="font-bold text-sm text-zinc-900">
+                <h3 className="font-bold text-sm text-[#092C29]">
                   Menu Highlights
                 </h3>
-                <p className="text-xs text-zinc-500">Curated dishes on your live menu</p>
+                <p className="text-xs text-stone-500 font-medium">Curated dishes on your live menu</p>
               </div>
               <Link
                 href="/dashboard/menu"
-                className="text-xs font-semibold text-zinc-600 hover:text-zinc-900"
+                className="text-xs font-bold text-[#092C29] hover:underline"
               >
                 Manage →
               </Link>
             </div>
 
             {snapshotItems.length === 0 ? (
-              <p className="text-xs text-zinc-400 py-4 text-center">
+              <p className="text-xs text-stone-400 py-4 text-center">
                 No items added yet.
               </p>
             ) : (
@@ -470,15 +480,15 @@ export default function DashboardOverviewPage() {
                 {snapshotItems.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between gap-3 p-2.5 rounded-lg border border-zinc-100 bg-zinc-50/50"
+                    className="flex items-center justify-between gap-3 p-3 rounded-xl border border-[#EAE6DF] bg-[#FAF8F2]/60 hover:bg-[#FAF8F2] transition"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       {item.is_veg ? <VegBadge /> : <NonVegBadge />}
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold text-zinc-900 truncate">
+                        <p className="text-xs font-bold text-[#092C29] truncate">
                           {item.name}
                         </p>
-                        <p className="text-[11px] font-mono text-zinc-500">
+                        <p className="text-[11px] font-mono text-stone-500 font-semibold">
                           ₹{Number(item.price).toFixed(2)}
                         </p>
                       </div>
@@ -487,7 +497,7 @@ export default function DashboardOverviewPage() {
                     <div className="flex items-center gap-1.5 shrink-0">
                       {item.has_3d_model && (
                         <span
-                          className="px-1.5 py-0.5 rounded text-[9px] font-mono font-medium bg-emerald-50 text-emerald-700 border border-emerald-200"
+                          className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-[#EBF4F1] text-[#092C29] border border-[#CDE3DC]"
                           title="Interactive 3D model configured"
                         >
                           3D
@@ -495,7 +505,7 @@ export default function DashboardOverviewPage() {
                       )}
                       <span
                         className={`w-2 h-2 rounded-full ${
-                          item.is_available ? "bg-emerald-500" : "bg-zinc-300"
+                          item.is_available ? "bg-emerald-500" : "bg-stone-300"
                         }`}
                         title={item.is_available ? "Available" : "Unavailable"}
                       />
@@ -507,43 +517,43 @@ export default function DashboardOverviewPage() {
           </div>
 
           {/* Quick Onboarding / Operations Readiness */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-2xs">
-            <h3 className="font-bold text-sm text-zinc-900 mb-3">
+          <div className="rounded-2xl border border-[#EAE6DF] bg-white p-5 sm:p-6 shadow-sm shadow-stone-900/5">
+            <h3 className="font-bold text-sm text-[#092C29] mb-3">
               Operations Readiness
             </h3>
 
             <div className="space-y-2.5 text-xs">
-              <div className="flex items-start gap-2.5 p-2 rounded-lg bg-zinc-50 border border-zinc-100">
-                <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">
+              <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-[#FAF8F2] border border-[#EAE6DF]">
+                <span className="w-5 h-5 rounded-full bg-[#EBF4F1] text-[#092C29] flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5 border border-[#CDE3DC]">
                   ✓
                 </span>
                 <div>
-                  <p className="font-semibold text-zinc-900">Digital Menu Ready</p>
-                  <p className="text-zinc-500 text-[11px]">
+                  <p className="font-bold text-[#092C29]">Digital Menu Ready</p>
+                  <p className="text-stone-500 text-[11px] font-medium">
                     Dishes & categories configured for customers.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2.5 p-2 rounded-lg bg-zinc-50 border border-zinc-100">
-                <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">
+              <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-[#FAF8F2] border border-[#EAE6DF]">
+                <span className="w-5 h-5 rounded-full bg-[#EBF4F1] text-[#092C29] flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5 border border-[#CDE3DC]">
                   ✓
                 </span>
                 <div>
-                  <p className="font-semibold text-zinc-900">QR Codes Generated</p>
-                  <p className="text-zinc-500 text-[11px]">
+                  <p className="font-bold text-[#092C29]">QR Codes Generated</p>
+                  <p className="text-stone-500 text-[11px] font-medium">
                     Table QR codes ready for printing & display.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2.5 p-2 rounded-lg bg-zinc-50 border border-zinc-100">
-                <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">
+              <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-[#FAF8F2] border border-[#EAE6DF]">
+                <span className="w-5 h-5 rounded-full bg-[#EBF4F1] text-[#092C29] flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5 border border-[#CDE3DC]">
                   ✓
                 </span>
                 <div>
-                  <p className="font-semibold text-zinc-900">AR Experience Active</p>
-                  <p className="text-zinc-500 text-[11px]">
+                  <p className="font-bold text-[#092C29]">AR Experience Active</p>
+                  <p className="text-stone-500 text-[11px] font-medium">
                     True-to-scale 3D models enabled on supported devices.
                   </p>
                 </div>

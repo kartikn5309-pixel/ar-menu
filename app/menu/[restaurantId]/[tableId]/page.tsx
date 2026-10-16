@@ -78,31 +78,36 @@ export default async function CustomerMenuPage({ params }: PageProps) {
   const categories = (categoryResult.data ?? []) as Category[];
   const items = (itemResult.data ?? []) as MenuItem[];
   return (
-    <main className="min-h-screen bg-[#faf9f5] text-zinc-900">
+    <main className="min-h-screen bg-[#FAF8F2] text-zinc-900 selection:bg-[#092C29]/10 selection:text-[#092C29]">
       {/* Restaurant Hero Header */}
-      <header className="relative isolate overflow-hidden bg-[#18181b] text-white">
+      <header className="relative isolate overflow-hidden bg-[#092C29] text-white">
         {restaurant.cover_image_url && (
           <div
-            className="absolute inset-0 -z-10 bg-cover bg-center opacity-30 mix-blend-overlay filter blur-[1px] scale-105 transition-transform duration-700"
+            className="absolute inset-0 -z-10 bg-cover bg-center opacity-25 mix-blend-overlay filter blur-[1px] scale-105 transition-transform duration-700"
             style={{ backgroundImage: `url("${restaurant.cover_image_url}")` }}
             aria-hidden="true"
           />
         )}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#18181b] via-[#18181b]/70 to-black/40" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#092C29] via-[#092C29]/80 to-black/50" />
 
         <div className="mx-auto max-w-5xl px-5 pt-6 pb-8 sm:px-8 sm:pb-12">
           {/* Top Brand & Table Bar */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-orange-600 text-xs font-black tracking-wider text-white shadow-sm">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#092C29] text-xs font-mono font-bold tracking-widest text-[#C6A15B] border border-[#C6A15B]/40 shadow-xs">
                 AR
               </span>
-              <span className="text-xs font-bold tracking-[0.2em] text-white/80 uppercase">
-                Menu
-              </span>
+              <div className="flex flex-col">
+                <span className="text-xs font-bold tracking-wider text-white uppercase leading-none">
+                  AR MENU
+                </span>
+                <span className="text-[9px] font-mono tracking-widest text-[#C6A15B] uppercase mt-0.5">
+                  Digital Dining
+                </span>
+              </div>
             </div>
 
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-white backdrop-blur-md shadow-sm">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-white backdrop-blur-md shadow-xs">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>Table {table.name || table.table_number}</span>
             </div>
@@ -114,39 +119,39 @@ export default async function CustomerMenuPage({ params }: PageProps) {
               <div
                 role="img"
                 aria-label={`${restaurant.name} logo`}
-                className="h-20 w-20 shrink-0 rounded-2xl border-2 border-white/25 bg-white bg-cover bg-center shadow-xl sm:h-24 sm:w-24"
+                className="h-20 w-20 shrink-0 rounded-2xl border-2 border-[#C6A15B]/30 bg-white bg-cover bg-center shadow-xl sm:h-24 sm:w-24"
                 style={{ backgroundImage: `url("${restaurant.logo_url}")` }}
               />
             )}
 
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-orange-400">
-                Welcome to
+              <p className="text-[11px] font-mono font-bold uppercase tracking-[0.25em] text-[#C6A15B]">
+                Culinary Experience
               </p>
-              <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+              <h1 className="mt-1 font-serif text-3xl font-bold tracking-tight text-white sm:text-5xl">
                 {restaurant.name}
               </h1>
 
               {restaurant.description && (
-                <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-zinc-300 sm:text-base">
+                <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-[#D9D4C8] sm:text-base">
                   {restaurant.description}
                 </p>
               )}
 
               {(restaurant.address || restaurant.phone) && (
-                <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-zinc-400">
+                <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-[#D9D4C8]/80">
                   {restaurant.address && (
                     <span className="inline-flex items-center gap-1.5">
-                      <svg className="h-3.5 w-3.5 text-orange-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M20 10c0 4.993-5.5 11.5-8 12-2.5-.5-8-7.007-8-12a8 8 0 0 1 16 0Z"/><circle cx={12} cy={10} r={3}/></svg>
+                      <svg className="h-3.5 w-3.5 text-[#C6A15B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M20 10c0 4.993-5.5 11.5-8 12-2.5-.5-8-7.007-8-12a8 8 0 0 1 16 0Z"/><circle cx={12} cy={10} r={3}/></svg>
                       {restaurant.address}
                     </span>
                   )}
                   {restaurant.phone && (
                     <a
                       href={`tel:${restaurant.phone}`}
-                      className="inline-flex items-center gap-1.5 text-zinc-300 hover:text-white underline decoration-zinc-600 underline-offset-4"
+                      className="inline-flex items-center gap-1.5 text-white hover:text-[#C6A15B] underline decoration-[#C6A15B]/40 underline-offset-4 transition-colors"
                     >
-                      <svg className="h-3.5 w-3.5 text-orange-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+                      <svg className="h-3.5 w-3.5 text-[#C6A15B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
                       {restaurant.phone}
                     </a>
                   )}
@@ -167,20 +172,20 @@ export default async function CustomerMenuPage({ params }: PageProps) {
         />
 
         {items.length === 0 && (
-          <div className="mt-8 rounded-3xl border border-dashed border-stone-300 bg-white p-12 text-center shadow-sm">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-2xl text-orange-600">
+          <div className="mt-8 rounded-3xl border border-dashed border-[#E7E2D6] bg-white p-12 text-center shadow-xs">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-2xl text-amber-700 border border-amber-200">
               🍽️
             </div>
             <h2 className="mt-4 text-xl font-bold text-zinc-900">Menu coming soon</h2>
             <p className="mt-2 text-sm text-zinc-500 max-w-md mx-auto">
-              This restaurant is curating their digital menu. Please check back shortly or ask a server for assistance.
+              This restaurant is currently curating their digital menu. Please check back shortly or ask a server for assistance.
             </p>
           </div>
         )}
       </div>
 
-      <footer className="border-t border-stone-200/80 bg-white/50 px-5 py-8 text-center text-xs font-medium text-zinc-400">
-        Powered by <span className="font-semibold text-zinc-700">AR MENU</span> · Smart Digital Dining
+      <footer className="border-t border-[#E7E2D6] bg-white/60 px-5 py-8 text-center text-xs font-medium text-zinc-500">
+        Powered by <span className="font-semibold text-[#092C29]">AR MENU</span> · Spatial Digital Dining
       </footer>
     </main>
   );
