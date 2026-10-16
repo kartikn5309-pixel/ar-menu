@@ -66,7 +66,7 @@ const statusColors: Record<OrderStatus, { bg: string; text: string; border: stri
   confirmed: { bg: "bg-blue-50", text: "text-blue-800", border: "border-blue-200" },
   preparing: { bg: "bg-orange-50", text: "text-orange-800", border: "border-orange-200" },
   ready: { bg: "bg-purple-50", text: "text-purple-800", border: "border-purple-200" },
-  completed: { bg: "bg-emerald-50", text: "text-emerald-800", border: "border-emerald-200" },
+  completed: { bg: "bg-[#EAF7EF]", text: "text-[#168548]", border: "border-[#DCE7DC]" },
   cancelled: { bg: "bg-rose-50", text: "text-rose-800", border: "border-rose-200" },
 };
 
@@ -335,12 +335,12 @@ export default function OrdersPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#EAE6DF]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#DCE7DC]">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#092C29]">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#1D2923]">
             Order Management
           </h1>
-          <p className="text-xs sm:text-sm text-stone-500 mt-1 font-medium">
+          <p className="text-xs sm:text-sm text-[#687B70] mt-1 font-medium">
             Incoming dining orders with real-time status dispatch.
           </p>
         </div>
@@ -349,13 +349,13 @@ export default function OrdersPage() {
           <div
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono font-bold border ${
               realtimeConnected
-                ? "bg-[#EBF4F1] text-[#092C29] border-[#CDE3DC]"
-                : "bg-stone-100 text-stone-600 border-stone-200"
+                ? "bg-[#EAF7EF] text-[#168548] border-[#DCE7DC]"
+                : "bg-[#F0F5EF] text-[#687B70] border-[#DCE7DC]"
             }`}
           >
             <span
               className={`w-2 h-2 rounded-full ${
-                realtimeConnected ? "bg-emerald-500 animate-pulse" : "bg-stone-400"
+                realtimeConnected ? "bg-[#218653] animate-pulse" : "bg-stone-400"
               }`}
             />
             <span>{realtimeConnected ? "Real-time Live" : "Polling Sync"}</span>
@@ -364,7 +364,7 @@ export default function OrdersPage() {
           <button
             type="button"
             onClick={() => void loadOrders(true)}
-            className="p-2 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-600 transition shadow-xs cursor-pointer"
+            className="p-2 rounded-xl border border-[#DCE7DC] bg-white hover:bg-[#F0F5EF] text-[#687B70] hover:text-[#1D2923] transition shadow-2xs cursor-pointer"
             title="Refresh orders"
           >
             <RefreshCwIcon className="w-4 h-4" />
@@ -378,14 +378,14 @@ export default function OrdersPage() {
           {notifications.map((n) => (
             <div
               key={n.id}
-              className="pointer-events-auto p-4 rounded-2xl bg-[#092C29] text-[#FAF8F2] shadow-2xl border border-[#193A34] animate-in slide-in-from-top-2"
+              className="pointer-events-auto p-4 rounded-2xl bg-[#17352A] text-white shadow-2xl border border-[#254F48] animate-in slide-in-from-top-2"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <span className="text-[10px] font-mono tracking-wider uppercase text-[#C6A15B] font-bold block mb-1">
+                  <span className="text-[10px] font-mono tracking-wider uppercase text-[#DDF5E8] font-bold block mb-1">
                     NEW ORDER RECEIVED
                   </span>
-                  <p className="font-bold text-sm text-[#FAF8F2]">{n.order.order_number}</p>
+                  <p className="font-bold text-sm text-white">{n.order.order_number}</p>
                   <p className="text-xs text-stone-300 mt-0.5 font-medium">
                     {n.tableName} • ₹{Number(n.order.total).toFixed(2)}
                   </p>
@@ -406,7 +406,7 @@ export default function OrdersPage() {
                   viewOrder(n.order);
                   setNotifications((prev) => prev.filter((item) => item.id !== n.id));
                 }}
-                className="mt-3 w-full py-2 px-3 rounded-xl bg-[#C6A15B] text-[#092C29] font-bold text-xs hover:bg-[#d4b068] transition cursor-pointer"
+                className="mt-3 w-full py-2 px-3 rounded-xl bg-[#168548] text-white font-bold text-xs hover:bg-[#11733D] transition cursor-pointer"
               >
                 View Ticket
               </button>
@@ -422,7 +422,7 @@ export default function OrdersPage() {
       )}
 
       {success && (
-        <div className="p-4 rounded-2xl bg-[#EBF4F1] border border-[#CDE3DC] text-[#092C29] text-sm font-medium">
+        <div className="p-4 rounded-2xl bg-[#EAF7EF] border border-[#DCE7DC] text-[#168548] text-sm font-medium">
           {success}
         </div>
       )}
@@ -431,13 +431,13 @@ export default function OrdersPage() {
       <section className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         <div
           onClick={() => setStatusFilter("all")}
-          className={`p-4 rounded-2xl border cursor-pointer transition shadow-sm shadow-stone-900/5 ${
+          className={`p-4 rounded-2xl border cursor-pointer transition shadow-xs ${
             statusFilter === "all"
-              ? "bg-[#092C29] text-[#FAF8F2] border-[#092C29]"
-              : "bg-white text-stone-900 border-[#EAE6DF] hover:border-stone-400"
+              ? "bg-[#168548] text-white border-[#168548]"
+              : "bg-white text-[#1D2923] border-[#DCE7DC] hover:border-[#168548]/40"
           }`}
         >
-          <span className={`text-[10px] font-mono uppercase tracking-wider block font-bold ${statusFilter === "all" ? "text-stone-300" : "text-stone-400"}`}>
+          <span className={`text-[10px] font-mono uppercase tracking-wider block font-bold ${statusFilter === "all" ? "text-emerald-100" : "text-[#687B70]"}`}>
             Total Orders
           </span>
           <span className="text-2xl font-black mt-1 block">{counts.total}</span>
@@ -445,76 +445,76 @@ export default function OrdersPage() {
 
         <div
           onClick={() => setStatusFilter("pending")}
-          className={`p-4 rounded-2xl border cursor-pointer transition shadow-sm shadow-stone-900/5 ${
+          className={`p-4 rounded-2xl border cursor-pointer transition shadow-xs ${
             statusFilter === "pending"
-              ? "bg-amber-700 text-white border-amber-700"
-              : "bg-white text-stone-900 border-[#EAE6DF] hover:border-amber-300"
+              ? "bg-amber-600 text-white border-amber-600"
+              : "bg-white text-[#1D2923] border-[#DCE7DC] hover:border-amber-300"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className={`text-[10px] font-mono uppercase tracking-wider block font-bold ${statusFilter === "pending" ? "text-amber-100" : "text-stone-400"}`}>
+            <span className={`text-[10px] font-mono uppercase tracking-wider block font-bold ${statusFilter === "pending" ? "text-amber-100" : "text-[#687B70]"}`}>
               Pending
             </span>
             {counts.pending > 0 && (
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
             )}
           </div>
-          <span className="text-xl font-bold mt-1 block text-amber-500">{counts.pending}</span>
+          <span className="text-xl font-bold mt-1 block text-amber-600">{counts.pending}</span>
         </div>
 
         <div
           onClick={() => setStatusFilter("preparing")}
-          className={`p-3.5 rounded-xl border cursor-pointer transition shadow-2xs ${
+          className={`p-4 rounded-2xl border cursor-pointer transition shadow-xs ${
             statusFilter === "preparing"
               ? "bg-orange-600 text-white border-orange-600"
-              : "bg-white text-zinc-900 border-zinc-200 hover:border-orange-300"
+              : "bg-white text-[#1D2923] border-[#DCE7DC] hover:border-orange-300"
           }`}
         >
-          <span className={`text-[10px] font-mono uppercase tracking-wider block ${statusFilter === "preparing" ? "text-orange-100" : "text-zinc-400"}`}>
+          <span className={`text-[10px] font-mono uppercase tracking-wider block font-bold ${statusFilter === "preparing" ? "text-orange-100" : "text-[#687B70]"}`}>
             In Kitchen
           </span>
-          <span className="text-xl font-bold mt-1 block">{counts.preparing}</span>
+          <span className="text-xl font-bold mt-1 block text-orange-600">{counts.preparing}</span>
         </div>
 
         <div
           onClick={() => setStatusFilter("ready")}
-          className={`p-3.5 rounded-xl border cursor-pointer transition shadow-2xs ${
+          className={`p-4 rounded-2xl border cursor-pointer transition shadow-xs ${
             statusFilter === "ready"
               ? "bg-purple-600 text-white border-purple-600"
-              : "bg-white text-zinc-900 border-zinc-200 hover:border-purple-300"
+              : "bg-white text-[#1D2923] border-[#DCE7DC] hover:border-purple-300"
           }`}
         >
-          <span className={`text-[10px] font-mono uppercase tracking-wider block ${statusFilter === "ready" ? "text-purple-100" : "text-zinc-400"}`}>
+          <span className={`text-[10px] font-mono uppercase tracking-wider block font-bold ${statusFilter === "ready" ? "text-purple-100" : "text-[#687B70]"}`}>
             Ready
           </span>
-          <span className="text-xl font-bold mt-1 block">{counts.ready}</span>
+          <span className="text-xl font-bold mt-1 block text-purple-600">{counts.ready}</span>
         </div>
 
         <div
           onClick={() => setStatusFilter("completed")}
-          className={`p-3.5 rounded-xl border cursor-pointer transition shadow-2xs col-span-2 sm:col-span-1 ${
+          className={`p-4 rounded-2xl border cursor-pointer transition shadow-xs col-span-2 sm:col-span-1 ${
             statusFilter === "completed"
-              ? "bg-emerald-700 text-white border-emerald-700"
-              : "bg-white text-zinc-900 border-zinc-200 hover:border-emerald-300"
+              ? "bg-[#168548] text-white border-[#168548]"
+              : "bg-white text-[#1D2923] border-[#DCE7DC] hover:border-[#168548]/40"
           }`}
         >
-          <span className={`text-[10px] font-mono uppercase tracking-wider block ${statusFilter === "completed" ? "text-emerald-100" : "text-zinc-400"}`}>
+          <span className={`text-[10px] font-mono uppercase tracking-wider block font-bold ${statusFilter === "completed" ? "text-emerald-100" : "text-[#687B70]"}`}>
             Completed
           </span>
-          <span className="text-xl font-bold mt-1 block">{counts.completed}</span>
+          <span className="text-xl font-bold mt-1 block text-[#168548]">{counts.completed}</span>
         </div>
       </section>
 
       {/* Filter & Search Bar */}
-      <section className="p-3.5 rounded-xl bg-white border border-zinc-200 shadow-2xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <section className="p-4 rounded-2xl bg-white border border-[#DCE7DC] shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+          <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#687B70]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by order #, table, or guest name..."
-            className="w-full pl-9 pr-4 py-2 rounded-lg border border-zinc-200 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-400"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#DCE7DC] text-xs text-[#1D2923] placeholder:text-[#687B70] focus:outline-none focus:ring-2 focus:ring-[#168548]/20 focus:border-[#168548]"
           />
         </div>
 
@@ -530,10 +530,10 @@ export default function OrdersPage() {
                   key={tab}
                   type="button"
                   onClick={() => setStatusFilter(tab)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition ${
                     isActive
-                      ? "bg-zinc-900 text-white font-semibold"
-                      : "text-zinc-600 hover:bg-zinc-100"
+                      ? "bg-[#168548] text-white font-semibold shadow-2xs"
+                      : "text-[#687B70] hover:text-[#1D2923] hover:bg-[#F0F5EF]"
                   }`}
                 >
                   <span>{tab === "all" ? "All" : statusLabels[tab]}</span>
@@ -548,12 +548,12 @@ export default function OrdersPage() {
       </section>
 
       {/* Orders Table (Desktop) / Cards (Mobile) */}
-      <section className="rounded-xl border border-zinc-200 bg-white shadow-2xs overflow-hidden">
+      <section className="rounded-2xl border border-[#DCE7DC] bg-white shadow-xs overflow-hidden">
         {filteredOrders.length === 0 ? (
           <div className="p-12 text-center">
-            <ReceiptIcon className="w-8 h-8 text-zinc-300 mx-auto mb-2" />
-            <p className="text-sm font-semibold text-zinc-700">No orders found</p>
-            <p className="text-xs text-zinc-400 mt-1 max-w-sm mx-auto">
+            <ReceiptIcon className="w-8 h-8 text-[#DCE7DC] mx-auto mb-2" />
+            <p className="text-sm font-semibold text-[#1D2923]">No orders found</p>
+            <p className="text-xs text-[#687B70] mt-1 max-w-sm mx-auto">
               {searchQuery || statusFilter !== "all"
                 ? "Try clearing your search or status filter."
                 : "Customer orders will stream into this table in real-time."}
@@ -564,7 +564,7 @@ export default function OrdersPage() {
             {/* Desktop Table */}
             <div className="hidden lg:block overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-zinc-50/75 border-b border-zinc-200 font-mono uppercase tracking-wider text-zinc-400 text-[10px]">
+                <thead className="bg-[#F7FAF5] border-b border-[#DCE7DC] font-mono uppercase tracking-wider text-[#687B70] text-[10px]">
                   <tr>
                     <th className="px-5 py-3.5">Order ID</th>
                     <th className="px-5 py-3.5">Table</th>
@@ -576,7 +576,7 @@ export default function OrdersPage() {
                     <th className="px-5 py-3.5 text-right">Dispatch Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-100">
+                <tbody className="divide-y divide-[#DCE7DC]">
                   {filteredOrders.map((order) => {
                     const colors = statusColors[order.status] ?? statusColors.pending;
                     const possibleActions = statusActions[order.status];
@@ -585,30 +585,30 @@ export default function OrdersPage() {
                     return (
                       <tr
                         key={order.id}
-                        className="hover:bg-zinc-50/60 transition-colors"
+                        className="hover:bg-[#F7FAF5] transition-colors"
                       >
-                        <td className="px-5 py-4 font-mono font-bold text-zinc-900">
+                        <td className="px-5 py-4 font-mono font-bold text-[#1D2923]">
                           <button
                             type="button"
                             onClick={() => viewOrder(order)}
-                            className="hover:underline text-zinc-900 hover:text-[#C6A15B] cursor-pointer"
+                            className="hover:underline text-[#1D2923] hover:text-[#168548] cursor-pointer"
                           >
                             {order.order_number}
                           </button>
                         </td>
 
-                        <td className="px-5 py-4 font-semibold text-zinc-800">
-                          <span className="px-2 py-1 rounded bg-zinc-100 border border-zinc-200 font-mono text-xs">
+                        <td className="px-5 py-4 font-semibold text-[#1D2923]">
+                          <span className="px-2 py-1 rounded-lg bg-[#EAF7EF] border border-[#DCE7DC] text-[#168548] font-mono text-xs">
                             {tableName}
                           </span>
                         </td>
 
-                        <td className="px-5 py-4 text-zinc-600">
+                        <td className="px-5 py-4 text-[#687B70]">
                           {order.customer_name || "Guest"}
                         </td>
 
-                        <td className="px-5 py-4 max-w-xs text-zinc-600">
-                          <p className="truncate font-medium">
+                        <td className="px-5 py-4 max-w-xs text-[#687B70]">
+                          <p className="truncate font-medium text-[#1D2923]">
                             {order.items.map((i) => `${i.item_name} ×${i.quantity}`).join(", ")}
                           </p>
                           {order.notes && (
@@ -618,7 +618,7 @@ export default function OrdersPage() {
                           )}
                         </td>
 
-                        <td className="px-5 py-4 font-bold text-zinc-900 font-mono">
+                        <td className="px-5 py-4 font-bold text-[#1D2923] font-mono">
                           ₹{Number(order.total).toFixed(2)}
                         </td>
 
@@ -630,7 +630,7 @@ export default function OrdersPage() {
                           </span>
                         </td>
 
-                        <td className="px-5 py-4 text-zinc-400 font-mono whitespace-nowrap">
+                        <td className="px-5 py-4 text-[#687B70] font-mono whitespace-nowrap">
                           {new Date(order.created_at).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
@@ -646,10 +646,10 @@ export default function OrdersPage() {
                                   type="button"
                                   disabled={updatingId === order.id}
                                   onClick={() => void updateStatus(order, action)}
-                                  className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+                                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                                     action === "cancelled"
-                                      ? "border border-zinc-200 hover:bg-rose-50 text-rose-600 hover:border-rose-200"
-                                      : "bg-zinc-900 hover:bg-zinc-800 text-white"
+                                      ? "border border-[#DCE7DC] hover:bg-rose-50 text-rose-600 hover:border-rose-200"
+                                      : "bg-[#168548] hover:bg-[#11733D] text-white shadow-2xs"
                                   } disabled:opacity-50`}
                                 >
                                   {updatingId === order.id
@@ -669,7 +669,7 @@ export default function OrdersPage() {
                               <button
                                 type="button"
                                 onClick={() => viewOrder(order)}
-                                className="px-2.5 py-1 rounded-md border border-zinc-200 text-[11px] font-medium text-zinc-500 hover:bg-zinc-50"
+                                className="px-2.5 py-1 rounded-lg border border-[#DCE7DC] text-[11px] font-medium text-[#687B70] hover:bg-[#F0F5EF]"
                               >
                                 View Ticket
                               </button>
@@ -684,7 +684,7 @@ export default function OrdersPage() {
             </div>
 
             {/* Mobile Cards */}
-            <div className="lg:hidden divide-y divide-zinc-200">
+            <div className="lg:hidden divide-y divide-[#DCE7DC]">
               {filteredOrders.map((order) => {
                 const colors = statusColors[order.status] ?? statusColors.pending;
                 const possibleActions = statusActions[order.status];
@@ -697,17 +697,17 @@ export default function OrdersPage() {
                         <button
                           type="button"
                           onClick={() => viewOrder(order)}
-                          className="font-mono font-bold text-sm text-zinc-900 hover:underline"
+                          className="font-mono font-bold text-sm text-[#1D2923] hover:underline"
                         >
                           {order.order_number}
                         </button>
-                        <p className="text-xs text-zinc-500 mt-0.5">
+                        <p className="text-xs text-[#687B70] mt-0.5">
                           {tableName} • {order.customer_name || "Guest"}
                         </p>
                       </div>
 
                       <div className="text-right">
-                        <span className="font-mono font-bold text-sm text-zinc-900 block">
+                        <span className="font-mono font-bold text-sm text-[#1D2923] block">
                           ₹{Number(order.total).toFixed(2)}
                         </span>
                         <span
@@ -718,7 +718,7 @@ export default function OrdersPage() {
                       </div>
                     </div>
 
-                    <div className="text-xs text-zinc-600 bg-zinc-50 p-2.5 rounded-lg border border-zinc-100">
+                    <div className="text-xs text-[#1D2923] bg-[#F7FAF5] p-2.5 rounded-xl border border-[#DCE7DC]">
                       <p>{order.items.map((i) => `${i.item_name} ×${i.quantity}`).join(", ")}</p>
                       {order.notes && (
                         <p className="text-[11px] text-amber-700 italic mt-1">
@@ -728,7 +728,7 @@ export default function OrdersPage() {
                     </div>
 
                     <div className="flex items-center justify-between gap-2 pt-1">
-                      <span className="text-[11px] font-mono text-zinc-400">
+                      <span className="text-[11px] font-mono text-[#687B70]">
                         {new Date(order.created_at).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -739,7 +739,7 @@ export default function OrdersPage() {
                         <button
                           type="button"
                           onClick={() => viewOrder(order)}
-                          className="px-2.5 py-1.5 rounded-lg border border-zinc-200 text-xs font-semibold text-zinc-700"
+                          className="px-2.5 py-1.5 rounded-xl border border-[#DCE7DC] text-xs font-semibold text-[#1D2923] hover:bg-[#F0F5EF]"
                         >
                           Details
                         </button>
@@ -750,10 +750,10 @@ export default function OrdersPage() {
                             type="button"
                             disabled={updatingId === order.id}
                             onClick={() => void updateStatus(order, action)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
+                            className={`px-3 py-1.5 rounded-xl text-xs font-semibold ${
                               action === "cancelled"
-                                ? "border border-zinc-200 text-rose-600"
-                                : "bg-zinc-900 text-white"
+                                ? "border border-[#DCE7DC] text-rose-600 hover:bg-rose-50"
+                                : "bg-[#168548] hover:bg-[#11733D] text-white shadow-2xs"
                             }`}
                           >
                             {action === "confirmed"
@@ -781,21 +781,21 @@ export default function OrdersPage() {
           ORDER DETAILS MODAL (TICKET VIEW)
          ==================================================================== */}
       {selectedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-xl bg-white border border-zinc-200 shadow-2xl p-6 overflow-hidden">
-            <div className="flex items-start justify-between pb-3 border-b border-zinc-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#17352A]/40 backdrop-blur-xs">
+          <div className="w-full max-w-lg rounded-2xl bg-white border border-[#DCE7DC] shadow-2xl p-6 overflow-hidden">
+            <div className="flex items-start justify-between pb-3 border-b border-[#DCE7DC]">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-bold block">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#687B70] font-bold block">
                   ORDER TICKET
                 </span>
-                <h3 className="text-xl font-bold font-mono text-zinc-900 mt-0.5">
+                <h3 className="text-xl font-bold font-mono text-[#1D2923] mt-0.5">
                   {selectedOrder.order_number}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedOrder(null)}
-                className="text-zinc-400 hover:text-zinc-700"
+                className="text-[#687B70] hover:text-[#1D2923]"
               >
                 <CloseIcon className="w-5 h-5" />
               </button>
@@ -803,28 +803,28 @@ export default function OrdersPage() {
 
             <div className="py-4 space-y-4 max-h-[65vh] overflow-y-auto">
               {/* Meta Grid */}
-              <div className="grid grid-cols-2 gap-3 p-3 rounded-lg bg-zinc-50 border border-zinc-100 text-xs">
+              <div className="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#F7FAF5] border border-[#DCE7DC] text-xs">
                 <div>
-                  <span className="text-zinc-400 uppercase text-[10px] font-mono block">Table</span>
-                  <span className="font-semibold text-zinc-900 mt-0.5 block">
+                  <span className="text-[#687B70] uppercase text-[10px] font-mono block">Table</span>
+                  <span className="font-semibold text-[#1D2923] mt-0.5 block">
                     {tableNames[selectedOrder.table_id] ?? "Table"}
                   </span>
                 </div>
                 <div>
-                  <span className="text-zinc-400 uppercase text-[10px] font-mono block">Guest</span>
-                  <span className="font-semibold text-zinc-900 mt-0.5 block">
+                  <span className="text-[#687B70] uppercase text-[10px] font-mono block">Guest</span>
+                  <span className="font-semibold text-[#1D2923] mt-0.5 block">
                     {selectedOrder.customer_name || "Guest"}
                   </span>
                 </div>
                 <div>
-                  <span className="text-zinc-400 uppercase text-[10px] font-mono block">Status</span>
-                  <span className="font-semibold text-zinc-900 mt-0.5 uppercase tracking-wider block">
+                  <span className="text-[#687B70] uppercase text-[10px] font-mono block">Status</span>
+                  <span className="font-semibold text-[#1D2923] mt-0.5 uppercase tracking-wider block">
                     {statusLabels[selectedOrder.status]}
                   </span>
                 </div>
                 <div>
-                  <span className="text-zinc-400 uppercase text-[10px] font-mono block">Received</span>
-                  <span className="font-mono text-zinc-900 mt-0.5 block">
+                  <span className="text-[#687B70] uppercase text-[10px] font-mono block">Received</span>
+                  <span className="font-mono text-[#1D2923] mt-0.5 block">
                     {new Date(selectedOrder.created_at).toLocaleString()}
                   </span>
                 </div>
@@ -832,7 +832,7 @@ export default function OrdersPage() {
 
               {/* Customer Notes */}
               {selectedOrder.notes && (
-                <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+                <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
                   <span className="font-bold block mb-0.5">Guest Special Request:</span>
                   <p>{selectedOrder.notes}</p>
                 </div>
@@ -840,28 +840,28 @@ export default function OrdersPage() {
 
               {/* Items Breakdown */}
               <div>
-                <h4 className="text-xs font-mono uppercase tracking-wider text-zinc-400 font-semibold mb-2">
+                <h4 className="text-xs font-mono uppercase tracking-wider text-[#687B70] font-semibold mb-2">
                   Ordered Items
                 </h4>
-                <div className="divide-y divide-zinc-100 border border-zinc-200 rounded-lg overflow-hidden">
+                <div className="divide-y divide-[#DCE7DC] border border-[#DCE7DC] rounded-xl overflow-hidden">
                   {selectedOrder.items.map((item, idx) => (
                     <div key={idx} className="p-3 flex items-center justify-between gap-3 text-xs">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="w-5 h-5 rounded bg-zinc-100 font-bold flex items-center justify-center text-zinc-800 font-mono text-[11px]">
+                          <span className="w-5 h-5 rounded-lg bg-[#EAF7EF] text-[#168548] font-bold flex items-center justify-center font-mono text-[11px] border border-[#DCE7DC]">
                             {item.quantity}
                           </span>
-                          <span className="font-semibold text-zinc-900">
+                          <span className="font-semibold text-[#1D2923]">
                             {item.item_name}
                           </span>
                         </div>
                         {item.notes && (
-                          <p className="text-[11px] text-zinc-500 italic ml-7 mt-0.5">
+                          <p className="text-[11px] text-[#687B70] italic ml-7 mt-0.5">
                             {item.notes}
                           </p>
                         )}
                       </div>
-                      <span className="font-mono font-bold text-zinc-900">
+                      <span className="font-mono font-bold text-[#1D2923]">
                         ₹{Number(item.line_total).toFixed(2)}
                       </span>
                     </div>
@@ -870,24 +870,24 @@ export default function OrdersPage() {
               </div>
 
               {/* Bill Summary */}
-              <div className="pt-2 space-y-1.5 text-xs border-t border-zinc-200">
-                <div className="flex justify-between text-zinc-500">
+              <div className="pt-2 space-y-1.5 text-xs border-t border-[#DCE7DC]">
+                <div className="flex justify-between text-[#687B70]">
                   <span>Subtotal</span>
                   <span className="font-mono">₹{Number(selectedOrder.subtotal).toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-sm font-bold text-zinc-900 pt-1 border-t border-zinc-100">
+                <div className="flex justify-between text-sm font-bold text-[#1D2923] pt-1 border-t border-[#DCE7DC]">
                   <span>Total Due</span>
-                  <span className="font-mono text-base">₹{Number(selectedOrder.total).toFixed(2)}</span>
+                  <span className="font-mono text-base text-[#168548]">₹{Number(selectedOrder.total).toFixed(2)}</span>
                 </div>
               </div>
             </div>
 
             {/* Modal Actions */}
-            <div className="pt-4 border-t border-zinc-200 flex items-center justify-between gap-3">
+            <div className="pt-4 border-t border-[#DCE7DC] flex items-center justify-between gap-3">
               <button
                 type="button"
                 onClick={() => setSelectedOrder(null)}
-                className="px-4 py-2 rounded-lg border border-zinc-200 text-xs font-semibold text-zinc-700 hover:bg-zinc-50"
+                className="px-4 py-2 rounded-xl border border-[#DCE7DC] text-xs font-semibold text-[#687B70] hover:bg-[#F0F5EF]"
               >
                 Close
               </button>
@@ -902,10 +902,10 @@ export default function OrdersPage() {
                       void updateStatus(selectedOrder, action);
                       setSelectedOrder(null);
                     }}
-                    className={`px-4 py-2 rounded-lg text-xs font-semibold ${
+                    className={`px-4 py-2 rounded-xl text-xs font-semibold ${
                       action === "cancelled"
-                        ? "border border-zinc-200 hover:bg-rose-50 text-rose-600"
-                        : "bg-zinc-900 hover:bg-zinc-800 text-white"
+                        ? "border border-[#DCE7DC] hover:bg-rose-50 text-rose-600"
+                        : "bg-[#168548] hover:bg-[#11733D] text-white shadow-xs"
                     }`}
                   >
                     Mark {statusLabels[action]}

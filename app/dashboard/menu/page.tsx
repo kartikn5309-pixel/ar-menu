@@ -708,12 +708,12 @@ export default function MenuManagementPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#EAE6DF]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#DCE7DC]">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#092C29]">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#1D2923]">
             Menu Management
           </h1>
-          <p className="text-xs sm:text-sm text-stone-500 mt-1 font-medium">
+          <p className="text-xs sm:text-sm text-[#687B70] mt-1 font-medium">
             Curate menu categories, dishes, dynamic pricing, and true-scale 3D models.
           </p>
         </div>
@@ -722,14 +722,14 @@ export default function MenuManagementPage() {
           <button
             type="button"
             onClick={() => openCategoryForm()}
-            className="px-3.5 py-2.5 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-700 text-xs font-bold transition shadow-xs cursor-pointer"
+            className="px-3.5 py-2.5 rounded-xl border border-[#DCE7DC] bg-white hover:bg-[#F0F5EF] text-[#1D2923] text-xs font-bold transition shadow-2xs cursor-pointer"
           >
             + Add Category
           </button>
           <button
             type="button"
             onClick={() => openItemForm()}
-            className="px-4 py-2.5 rounded-xl bg-[#092C29] hover:bg-[#123F38] text-[#FAF8F2] text-xs font-bold transition shadow-md shadow-stone-900/10 flex items-center gap-1.5 cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-[#168548] hover:bg-[#11733D] text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer"
           >
             <PlusIcon className="w-3.5 h-3.5" />
             <span>Add Dish</span>
@@ -744,69 +744,69 @@ export default function MenuManagementPage() {
       )}
 
       {success && (
-        <div className="p-4 rounded-2xl bg-[#EBF4F1] border border-[#CDE3DC] text-[#092C29] text-sm font-medium">
+        <div className="p-4 rounded-2xl bg-[#EAF7EF] border border-[#DCE7DC] text-[#168548] text-sm font-medium">
           {success}
         </div>
       )}
 
       {/* Metrics Row */}
       <section className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-        <div className="p-4 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5">
-          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-stone-400 font-bold block">
+        <div className="p-4 rounded-2xl bg-white border border-[#DCE7DC] shadow-xs">
+          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-[#687B70] font-bold block">
             TOTAL DISHES
           </span>
-          <span className="text-2xl font-black text-[#092C29] mt-1 block">
+          <span className="text-2xl font-black text-[#1D2923] mt-1 block">
             {items.length}
           </span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5">
-          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-stone-400 font-bold block">
+        <div className="p-4 rounded-2xl bg-white border border-[#DCE7DC] shadow-xs">
+          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-[#687B70] font-bold block">
             AVAILABLE NOW
           </span>
-          <span className="text-2xl font-black text-[#123F38] mt-1 block">
+          <span className="text-2xl font-black text-[#168548] mt-1 block">
             {availableCount}
           </span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5">
-          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-stone-400 font-bold block">
+        <div className="p-4 rounded-2xl bg-white border border-[#DCE7DC] shadow-xs">
+          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-[#687B70] font-bold block">
             SPATIAL 3D READY
           </span>
-          <span className="text-2xl font-black text-[#092C29] mt-1 block flex items-center gap-1.5">
+          <span className="text-2xl font-black text-[#1D2923] mt-1 block flex items-center gap-1.5">
             <span>{model3dCount}</span>
-            <span className="text-xs font-mono font-medium text-stone-400">models</span>
+            <span className="text-xs font-mono font-medium text-[#687B70]">models</span>
           </span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5">
-          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-stone-400 font-bold block">
+        <div className="p-4 rounded-2xl bg-white border border-[#DCE7DC] shadow-xs">
+          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-[#687B70] font-bold block">
             CATEGORIES
           </span>
-          <span className="text-2xl font-black text-[#092C29] mt-1 block">
+          <span className="text-2xl font-black text-[#1D2923] mt-1 block">
             {categories.length}
           </span>
         </div>
       </section>
 
       {/* Search & Filter Toolbar */}
-      <section className="p-4 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5 space-y-3">
+      <section className="p-4 rounded-2xl bg-white border border-[#DCE7DC] shadow-xs space-y-3">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           {/* Search Input */}
           <div className="relative flex-1">
-            <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+            <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#687B70]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search dishes by name or culinary notes..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#EAE6DF] text-xs text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#092C29]/10 focus:border-[#092C29]"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#DCE7DC] text-xs text-[#1D2923] placeholder:text-[#687B70] focus:outline-none focus:ring-2 focus:ring-[#168548]/20 focus:border-[#168548]"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#687B70] hover:text-[#1D2923]"
               >
                 ✕
               </button>
@@ -817,7 +817,7 @@ export default function MenuManagementPage() {
           <select
             value={selectedCategoryId}
             onChange={(e) => setSelectedCategoryId(e.target.value)}
-            className="px-3.5 py-2.5 rounded-xl border border-[#EAE6DF] bg-white text-xs font-bold text-stone-700 focus:outline-none focus:ring-2 focus:ring-[#092C29]/10"
+            className="px-3.5 py-2.5 rounded-xl border border-[#DCE7DC] bg-white text-xs font-bold text-[#1D2923] focus:outline-none focus:ring-2 focus:ring-[#168548]/20"
           >
             <option value="all">All Categories ({categories.length})</option>
             {categories.map((c) => (
@@ -831,7 +831,7 @@ export default function MenuManagementPage() {
           <select
             value={availabilityFilter}
             onChange={(e) => setAvailabilityFilter(e.target.value as "all" | "available" | "unavailable")}
-            className="px-3.5 py-2.5 rounded-xl border border-[#EAE6DF] bg-white text-xs font-bold text-stone-700 focus:outline-none focus:ring-2 focus:ring-[#092C29]/10"
+            className="px-3.5 py-2.5 rounded-xl border border-[#DCE7DC] bg-white text-xs font-bold text-[#1D2923] focus:outline-none focus:ring-2 focus:ring-[#168548]/20"
           >
             <option value="all">All Availability</option>
             <option value="available">Available Only</option>
@@ -842,7 +842,7 @@ export default function MenuManagementPage() {
           <select
             value={dietFilter}
             onChange={(e) => setDietFilter(e.target.value as "all" | "veg" | "non-veg")}
-            className="px-3.5 py-2.5 rounded-xl border border-[#EAE6DF] bg-white text-xs font-bold text-stone-700 focus:outline-none focus:ring-2 focus:ring-[#092C29]/10"
+            className="px-3.5 py-2.5 rounded-xl border border-[#DCE7DC] bg-white text-xs font-bold text-[#1D2923] focus:outline-none focus:ring-2 focus:ring-[#168548]/20"
           >
             <option value="all">All Diets</option>
             <option value="veg">Vegetarian</option>
@@ -855,8 +855,8 @@ export default function MenuManagementPage() {
             onClick={() => setArOnlyFilter(!arOnlyFilter)}
             className={`px-3.5 py-2.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition ${
               arOnlyFilter
-                ? "bg-[#EBF4F1] border-[#CDE3DC] text-[#092C29]"
-                : "border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-600"
+                ? "bg-[#EAF7EF] border-[#DCE7DC] text-[#168548]"
+                : "border-[#DCE7DC] bg-white hover:bg-[#F0F5EF] text-[#687B70]"
             }`}
           >
             <ArCubeIcon className="w-3.5 h-3.5" />
@@ -868,25 +868,25 @@ export default function MenuManagementPage() {
       {/* Menu Categories & Items List */}
       <section className="space-y-6">
         {categories.length === 0 ? (
-          <div className="rounded-xl border border-zinc-200 bg-white p-12 text-center shadow-2xs">
-            <p className="text-base font-bold text-zinc-900">
+          <div className="rounded-2xl border border-[#DCE7DC] bg-white p-12 text-center shadow-xs">
+            <p className="text-base font-bold text-[#1D2923]">
               No categories created yet
             </p>
-            <p className="text-xs text-zinc-500 mt-1 max-w-sm mx-auto">
+            <p className="text-xs text-[#687B70] mt-1 max-w-sm mx-auto">
               Start by creating menu categories like Starters, Mains, Desserts, or Beverages.
             </p>
             <button
               type="button"
               onClick={() => openCategoryForm()}
-              className="mt-4 px-4 py-2 rounded-lg bg-zinc-900 text-white font-semibold text-xs hover:bg-zinc-800 transition"
+              className="mt-4 px-4 py-2 rounded-xl bg-[#168548] text-white font-semibold text-xs hover:bg-[#11733D] transition shadow-xs"
             >
               + Create Category
             </button>
           </div>
         ) : filteredItems.length === 0 && (searchQuery || selectedCategoryId !== "all" || availabilityFilter !== "all" || dietFilter !== "all" || arOnlyFilter) ? (
-          <div className="rounded-xl border border-zinc-200 bg-white p-10 text-center shadow-2xs">
-            <p className="text-sm font-semibold text-zinc-700">No matching dishes found</p>
-            <p className="text-xs text-zinc-400 mt-1">
+          <div className="rounded-2xl border border-[#DCE7DC] bg-white p-10 text-center shadow-xs">
+            <p className="text-sm font-semibold text-[#1D2923]">No matching dishes found</p>
+            <p className="text-xs text-[#687B70] mt-1">
               Try adjusting your search terms or filters.
             </p>
             <button
@@ -898,7 +898,7 @@ export default function MenuManagementPage() {
                 setDietFilter("all");
                 setArOnlyFilter(false);
               }}
-              className="mt-3 px-3 py-1.5 rounded-lg border border-zinc-200 text-xs font-medium text-zinc-600 hover:bg-zinc-50"
+              className="mt-3 px-3 py-1.5 rounded-xl border border-[#DCE7DC] text-xs font-medium text-[#687B70] hover:bg-[#F0F5EF]"
             >
               Clear filters
             </button>
@@ -906,21 +906,21 @@ export default function MenuManagementPage() {
         ) : (
           groupedItems.map(({ category, items: categoryItems }) => {
             if (categoryItems.length === 0 && selectedCategoryId === "all" && (searchQuery || arOnlyFilter || availabilityFilter !== "all" || dietFilter !== "all")) {
-              return null; // Don't show empty categories during active search if they have no matches
+              return null;
             }
 
             return (
               <div
                 key={category.id}
-                className="rounded-2xl border border-[#EAE6DF] bg-white shadow-sm shadow-stone-900/5 overflow-hidden"
+                className="rounded-2xl border border-[#DCE7DC] bg-white shadow-xs overflow-hidden"
               >
                 {/* Category Header */}
-                <div className="px-5 py-4 border-b border-[#F0ECE1] bg-[#FAF8F2] flex items-center justify-between gap-4">
+                <div className="px-5 py-4 border-b border-[#DCE7DC] bg-[#F7FAF5] flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <h2 className="text-base font-bold text-[#092C29]">
+                    <h2 className="text-base font-bold text-[#1D2923]">
                       {category.name}
                     </h2>
-                    <span className="text-xs font-mono text-stone-400 font-semibold">
+                    <span className="text-xs font-mono text-[#687B70] font-semibold">
                       ({categoryItems.length} {categoryItems.length === 1 ? "item" : "items"})
                     </span>
                     {!category.is_active && (
@@ -934,14 +934,14 @@ export default function MenuManagementPage() {
                     <button
                       type="button"
                       onClick={() => toggleCategory(category)}
-                      className="px-3 py-1.5 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-[11px] font-bold text-stone-600 transition shadow-2xs cursor-pointer"
+                      className="px-3 py-1.5 rounded-xl border border-[#DCE7DC] bg-white hover:bg-[#EAF7EF] text-[11px] font-bold text-[#1D2923] hover:text-[#168548] transition shadow-2xs cursor-pointer"
                     >
                       {category.is_active ? "Hide" : "Show"}
                     </button>
                     <button
                       type="button"
                       onClick={() => openCategoryForm(category)}
-                      className="p-1.5 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-500 hover:text-stone-900 transition shadow-2xs cursor-pointer"
+                      className="p-1.5 rounded-xl border border-[#DCE7DC] bg-white hover:bg-[#F0F5EF] text-[#687B70] hover:text-[#1D2923] transition shadow-2xs cursor-pointer"
                       title="Edit Category"
                     >
                       <EditIcon className="w-3.5 h-3.5" />
@@ -949,7 +949,7 @@ export default function MenuManagementPage() {
                     <button
                       type="button"
                       onClick={() => deleteCategory(category)}
-                      className="p-1.5 rounded-xl border border-transparent hover:border-rose-200 hover:bg-rose-50 text-stone-400 hover:text-rose-600 transition cursor-pointer"
+                      className="p-1.5 rounded-xl border border-transparent hover:border-rose-200 hover:bg-rose-50 text-[#687B70] hover:text-rose-600 transition cursor-pointer"
                       title="Delete Category"
                     >
                       <TrashIcon className="w-3.5 h-3.5" />
@@ -959,22 +959,22 @@ export default function MenuManagementPage() {
 
                 {/* Category Items List */}
                 {categoryItems.length === 0 ? (
-                  <div className="p-8 text-center text-xs text-stone-400">
+                  <div className="p-8 text-center text-xs text-[#687B70]">
                     No items in this category yet. Click &quot;Add Dish&quot; above to add one.
                   </div>
                 ) : (
-                  <div className="divide-y divide-[#F0ECE1]">
+                  <div className="divide-y divide-[#DCE7DC]">
                     {categoryItems.map((item) => (
                       <div
                         key={item.id}
                         className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${
-                          !item.is_available ? "opacity-60 bg-[#FAF8F2]/50" : "hover:bg-[#FAF8F2]/40"
+                          !item.is_available ? "opacity-60 bg-[#F7FAF5]/50" : "hover:bg-[#F7FAF5]/60"
                         }`}
                       >
                         {/* Dish Details & Thumbnail */}
                         <div className="flex items-start sm:items-center gap-4 min-w-0">
                           {/* Image Thumbnail */}
-                          <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-stone-100 border border-[#EAE6DF] shrink-0 shadow-2xs">
+                          <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-[#F0F5EF] border border-[#DCE7DC] shrink-0 shadow-2xs">
                             {item.image_url ? (
                               <Image
                                 src={item.image_url}
@@ -984,7 +984,7 @@ export default function MenuManagementPage() {
                                 className="object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-[10px] font-mono text-stone-400">
+                              <div className="w-full h-full flex items-center justify-center text-[10px] font-mono text-[#687B70]">
                                 NO PIC
                               </div>
                             )}
@@ -994,16 +994,16 @@ export default function MenuManagementPage() {
                           <div className="min-w-0">
                             <div className="flex items-center gap-2">
                               {item.is_veg ? <VegBadge /> : <NonVegBadge />}
-                              <h3 className="font-bold text-sm text-[#092C29] truncate">
+                              <h3 className="font-bold text-sm text-[#1D2923] truncate">
                                 {item.name}
                               </h3>
-                              <span className="font-bold text-sm text-[#092C29] tabular-nums">
+                              <span className="font-bold text-sm text-[#168548] tabular-nums">
                                 ₹{Number(item.price).toFixed(2)}
                               </span>
                             </div>
 
                             {item.description && (
-                              <p className="text-xs text-stone-500 line-clamp-1 mt-0.5 max-w-xl font-medium">
+                              <p className="text-xs text-[#687B70] line-clamp-1 mt-0.5 max-w-xl font-medium">
                                 {item.description}
                               </p>
                             )}
@@ -1011,12 +1011,12 @@ export default function MenuManagementPage() {
                             {/* Tags */}
                             <div className="flex items-center gap-2 mt-1.5">
                               {item.has_3d_model ? (
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#EBF4F1] text-[#092C29] border border-[#CDE3DC]">
-                                  <ArCubeIcon className="w-3 h-3 text-[#123F38]" />
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#EAF7EF] text-[#168548] border border-[#DCE7DC]">
+                                  <ArCubeIcon className="w-3 h-3 text-[#168548]" />
                                   <span>Spatial 3D Ready</span>
                                 </span>
                               ) : (
-                                <span className="text-[10px] font-mono text-stone-400 font-medium">
+                                <span className="text-[10px] font-mono text-[#687B70] font-medium">
                                   Photo Only
                                 </span>
                               )}
@@ -1024,7 +1024,7 @@ export default function MenuManagementPage() {
                               <span
                                 className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
                                   item.is_available
-                                    ? "bg-stone-100 text-stone-700"
+                                    ? "bg-[#EAF7EF] text-[#168548] border border-[#DCE7DC]"
                                     : "bg-rose-50 text-rose-700 border border-rose-200"
                                 }`}
                               >
@@ -1041,8 +1041,8 @@ export default function MenuManagementPage() {
                             onClick={() => toggleItem(item)}
                             className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition cursor-pointer shadow-2xs ${
                               item.is_available
-                                ? "border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-700"
-                                : "border-[#CDE3DC] bg-[#EBF4F1] hover:bg-[#D9EFE9] text-[#092C29]"
+                                ? "border-[#DCE7DC] bg-white hover:bg-[#F0F5EF] text-[#687B70]"
+                                : "border-[#DCE7DC] bg-[#EAF7EF] hover:bg-[#DDF5E8] text-[#168548]"
                             }`}
                           >
                             {item.is_available ? "Disable" : "Enable"}
@@ -1051,7 +1051,7 @@ export default function MenuManagementPage() {
                           <button
                             type="button"
                             onClick={() => openItemForm(item)}
-                            className="p-2 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-600 transition shadow-2xs cursor-pointer"
+                            className="p-2 rounded-xl border border-[#DCE7DC] bg-white hover:bg-[#F0F5EF] text-[#687B70] hover:text-[#1D2923] transition shadow-2xs cursor-pointer"
                             title="Edit dish"
                           >
                             <EditIcon className="w-4 h-4" />
@@ -1060,7 +1060,7 @@ export default function MenuManagementPage() {
                           <button
                             type="button"
                             onClick={() => deleteItem(item)}
-                            className="p-2 rounded-xl border border-transparent hover:border-rose-200 hover:bg-rose-50 text-stone-400 hover:text-rose-600 transition cursor-pointer"
+                            className="p-2 rounded-xl border border-transparent hover:border-rose-200 hover:bg-rose-50 text-[#687B70] hover:text-rose-600 transition cursor-pointer"
                             title="Delete dish"
                           >
                             <TrashIcon className="w-4 h-4" />
@@ -1077,13 +1077,13 @@ export default function MenuManagementPage() {
 
         {/* Uncategorized Items (if any) */}
         {uncategorizedItems.length > 0 && (
-          <div className="rounded-xl border border-zinc-200 bg-white shadow-2xs overflow-hidden">
-            <div className="px-5 py-4 border-b border-zinc-200 bg-zinc-50/60">
-              <h2 className="text-base font-bold text-zinc-900">
+          <div className="rounded-2xl border border-[#DCE7DC] bg-white shadow-xs overflow-hidden">
+            <div className="px-5 py-4 border-b border-[#DCE7DC] bg-[#F7FAF5]">
+              <h2 className="text-base font-bold text-[#1D2923]">
                 Uncategorized Items ({uncategorizedItems.length})
               </h2>
             </div>
-            <div className="divide-y divide-zinc-100">
+            <div className="divide-y divide-[#DCE7DC]">
               {uncategorizedItems.map((item) => (
                 <div
                   key={item.id}
@@ -1091,14 +1091,14 @@ export default function MenuManagementPage() {
                 >
                   <div className="flex items-center gap-3">
                     {item.is_veg ? <VegBadge /> : <NonVegBadge />}
-                    <span className="font-semibold text-sm">{item.name}</span>
-                    <span className="font-mono text-sm">₹{Number(item.price).toFixed(2)}</span>
+                    <span className="font-semibold text-sm text-[#1D2923]">{item.name}</span>
+                    <span className="font-mono text-sm text-[#168548]">₹{Number(item.price).toFixed(2)}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() => openItemForm(item)}
-                      className="px-3 py-1.5 rounded-lg border border-zinc-200 text-xs font-semibold text-zinc-700"
+                      className="px-3 py-1.5 rounded-xl border border-[#DCE7DC] text-xs font-semibold text-[#1D2923] hover:bg-[#F0F5EF]"
                     >
                       Assign Category
                     </button>
@@ -1114,16 +1114,16 @@ export default function MenuManagementPage() {
           CATEGORY MODAL
          ==================================================================== */}
       {showCategoryForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-          <div className="w-full max-w-md rounded-xl bg-white border border-zinc-200 shadow-xl p-6">
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-200 mb-4">
-              <h3 className="font-bold text-base text-zinc-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#17352A]/40 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-2xl bg-white border border-[#DCE7DC] shadow-xl p-6">
+            <div className="flex items-center justify-between pb-3 border-b border-[#DCE7DC] mb-4">
+              <h3 className="font-bold text-base text-[#1D2923]">
                 {editingCategory ? "Edit Category" : "Add New Category"}
               </h3>
               <button
                 type="button"
                 onClick={closeCategoryForm}
-                className="text-zinc-400 hover:text-zinc-700"
+                className="text-[#687B70] hover:text-[#1D2923]"
               >
                 <CloseIcon className="w-5 h-5" />
               </button>
@@ -1131,7 +1131,7 @@ export default function MenuManagementPage() {
 
             <form onSubmit={saveCategory} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#1D2923] mb-1.5">
                   Category Name *
                 </label>
                 <input
@@ -1140,12 +1140,12 @@ export default function MenuManagementPage() {
                   value={categoryForm.name}
                   onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
                   placeholder="e.g. Starters, Main Course, Artisanal Hearth"
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCE7DC] text-sm text-[#1D2923] focus:outline-none focus:ring-2 focus:ring-[#168548]/20 focus:border-[#168548]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#1D2923] mb-1.5">
                   Description (Optional)
                 </label>
                 <textarea
@@ -1153,7 +1153,7 @@ export default function MenuManagementPage() {
                   value={categoryForm.description ?? ""}
                   onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
                   placeholder="Brief description shown to guests..."
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCE7DC] text-sm text-[#1D2923] focus:outline-none focus:ring-2 focus:ring-[#168548]/20 focus:border-[#168548]"
                 />
               </div>
 
@@ -1163,25 +1163,25 @@ export default function MenuManagementPage() {
                   id="cat-active"
                   checked={categoryForm.is_active}
                   onChange={(e) => setCategoryForm({ ...categoryForm, is_active: e.target.checked })}
-                  className="w-4 h-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+                  className="w-4 h-4 rounded border-[#DCE7DC] text-[#168548] focus:ring-[#168548]"
                 />
-                <label htmlFor="cat-active" className="text-sm font-medium text-zinc-700 select-none">
+                <label htmlFor="cat-active" className="text-sm font-medium text-[#1D2923] select-none">
                   Category is visible to customers
                 </label>
               </div>
 
-              <div className="flex justify-end gap-2.5 pt-3 border-t border-zinc-200">
+              <div className="flex justify-end gap-2.5 pt-3 border-t border-[#DCE7DC]">
                 <button
                   type="button"
                   onClick={closeCategoryForm}
-                  className="px-4 py-2 rounded-lg border border-zinc-200 text-xs font-semibold text-zinc-700 hover:bg-zinc-50"
+                  className="px-4 py-2 rounded-xl border border-[#DCE7DC] text-xs font-semibold text-[#687B70] hover:bg-[#F0F5EF]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold transition"
+                  className="px-4 py-2 rounded-xl bg-[#168548] hover:bg-[#11733D] text-white text-xs font-semibold transition shadow-xs"
                 >
                   {saving ? "Saving..." : editingCategory ? "Save Changes" : "Create Category"}
                 </button>
@@ -1195,16 +1195,16 @@ export default function MenuManagementPage() {
           MENU ITEM MODAL
          ==================================================================== */}
       {showItemForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs overflow-y-auto">
-          <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-xl bg-white border border-zinc-200 shadow-xl p-6 my-8">
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-200 mb-4 sticky top-0 bg-white z-10">
-              <h3 className="font-bold text-base text-zinc-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#17352A]/40 backdrop-blur-xs overflow-y-auto">
+          <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white border border-[#DCE7DC] shadow-xl p-6 my-8">
+            <div className="flex items-center justify-between pb-3 border-b border-[#DCE7DC] mb-4 sticky top-0 bg-white z-10">
+              <h3 className="font-bold text-base text-[#1D2923]">
                 {editingItem ? "Edit Menu Dish" : "Add Menu Dish"}
               </h3>
               <button
                 type="button"
                 onClick={closeItemForm}
-                className="text-zinc-400 hover:text-zinc-700"
+                className="text-[#687B70] hover:text-[#1D2923]"
               >
                 <CloseIcon className="w-5 h-5" />
               </button>
@@ -1212,7 +1212,7 @@ export default function MenuManagementPage() {
 
             <form onSubmit={saveItem} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#1D2923] mb-1.5">
                   Dish Name *
                 </label>
                 <input
@@ -1221,19 +1221,19 @@ export default function MenuManagementPage() {
                   value={itemForm.name}
                   onChange={(e) => setItemForm({ ...itemForm, name: e.target.value })}
                   placeholder="e.g. Artisanal Paneer Tikka"
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCE7DC] text-sm text-[#1D2923] focus:outline-none focus:ring-2 focus:ring-[#168548]/20 focus:border-[#168548]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#1D2923] mb-1.5">
                   Category *
                 </label>
                 <select
                   required
                   value={itemForm.category_id ?? ""}
                   onChange={(e) => setItemForm({ ...itemForm, category_id: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCE7DC] text-sm bg-white text-[#1D2923] focus:outline-none focus:ring-2 focus:ring-[#168548]/20"
                 >
                   <option value="">Select Category...</option>
                   {categories.map((c) => (
@@ -1246,7 +1246,7 @@ export default function MenuManagementPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#1D2923] mb-1.5">
                     Price (₹) *
                   </label>
                   <input
@@ -1256,25 +1256,25 @@ export default function MenuManagementPage() {
                     required
                     value={itemForm.price}
                     onChange={(e) => setItemForm({ ...itemForm, price: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCE7DC] text-sm text-[#1D2923] focus:outline-none focus:ring-2 focus:ring-[#168548]/20 focus:border-[#168548]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#1D2923] mb-1.5">
                     Sort Order
                   </label>
                   <input
                     type="number"
                     value={itemForm.sort_order}
                     onChange={(e) => setItemForm({ ...itemForm, sort_order: parseInt(e.target.value, 10) || 0 })}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCE7DC] text-sm text-[#1D2923] focus:outline-none focus:ring-2 focus:ring-[#168548]/20 focus:border-[#168548]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#1D2923] mb-1.5">
                   Description
                 </label>
                 <textarea
@@ -1282,19 +1282,19 @@ export default function MenuManagementPage() {
                   value={itemForm.description ?? ""}
                   onChange={(e) => setItemForm({ ...itemForm, description: e.target.value })}
                   placeholder="Ingredients, preparation, and culinary notes..."
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCE7DC] text-sm text-[#1D2923] focus:outline-none focus:ring-2 focus:ring-[#168548]/20 focus:border-[#168548]"
                 />
               </div>
 
               {/* Food Image Upload */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#1D2923] mb-1.5">
                   Food Photography
                 </label>
 
                 {imagePreview ? (
-                  <div className="flex items-center gap-3 p-3 rounded-lg border border-zinc-200 bg-zinc-50">
-                    <div className="relative w-16 h-16 rounded-md overflow-hidden bg-zinc-100 border border-zinc-300 shrink-0">
+                  <div className="flex items-center gap-3 p-3 rounded-xl border border-[#DCE7DC] bg-[#F7FAF5]">
+                    <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-white border border-[#DCE7DC] shrink-0">
                       <Image
                         src={imagePreview}
                         alt="Preview"
@@ -1304,24 +1304,24 @@ export default function MenuManagementPage() {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-zinc-900 truncate">
+                      <p className="text-xs font-semibold text-[#1D2923] truncate">
                         {selectedImageFile?.name || "Uploaded Photo"}
                       </p>
                       <button
                         type="button"
                         onClick={removeImage}
-                        className="text-xs font-medium text-red-600 hover:underline mt-1"
+                        className="text-xs font-medium text-rose-600 hover:underline mt-1"
                       >
                         Remove photo
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <label className="block p-4 border border-dashed border-zinc-300 rounded-lg text-center cursor-pointer hover:bg-zinc-50 transition">
-                    <span className="text-xs font-semibold text-zinc-700 block">
+                  <label className="block p-4 border-2 border-dashed border-[#DCE7DC] rounded-xl text-center cursor-pointer hover:bg-[#EAF7EF]/50 hover:border-[#168548] transition">
+                    <span className="text-xs font-semibold text-[#1D2923] block">
                       Click to upload dish photo
                     </span>
-                    <span className="text-[11px] text-zinc-400 block mt-0.5">
+                    <span className="text-[11px] text-[#687B70] block mt-0.5">
                       JPG, PNG, or WebP up to 5 MB
                     </span>
                     <input
@@ -1337,37 +1337,37 @@ export default function MenuManagementPage() {
               {/* 3D Spatial Model Upload */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-zinc-600 flex items-center gap-1.5">
-                    <ArCubeIcon className="w-3.5 h-3.5 text-zinc-500" />
+                  <label className="text-xs font-semibold uppercase tracking-wider text-[#1D2923] flex items-center gap-1.5">
+                    <ArCubeIcon className="w-3.5 h-3.5 text-[#168548]" />
                     <span>Spatial 3D Model (.GLB)</span>
                   </label>
-                  <span className="text-[10px] font-mono text-zinc-400">
+                  <span className="text-[10px] font-mono text-[#687B70]">
                     Optional for AR view
                   </span>
                 </div>
 
                 {(selectedModelFile || (editingItem?.has_3d_model && !removeExistingModel)) ? (
-                  <div className="flex items-center justify-between gap-3 p-3 rounded-lg border border-emerald-200 bg-emerald-50/60">
+                  <div className="flex items-center justify-between gap-3 p-3 rounded-xl border border-[#DCE7DC] bg-[#EAF7EF]">
                     <div className="flex items-center gap-2 min-w-0">
-                      <ArCubeIcon className="w-4 h-4 text-emerald-600 shrink-0" />
-                      <span className="text-xs font-mono font-medium text-emerald-900 truncate">
+                      <ArCubeIcon className="w-4 h-4 text-[#168548] shrink-0" />
+                      <span className="text-xs font-mono font-medium text-[#168548] truncate">
                         {selectedModelFile?.name ?? getModelFilename(editingItem?.model_url)}
                       </span>
                     </div>
                     <button
                       type="button"
                       onClick={removeModel}
-                      className="text-xs font-semibold text-red-600 hover:underline shrink-0"
+                      className="text-xs font-semibold text-rose-600 hover:underline shrink-0"
                     >
                       Remove
                     </button>
                   </div>
                 ) : (
-                  <label className="block p-4 border border-dashed border-zinc-300 rounded-lg text-center cursor-pointer hover:bg-zinc-50 transition">
-                    <span className="text-xs font-semibold text-zinc-700 block">
+                  <label className="block p-4 border-2 border-dashed border-[#DCE7DC] rounded-xl text-center cursor-pointer hover:bg-[#EAF7EF]/50 hover:border-[#168548] transition">
+                    <span className="text-xs font-semibold text-[#1D2923] block">
                       Click to upload .GLB 3D model
                     </span>
-                    <span className="text-[11px] text-zinc-400 block mt-0.5">
+                    <span className="text-[11px] text-[#687B70] block mt-0.5">
                       Standard GLB model up to 50 MB
                     </span>
                     <input
@@ -1388,9 +1388,9 @@ export default function MenuManagementPage() {
                     id="item-avail"
                     checked={itemForm.is_available}
                     onChange={(e) => setItemForm({ ...itemForm, is_available: e.target.checked })}
-                    className="w-4 h-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+                    className="w-4 h-4 rounded border-[#DCE7DC] text-[#168548] focus:ring-[#168548]"
                   />
-                  <label htmlFor="item-avail" className="text-xs font-medium text-zinc-700 select-none">
+                  <label htmlFor="item-avail" className="text-xs font-medium text-[#1D2923] select-none">
                     Available to order
                   </label>
                 </div>
@@ -1401,27 +1401,27 @@ export default function MenuManagementPage() {
                     id="item-veg"
                     checked={itemForm.is_veg}
                     onChange={(e) => setItemForm({ ...itemForm, is_veg: e.target.checked })}
-                    className="w-4 h-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+                    className="w-4 h-4 rounded border-[#DCE7DC] text-[#168548] focus:ring-[#168548]"
                   />
-                  <label htmlFor="item-veg" className="text-xs font-medium text-zinc-700 select-none flex items-center gap-1.5">
+                  <label htmlFor="item-veg" className="text-xs font-medium text-[#1D2923] select-none flex items-center gap-1.5">
                     <VegBadge className="h-3 w-3" />
                     <span>Vegetarian</span>
                   </label>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2.5 pt-4 border-t border-zinc-200">
+              <div className="flex justify-end gap-2.5 pt-4 border-t border-[#DCE7DC]">
                 <button
                   type="button"
                   onClick={closeItemForm}
-                  className="px-4 py-2 rounded-lg border border-zinc-200 text-xs font-semibold text-zinc-700 hover:bg-zinc-50"
+                  className="px-4 py-2 rounded-xl border border-[#DCE7DC] text-xs font-semibold text-[#687B70] hover:bg-[#F0F5EF]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving || uploadingImage || uploadingModel}
-                  className="px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold transition"
+                  className="px-4 py-2 rounded-xl bg-[#168548] hover:bg-[#11733D] text-white text-xs font-semibold transition shadow-xs"
                 >
                   {saving || uploadingImage || uploadingModel
                     ? "Saving Dish..."

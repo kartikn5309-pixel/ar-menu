@@ -256,12 +256,12 @@ export default function TablesManagementPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#EAE6DF]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#DCE7DC]">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#092C29]">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#1D2923]">
             Tables &amp; QR Management
           </h1>
-          <p className="text-xs sm:text-sm text-stone-500 mt-1 font-medium">
+          <p className="text-xs sm:text-sm text-[#687B70] mt-1 font-medium">
             Configure floor tables and generate high-resolution QR codes for physical table dining.
           </p>
         </div>
@@ -269,7 +269,7 @@ export default function TablesManagementPage() {
         <button
           type="button"
           onClick={() => openForm()}
-          className="px-4 py-2.5 rounded-xl bg-[#092C29] hover:bg-[#123F38] text-[#FAF8F2] text-xs font-bold transition shadow-md shadow-stone-900/10 flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+          className="px-4 py-2.5 rounded-xl bg-[#168548] hover:bg-[#11733D] text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
         >
           <PlusIcon className="w-3.5 h-3.5" />
           <span>Add Table</span>
@@ -283,58 +283,58 @@ export default function TablesManagementPage() {
       )}
 
       {success && (
-        <div className="p-4 rounded-2xl bg-[#EBF4F1] border border-[#CDE3DC] text-[#092C29] text-sm font-medium">
+        <div className="p-4 rounded-2xl bg-[#EAF7EF] border border-[#DCE7DC] text-[#168548] text-sm font-medium">
           {success}
         </div>
       )}
 
       {/* Metrics Row */}
       <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-5 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5">
-          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-stone-400 font-bold block">
+        <div className="p-5 rounded-2xl bg-white border border-[#DCE7DC] shadow-xs">
+          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-[#687B70] font-bold block">
             TOTAL TABLES
           </span>
-          <span className="text-2xl font-black text-[#092C29] mt-1 block">
+          <span className="text-2xl font-black text-[#1D2923] mt-1 block">
             {tables.length}
           </span>
-          <p className="text-[11px] text-stone-400 mt-1 font-medium">Configured in floor plan</p>
+          <p className="text-[11px] text-[#687B70] mt-1 font-medium">Configured in floor plan</p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5">
-          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-stone-400 font-bold block">
+        <div className="p-5 rounded-2xl bg-white border border-[#DCE7DC] shadow-xs">
+          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-[#687B70] font-bold block">
             ACTIVE FOR GUESTS
           </span>
-          <span className="text-2xl font-black text-[#123F38] mt-1 block">
+          <span className="text-2xl font-black text-[#168548] mt-1 block">
             {activeCount}
           </span>
-          <p className="text-[11px] text-stone-400 mt-1 font-medium">Accepting customer scans</p>
+          <p className="text-[11px] text-[#687B70] mt-1 font-medium">Accepting customer scans</p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5">
-          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-stone-400 font-bold block">
+        <div className="p-5 rounded-2xl bg-white border border-[#DCE7DC] shadow-xs">
+          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-[#687B70] font-bold block">
             QR ANCHORS READY
           </span>
-          <span className="text-2xl font-black text-[#092C29] mt-1 block">
+          <span className="text-2xl font-black text-[#1D2923] mt-1 block">
             {activeCount}
           </span>
-          <p className="text-[11px] text-stone-400 mt-1 font-medium">Direct AR table gateways</p>
+          <p className="text-[11px] text-[#687B70] mt-1 font-medium">Direct AR table gateways</p>
         </div>
       </section>
 
       {/* Search Toolbar */}
-      <section className="p-4 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm shadow-stone-900/5 flex items-center justify-between gap-4">
+      <section className="p-4 rounded-2xl bg-white border border-[#DCE7DC] shadow-xs flex items-center justify-between gap-4">
         <div className="relative flex-1 max-w-sm">
-          <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+          <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#687B70]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search table number or label..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#EAE6DF] text-xs text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#092C29]/10 focus:border-[#092C29]"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#DCE7DC] text-xs text-[#1D2923] placeholder:text-[#687B70] focus:outline-none focus:ring-2 focus:ring-[#168548]/20 focus:border-[#168548]"
           />
         </div>
 
-        <span className="text-xs text-stone-500 font-mono hidden sm:inline font-semibold">
+        <span className="text-xs text-[#687B70] font-mono hidden sm:inline font-semibold">
           Showing {filteredTables.length} of {tables.length} tables
         </span>
       </section>
@@ -342,22 +342,22 @@ export default function TablesManagementPage() {
       {/* Tables Grid */}
       <section>
         {tables.length === 0 ? (
-          <div className="rounded-2xl border border-[#EAE6DF] bg-white p-12 text-center shadow-sm shadow-stone-900/5">
-            <QrCodeIcon className="w-10 h-10 text-stone-300 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-[#092C29]">No tables created yet</h3>
-            <p className="text-xs text-stone-500 mt-1 max-w-sm mx-auto font-medium">
+          <div className="rounded-2xl border border-[#DCE7DC] bg-white p-12 text-center shadow-xs">
+            <QrCodeIcon className="w-10 h-10 text-[#DCE7DC] mx-auto mb-3" />
+            <h3 className="text-base font-bold text-[#1D2923]">No tables created yet</h3>
+            <p className="text-xs text-[#687B70] mt-1 max-w-sm mx-auto font-medium">
               Add tables to automatically generate scannable QR codes for your dining guests.
             </p>
             <button
               type="button"
               onClick={() => openForm()}
-              className="mt-4 px-4 py-2.5 rounded-xl bg-[#092C29] text-[#FAF8F2] font-bold text-xs hover:bg-[#123F38] transition cursor-pointer"
+              className="mt-4 px-4 py-2.5 rounded-xl bg-[#168548] text-white font-bold text-xs hover:bg-[#11733D] transition cursor-pointer shadow-xs"
             >
               + Create First Table
             </button>
           </div>
         ) : filteredTables.length === 0 ? (
-          <div className="rounded-2xl border border-[#EAE6DF] bg-white p-8 text-center shadow-sm shadow-stone-900/5 text-xs text-stone-500 font-medium">
+          <div className="rounded-2xl border border-[#DCE7DC] bg-white p-8 text-center shadow-xs text-xs text-[#687B70] font-medium">
             No tables matching &quot;{searchQuery}&quot;.
           </div>
         ) : (
@@ -369,19 +369,19 @@ export default function TablesManagementPage() {
               return (
                 <article
                   key={table.id}
-                  className={`rounded-2xl border bg-white shadow-sm shadow-stone-900/5 overflow-hidden transition-all flex flex-col justify-between ${
+                  className={`rounded-2xl border bg-white shadow-xs overflow-hidden transition-all flex flex-col justify-between ${
                     table.is_active
-                      ? "border-[#EAE6DF] hover:border-[#C6A15B]/50"
-                      : "border-[#EAE6DF] opacity-60 bg-[#FAF8F2]/50"
+                      ? "border-[#DCE7DC] hover:border-[#168548]/40"
+                      : "border-[#DCE7DC] opacity-60 bg-[#F7FAF5]/50"
                   }`}
                 >
                   {/* Card Header */}
-                  <div className="p-4 sm:p-5 border-b border-[#F0ECE1] flex items-center justify-between">
+                  <div className="p-4 sm:p-5 border-b border-[#DCE7DC] flex items-center justify-between bg-white">
                     <div>
-                      <h3 className="font-bold text-sm text-[#092C29]">
+                      <h3 className="font-bold text-sm text-[#1D2923]">
                         {table.name ? `${table.name} (T-${table.table_number})` : `Table ${table.table_number}`}
                       </h3>
-                      <p className="text-[11px] font-mono text-stone-400 mt-0.5">
+                      <p className="text-[11px] font-mono text-[#687B70] mt-0.5">
                         ID: {table.id.slice(0, 8)}...
                       </p>
                     </div>
@@ -389,8 +389,8 @@ export default function TablesManagementPage() {
                     <span
                       className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                         table.is_active
-                          ? "bg-[#EBF4F1] text-[#092C29] border-[#CDE3DC]"
-                          : "bg-stone-100 text-stone-500 border-stone-200"
+                          ? "bg-[#EAF7EF] text-[#168548] border-[#DCE7DC]"
+                          : "bg-[#F0F5EF] text-[#687B70] border-[#DCE7DC]"
                       }`}
                     >
                       {table.is_active ? "Active" : "Inactive"}
@@ -398,8 +398,8 @@ export default function TablesManagementPage() {
                   </div>
 
                   {/* QR Canvas Centerpiece */}
-                  <div className="p-6 flex flex-col items-center justify-center bg-[#FAF8F2]">
-                    <div className="p-3 bg-white rounded-2xl border border-[#EAE6DF] shadow-sm shadow-stone-900/5">
+                  <div className="p-6 flex flex-col items-center justify-center bg-[#F7FAF5]">
+                    <div className="p-3 bg-white rounded-2xl border border-[#DCE7DC] shadow-xs">
                       <QRCodeCanvas
                         id={`qr-${table.id}`}
                         value={url}
@@ -408,30 +408,30 @@ export default function TablesManagementPage() {
                         includeMargin
                       />
                     </div>
-                    <span className="text-[10px] font-mono text-stone-400 mt-2.5 font-semibold">
+                    <span className="text-[10px] font-mono text-[#687B70] mt-2.5 font-semibold">
                       Scan to open Table {table.table_number} menu
                     </span>
                   </div>
 
                   {/* Link Snippet & Copy Action */}
-                  <div className="px-4 py-2.5 bg-[#FAF8F2]/60 border-t border-[#F0ECE1] flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-mono text-stone-500 truncate select-all">
+                  <div className="px-4 py-2.5 bg-[#F7FAF5]/60 border-t border-[#DCE7DC] flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-mono text-[#687B70] truncate select-all">
                       {url}
                     </span>
                     <button
                       type="button"
                       onClick={() => copyUrl(table)}
-                      className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#FAF8F2] border border-[#EAE6DF] text-stone-700 text-[11px] font-bold shrink-0 flex items-center gap-1 transition cursor-pointer shadow-2xs"
+                      className="px-2.5 py-1 rounded-xl bg-white hover:bg-[#EAF7EF] border border-[#DCE7DC] text-[#1D2923] hover:text-[#168548] text-[11px] font-bold shrink-0 flex items-center gap-1 transition cursor-pointer shadow-2xs"
                       title="Copy QR Destination URL"
                     >
                       {isCopied ? (
                         <>
-                          <CheckIcon className="w-3 h-3 text-[#123F38]" />
-                          <span className="text-[#092C29] font-bold">Copied</span>
+                          <CheckIcon className="w-3 h-3 text-[#168548]" />
+                          <span className="text-[#168548] font-bold">Copied</span>
                         </>
                       ) : (
                         <>
-                          <CopyIcon className="w-3 h-3 text-stone-400" />
+                          <CopyIcon className="w-3 h-3 text-[#687B70]" />
                           <span>Copy</span>
                         </>
                       )}
@@ -439,25 +439,25 @@ export default function TablesManagementPage() {
                   </div>
 
                   {/* Card Bottom Operational Actions */}
-                  <div className="p-3.5 border-t border-[#F0ECE1] flex items-center justify-between gap-2">
+                  <div className="p-3.5 border-t border-[#DCE7DC] flex items-center justify-between gap-2 bg-white">
                     <div className="flex items-center gap-1.5">
                       <button
                         type="button"
                         onClick={() => downloadQr(table)}
-                        className="px-3 py-1.5 rounded-xl border border-[#EAE6DF] bg-white hover:bg-[#FAF8F2] text-stone-700 text-xs font-bold flex items-center gap-1 shadow-2xs transition cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl border border-[#DCE7DC] bg-white hover:bg-[#EAF7EF] text-[#1D2923] hover:text-[#168548] text-xs font-bold flex items-center gap-1 shadow-2xs transition cursor-pointer"
                         title="Download printable PNG"
                       >
-                        <DownloadIcon className="w-3.5 h-3.5 text-stone-500" />
+                        <DownloadIcon className="w-3.5 h-3.5 text-[#687B70]" />
                         <span>PNG</span>
                       </button>
 
                       <Link
                         href={`/menu/${restaurant.id}/${table.id}`}
                         target="_blank"
-                        className="px-2.5 py-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-semibold flex items-center gap-1 shadow-2xs transition"
+                        className="px-2.5 py-1.5 rounded-xl border border-[#DCE7DC] bg-white hover:bg-[#EAF7EF] text-[#1D2923] hover:text-[#168548] text-xs font-semibold flex items-center gap-1 shadow-2xs transition"
                         title="Open customer menu in new tab"
                       >
-                        <ExternalLinkIcon className="w-3.5 h-3.5 text-zinc-500" />
+                        <ExternalLinkIcon className="w-3.5 h-3.5 text-[#687B70]" />
                         <span>Test</span>
                       </Link>
                     </div>
@@ -466,7 +466,7 @@ export default function TablesManagementPage() {
                       <button
                         type="button"
                         onClick={() => toggleTable(table)}
-                        className="px-2 py-1 text-xs font-medium text-zinc-500 hover:text-zinc-900 rounded hover:bg-zinc-100 transition"
+                        className="px-2.5 py-1 text-xs font-medium text-[#687B70] hover:text-[#1D2923] rounded-lg hover:bg-[#F0F5EF] transition"
                       >
                         {table.is_active ? "Disable" : "Enable"}
                       </button>
@@ -474,7 +474,7 @@ export default function TablesManagementPage() {
                       <button
                         type="button"
                         onClick={() => openForm(table)}
-                        className="p-1 text-zinc-400 hover:text-zinc-700 rounded hover:bg-zinc-100 transition"
+                        className="p-1.5 text-[#687B70] hover:text-[#1D2923] rounded-lg hover:bg-[#F0F5EF] transition"
                         title="Edit table name"
                       >
                         <EditIcon className="w-3.5 h-3.5" />
@@ -483,7 +483,7 @@ export default function TablesManagementPage() {
                       <button
                         type="button"
                         onClick={() => deleteTable(table)}
-                        className="p-1 text-zinc-400 hover:text-red-600 rounded hover:bg-red-50 transition"
+                        className="p-1.5 text-[#687B70] hover:text-rose-600 rounded-lg hover:bg-rose-50 transition"
                         title="Delete table"
                       >
                         <TrashIcon className="w-3.5 h-3.5" />
@@ -501,16 +501,16 @@ export default function TablesManagementPage() {
           ADD / EDIT TABLE MODAL
          ==================================================================== */}
       {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-          <div className="w-full max-w-md rounded-xl bg-white border border-zinc-200 shadow-xl p-6">
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-200 mb-4">
-              <h3 className="font-bold text-base text-zinc-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#17352A]/40 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-2xl bg-white border border-[#DCE7DC] shadow-xl p-6">
+            <div className="flex items-center justify-between pb-3 border-b border-[#DCE7DC] mb-4">
+              <h3 className="font-bold text-base text-[#1D2923]">
                 {editingTable ? "Edit Dining Table" : "Add Dining Table"}
               </h3>
               <button
                 type="button"
                 onClick={closeForm}
-                className="text-zinc-400 hover:text-zinc-700"
+                className="text-[#687B70] hover:text-[#1D2923]"
               >
                 <CloseIcon className="w-5 h-5" />
               </button>
@@ -518,7 +518,7 @@ export default function TablesManagementPage() {
 
             <form onSubmit={saveTable} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#1D2923] mb-1.5">
                   Table Number / Identifier *
                 </label>
                 <input
@@ -527,12 +527,12 @@ export default function TablesManagementPage() {
                   value={form.table_number}
                   onChange={(e) => setForm({ ...form, table_number: e.target.value })}
                   placeholder="e.g. 1, 04, Patio 2, VIP-1"
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCE7DC] text-sm text-[#1D2923] focus:outline-none focus:ring-2 focus:ring-[#168548]/20 focus:border-[#168548]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#1D2923] mb-1.5">
                   Table Name / Section (Optional)
                 </label>
                 <input
@@ -540,22 +540,22 @@ export default function TablesManagementPage() {
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="e.g. Window Seat, Balcony Terrace"
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCE7DC] text-sm text-[#1D2923] focus:outline-none focus:ring-2 focus:ring-[#168548]/20 focus:border-[#168548]"
                 />
               </div>
 
-              <div className="flex justify-end gap-2.5 pt-4 border-t border-zinc-200">
+              <div className="flex justify-end gap-2.5 pt-4 border-t border-[#DCE7DC]">
                 <button
                   type="button"
                   onClick={closeForm}
-                  className="px-4 py-2 rounded-lg border border-zinc-200 text-xs font-semibold text-zinc-700 hover:bg-zinc-50"
+                  className="px-4 py-2 rounded-xl border border-[#DCE7DC] text-xs font-semibold text-[#687B70] hover:bg-[#F0F5EF]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold transition"
+                  className="px-4 py-2 rounded-xl bg-[#168548] hover:bg-[#11733D] text-white text-xs font-semibold transition shadow-xs"
                 >
                   {saving ? "Saving..." : editingTable ? "Save Changes" : "Create Table"}
                 </button>

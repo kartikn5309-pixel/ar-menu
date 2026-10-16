@@ -78,9 +78,9 @@ export default async function CustomerMenuPage({ params }: PageProps) {
   const categories = (categoryResult.data ?? []) as Category[];
   const items = (itemResult.data ?? []) as MenuItem[];
   return (
-    <main className="min-h-screen bg-[#FAF8F2] text-zinc-900 selection:bg-[#092C29]/10 selection:text-[#092C29]">
-      {/* Restaurant Hero Header */}
-      <header className="relative isolate overflow-hidden bg-[#092C29] text-white">
+    <main className="min-h-screen bg-[#F7FAF5] text-[#1D2923] selection:bg-[#DDF5E8] selection:text-[#168548]">
+      {/* Restaurant Hero Header (Deep Forest Green #17352A) */}
+      <header className="relative isolate overflow-hidden bg-[#17352A] text-white">
         {restaurant.cover_image_url && (
           <div
             className="absolute inset-0 -z-10 bg-cover bg-center opacity-25 mix-blend-overlay filter blur-[1px] scale-105 transition-transform duration-700"
@@ -88,20 +88,20 @@ export default async function CustomerMenuPage({ params }: PageProps) {
             aria-hidden="true"
           />
         )}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#092C29] via-[#092C29]/80 to-black/50" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#17352A] via-[#17352A]/85 to-black/40" />
 
         <div className="mx-auto max-w-5xl px-5 pt-6 pb-8 sm:px-8 sm:pb-12">
           {/* Top Brand & Table Bar */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#092C29] text-xs font-mono font-bold tracking-widest text-[#C6A15B] border border-[#C6A15B]/40 shadow-xs">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#168548] text-xs font-mono font-bold tracking-widest text-white border border-[#DDF5E8] shadow-xs">
                 AR
               </span>
               <div className="flex flex-col">
                 <span className="text-xs font-bold tracking-wider text-white uppercase leading-none">
                   AR MENU
                 </span>
-                <span className="text-[9px] font-mono tracking-widest text-[#C6A15B] uppercase mt-0.5">
+                <span className="text-[9px] font-mono tracking-widest text-[#DDF5E8] uppercase mt-0.5 font-semibold">
                   Digital Dining
                 </span>
               </div>
@@ -119,13 +119,13 @@ export default async function CustomerMenuPage({ params }: PageProps) {
               <div
                 role="img"
                 aria-label={`${restaurant.name} logo`}
-                className="h-20 w-20 shrink-0 rounded-2xl border-2 border-[#C6A15B]/30 bg-white bg-cover bg-center shadow-xl sm:h-24 sm:w-24"
+                className="h-20 w-20 shrink-0 rounded-2xl border-2 border-white/30 bg-white bg-cover bg-center shadow-xl sm:h-24 sm:w-24"
                 style={{ backgroundImage: `url("${restaurant.logo_url}")` }}
               />
             )}
 
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-mono font-bold uppercase tracking-[0.25em] text-[#C6A15B]">
+              <p className="text-[11px] font-mono font-bold uppercase tracking-[0.25em] text-[#DDF5E8]">
                 Culinary Experience
               </p>
               <h1 className="mt-1 font-serif text-3xl font-bold tracking-tight text-white sm:text-5xl">
@@ -133,25 +133,25 @@ export default async function CustomerMenuPage({ params }: PageProps) {
               </h1>
 
               {restaurant.description && (
-                <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-[#D9D4C8] sm:text-base">
+                <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-white/80 sm:text-base font-medium">
                   {restaurant.description}
                 </p>
               )}
 
               {(restaurant.address || restaurant.phone) && (
-                <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-[#D9D4C8]/80">
+                <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/70 font-medium">
                   {restaurant.address && (
                     <span className="inline-flex items-center gap-1.5">
-                      <svg className="h-3.5 w-3.5 text-[#C6A15B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M20 10c0 4.993-5.5 11.5-8 12-2.5-.5-8-7.007-8-12a8 8 0 0 1 16 0Z"/><circle cx={12} cy={10} r={3}/></svg>
+                      <svg className="h-3.5 w-3.5 text-[#DDF5E8] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M20 10c0 4.993-5.5 11.5-8 12-2.5-.5-8-7.007-8-12a8 8 0 0 1 16 0Z"/><circle cx={12} cy={10} r={3}/></svg>
                       {restaurant.address}
                     </span>
                   )}
                   {restaurant.phone && (
                     <a
                       href={`tel:${restaurant.phone}`}
-                      className="inline-flex items-center gap-1.5 text-white hover:text-[#C6A15B] underline decoration-[#C6A15B]/40 underline-offset-4 transition-colors"
+                      className="inline-flex items-center gap-1.5 text-white hover:text-[#DDF5E8] underline decoration-white/40 underline-offset-4 transition-colors"
                     >
-                      <svg className="h-3.5 w-3.5 text-[#C6A15B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+                      <svg className="h-3.5 w-3.5 text-[#DDF5E8] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
                       {restaurant.phone}
                     </a>
                   )}
@@ -172,20 +172,20 @@ export default async function CustomerMenuPage({ params }: PageProps) {
         />
 
         {items.length === 0 && (
-          <div className="mt-8 rounded-3xl border border-dashed border-[#E7E2D6] bg-white p-12 text-center shadow-xs">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-2xl text-amber-700 border border-amber-200">
+          <div className="mt-8 rounded-3xl border border-dashed border-[#DCE7DC] bg-white p-12 text-center shadow-xs">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#EAF7EF] text-2xl text-[#168548] border border-[#DCE7DC]">
               🍽️
             </div>
-            <h2 className="mt-4 text-xl font-bold text-zinc-900">Menu coming soon</h2>
-            <p className="mt-2 text-sm text-zinc-500 max-w-md mx-auto">
+            <h2 className="mt-4 text-xl font-bold text-[#1D2923]">Menu coming soon</h2>
+            <p className="mt-2 text-sm text-[#687B70] max-w-md mx-auto font-medium">
               This restaurant is currently curating their digital menu. Please check back shortly or ask a server for assistance.
             </p>
           </div>
         )}
       </div>
 
-      <footer className="border-t border-[#E7E2D6] bg-white/60 px-5 py-8 text-center text-xs font-medium text-zinc-500">
-        Powered by <span className="font-semibold text-[#092C29]">AR MENU</span> · Spatial Digital Dining
+      <footer className="border-t border-[#DCE7DC] bg-white px-5 py-8 text-center text-xs font-medium text-[#687B70]">
+        Powered by <span className="font-semibold text-[#168548]">AR MENU</span> · Spatial Digital Dining
       </footer>
     </main>
   );
@@ -207,18 +207,17 @@ function InvalidMenuLink({
   message?: string;
 }) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#faf9f5] px-5 text-center text-zinc-900">
-      <section className="w-full max-w-md rounded-3xl border border-stone-200 bg-white p-8 shadow-xl sm:p-10">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-xl font-bold text-orange-600 border border-orange-200">
+    <main className="flex min-h-screen items-center justify-center bg-[#F7FAF5] px-5 text-center text-[#1D2923]">
+      <section className="w-full max-w-md rounded-3xl border border-[#DCE7DC] bg-white p-8 shadow-xl sm:p-10">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-xl font-bold text-amber-700 border border-amber-200">
           !
         </div>
-        <h1 className="mt-5 text-2xl font-extrabold text-zinc-900">Menu Unavailable</h1>
-        <p className="mt-3 text-sm leading-relaxed text-zinc-500">{message}</p>
-        <div className="mt-6 rounded-2xl bg-stone-50 p-4 border border-stone-200/70 text-xs text-zinc-500">
+        <h1 className="mt-5 text-2xl font-bold text-[#1D2923]">Menu Unavailable</h1>
+        <p className="mt-3 text-sm leading-relaxed text-[#687B70] font-medium">{message}</p>
+        <div className="mt-6 rounded-2xl bg-[#F7FAF5] p-4 border border-[#DCE7DC] text-xs text-[#687B70] font-medium">
           Please rescan the QR code on your table or request assistance from the restaurant staff.
         </div>
       </section>
     </main>
   );
 }
-

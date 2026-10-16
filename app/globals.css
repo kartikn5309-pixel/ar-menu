@@ -1,34 +1,38 @@
 @import "tailwindcss";
 
 :root {
-  /* Legacy & Hospitality Base Variables */
-  --background: #0b1120;
-  --foreground: #f8fafc;
-  --surface: #0f172a;
-  --surface-raised: #1e293b;
-  --surface-subtle: #111827;
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-warm: rgba(255, 255, 255, 0.15);
-  --forest-emerald: #092c29;
-  --emerald-deep: #123f38;
-  --champagne-gold: #c6a15b;
-  --muted-sage: #5d8b82;
-  --veg-green: #22c55e;
-  --nonveg-red: #ef4444;
+  /* ===================================================
+     Grasshopper-Inspired Premium Green Design Tokens
+     =================================================== */
+  --primary-green: #168548;
+  --forest-green: #17352A;
+  --heading-text: #1D2923;
+  --soft-mint: #EAF7EF;
+  --page-bg: #F7FAF5;
+  --surface-white: #FFFFFF;
+  --subtle-mint: #DDF5E8;
+  --border-light: #DCE7DC;
+  --secondary-text: #687B70;
+  --muted-bg: #F0F5EF;
+  --hover-green: #11733D;
+  --success-green: #218653;
+  --warning-amber: #D97706;
+  --error-red: #DC2626;
 
-  /* Modern High-Value SaaS Identity Tokens */
-  --navy-950: #070b14;
-  --navy-900: #0b1120;
-  --navy-850: #0f172a;
-  --navy-800: #1e293b;
-  --navy-700: #334155;
-  --electric-indigo: #6366f1;
-  --electric-indigo-hover: #4f46e5;
-  --electric-purple: #8b5cf6;
-  --electric-violet: #7c3aed;
-  --electric-cyan: #38bdf8;
-  --electric-blue: #3b82f6;
-  --warm-gold: #f59e0b;
+  /* Standard Theme Variables */
+  --background: #F7FAF5;
+  --foreground: #1D2923;
+  --surface: #FFFFFF;
+  --surface-raised: #FFFFFF;
+  --surface-subtle: #F0F5EF;
+  --border-subtle: #DCE7DC;
+  --border-warm: #DCE7DC;
+  --forest-emerald: #17352A;
+  --emerald-deep: #17352A;
+  --champagne-gold: #168548;
+  --muted-sage: #687B70;
+  --veg-green: #218653;
+  --nonveg-red: #DC2626;
 
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
@@ -43,8 +47,8 @@
 }
 
 body {
-  background-color: var(--navy-900);
-  color: var(--foreground);
+  background-color: var(--page-bg);
+  color: var(--heading-text);
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -75,21 +79,22 @@ body {
 }
 
 /* ===================================================
-   Understated Hospitality Loading & Ambient System
+   Understated Brand Progress & Micro-Animations
    =================================================== */
 
-@keyframes goldLineGlide {
+@keyframes mintLineGlide {
   0% { transform: translateX(-100%); }
   50% { transform: translateX(60%); }
   100% { transform: translateX(220%); }
 }
 
-.animate-gold-line-glide {
-  animation: goldLineGlide 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+.animate-gold-line-glide,
+.animate-mint-line-glide {
+  animation: mintLineGlide 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.98); }
+  from { opacity: 0; transform: scale(0.985); }
   to { opacity: 1; transform: scale(1); }
 }
 
@@ -97,29 +102,21 @@ body {
   animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* ===================================================
-   Spatial SaaS — Ambient Glows & Dynamic Micro-Animations
-   =================================================== */
-
+/* Subtle Ambient Mint Atmosphere */
 @keyframes ambientGlow1 {
-  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.18; }
-  50% { transform: translate(36px, -24px) scale(1.12); opacity: 0.32; }
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.35; }
+  50% { transform: translate(24px, -16px) scale(1.08); opacity: 0.55; }
 }
 
 @keyframes ambientGlow2 {
-  0%, 100% { transform: translate(0, 0) scale(1.08); opacity: 0.14; }
-  50% { transform: translate(-32px, 28px) scale(0.94); opacity: 0.26; }
-}
-
-@keyframes ambientGlow3 {
-  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.12; }
-  50% { transform: translate(24px, 32px) scale(1.10); opacity: 0.24; }
+  0%, 100% { transform: translate(0, 0) scale(1.05); opacity: 0.25; }
+  50% { transform: translate(-20px, 20px) scale(0.95); opacity: 0.45; }
 }
 
 @keyframes scanArcSweep {
-  0% { transform: rotate(0deg); opacity: 0.35; }
+  0% { transform: rotate(0deg); opacity: 0.4; }
   50% { opacity: 0.75; }
-  100% { transform: rotate(360deg); opacity: 0.35; }
+  100% { transform: rotate(360deg); opacity: 0.4; }
 }
 
 @keyframes scanArcReverse {
@@ -127,48 +124,30 @@ body {
   100% { transform: rotate(0deg); }
 }
 
-@keyframes contourDrift {
-  0%, 100% { transform: translateY(0) scale(1); opacity: 0.08; }
-  50% { transform: translateY(-10px) scale(1.02); opacity: 0.16; }
-}
-
 @keyframes floatGentle {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-6px); }
 }
 
 @keyframes pulseGlow {
   0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.06); }
-}
-
-@keyframes shimmerSweep {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(200%); }
+  50% { opacity: 0.7; transform: scale(1.04); }
 }
 
 .animate-ambient-glow-1 {
-  animation: ambientGlow1 14s ease-in-out infinite;
+  animation: ambientGlow1 16s ease-in-out infinite;
 }
 
 .animate-ambient-glow-2 {
-  animation: ambientGlow2 18s ease-in-out infinite;
-}
-
-.animate-ambient-glow-3 {
-  animation: ambientGlow3 13s ease-in-out infinite;
+  animation: ambientGlow2 20s ease-in-out infinite;
 }
 
 .animate-scan-arc-sweep {
-  animation: scanArcSweep 20s linear infinite;
+  animation: scanArcSweep 24s linear infinite;
 }
 
 .animate-scan-arc-reverse {
-  animation: scanArcReverse 28s linear infinite;
-}
-
-.animate-contour-drift {
-  animation: contourDrift 16s ease-in-out infinite;
+  animation: scanArcReverse 32s linear infinite;
 }
 
 .animate-float-gentle {
@@ -179,54 +158,44 @@ body {
   animation: pulseGlow 4s ease-in-out infinite;
 }
 
-@keyframes kenBurnsSlow {
-  0% { transform: scale(1.0); }
-  100% { transform: scale(1.045); }
+/* Clean White & Soft Mint Card Utility Classes */
+.card-premium {
+  background-color: #FFFFFF;
+  border: 1px solid #DCE7DC;
+  box-shadow: 0 1px 3px rgba(23, 53, 42, 0.04), 0 1px 2px rgba(23, 53, 42, 0.02);
+  border-radius: 1rem;
 }
 
-.animate-ken-burns {
-  animation: kenBurnsSlow 4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.card-premium-interactive {
+  background-color: #FFFFFF;
+  border: 1px solid #DCE7DC;
+  box-shadow: 0 1px 3px rgba(23, 53, 42, 0.04), 0 1px 2px rgba(23, 53, 42, 0.02);
+  border-radius: 1rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Modern High-End Glassmorphism Utilities */
-.glass-panel-dark {
-  background: rgba(15, 23, 42, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.card-premium-interactive:hover {
+  transform: translateY(-2px);
+  border-color: #168548;
+  box-shadow: 0 12px 24px -6px rgba(22, 133, 72, 0.1);
 }
 
-.glass-panel-subtle {
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.glass-card-interactive {
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass-card-interactive:hover {
-  transform: translateY(-4px);
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.15);
+.hero-mint-glow {
+  background: radial-gradient(circle at 50% 15%, rgba(234, 247, 239, 0.9) 0%, rgba(221, 245, 232, 0.4) 45%, rgba(247, 250, 245, 0) 80%);
 }
 
 /* Reduced Motion Accessibility */
 @media (prefers-reduced-motion: reduce) {
   .animate-gold-line-glide,
+  .animate-mint-line-glide,
   .animate-fadeIn,
   .animate-ambient-glow-1,
   .animate-ambient-glow-2,
-  .animate-ambient-glow-3,
   .animate-scan-arc-sweep,
   .animate-scan-arc-reverse,
-  .animate-contour-drift,
   .animate-float-gentle,
   .animate-pulse-glow,
-  .animate-ken-burns,
-  .glass-card-interactive:hover,
+  .card-premium-interactive:hover,
   .scroll-reveal-item {
     animation: none !important;
     transform: none !important;

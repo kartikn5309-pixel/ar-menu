@@ -93,28 +93,28 @@ export default function OrderStatusPage({ params }: { params: Promise<{ orderId:
   );
 
   return (
-    <main className="min-h-screen bg-[#FAF8F2] px-4 py-8 text-stone-900 sm:px-8 sm:py-14">
-      <section className="mx-auto max-w-2xl rounded-3xl border border-[#EAE6DF] bg-white p-6 shadow-xl shadow-stone-900/5 sm:p-10">
+    <main className="min-h-screen bg-[#F7FAF5] px-4 py-8 text-[#1D2923] sm:px-8 sm:py-14">
+      <section className="mx-auto max-w-2xl rounded-3xl border border-[#DCE7DC] bg-white p-6 shadow-sm sm:p-10">
         {/* Order Success Header */}
-        <div className="flex items-center justify-between border-b border-[#F0ECE1] pb-6">
+        <div className="flex items-center justify-between border-b border-[#DCE7DC] pb-6">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EBF4F1] border border-[#CDE3DC] px-3.5 py-1 text-xs font-bold text-[#092C29]">
-              <span className="h-2 w-2 rounded-full bg-[#123F38] animate-pulse" />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EAF7EF] border border-[#DCE7DC] px-3.5 py-1 text-xs font-bold text-[#168548]">
+              <span className="h-2 w-2 rounded-full bg-[#168548] animate-pulse" />
               Order Placed Successfully
             </span>
-            <h1 className="mt-3 font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#092C29]">
+            <h1 className="mt-3 font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#1D2923]">
               {selectedOrder.order_number}
             </h1>
-            <p className="mt-1 text-xs sm:text-sm text-stone-500 font-medium">
-              {selectedOrder.restaurant_name} · <span className="font-semibold text-stone-700">{selectedOrder.table_name}</span>
+            <p className="mt-1 text-xs sm:text-sm text-[#687B70] font-medium">
+              {selectedOrder.restaurant_name} · <span className="font-semibold text-[#1D2923]">{selectedOrder.table_name}</span>
             </p>
           </div>
 
           <div className="hidden sm:block text-right">
-            <span className="text-[11px] font-bold text-stone-400 uppercase tracking-wider block">
+            <span className="text-[11px] font-bold text-[#687B70] uppercase tracking-wider block">
               Time Placed
             </span>
-            <span className="text-xs font-bold text-[#092C29]">
+            <span className="text-xs font-bold text-[#1D2923]">
               {new Date(selectedOrder.created_at).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
@@ -124,12 +124,12 @@ export default function OrderStatusPage({ params }: { params: Promise<{ orderId:
         </div>
 
         {/* Live Visual Status Tracker */}
-        <div className="mt-7 rounded-2xl border border-[#EAE6DF] bg-[#FAF8F2]/70 p-5 sm:p-6">
+        <div className="mt-7 rounded-2xl border border-[#DCE7DC] bg-[#F7FAF5] p-5 sm:p-6">
           <div className="flex items-center justify-between mb-5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#687B70]">
               Kitchen Preparation Status
             </span>
-            <span className="text-xs font-bold uppercase tracking-wider rounded-full px-3 py-1 bg-[#092C29] text-[#FAF8F2]">
+            <span className="text-xs font-bold uppercase tracking-wider rounded-full px-3 py-1 bg-[#168548] text-white">
               {selectedOrder.status}
             </span>
           </div>
@@ -151,15 +151,15 @@ export default function OrderStatusPage({ params }: { params: Promise<{ orderId:
                       <div
                         className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full text-xs font-bold transition-all shadow-xs ${
                           isCompleted
-                            ? "bg-[#092C29] text-[#FAF8F2]"
-                            : "bg-white border-2 border-stone-300 text-stone-400"
-                        } ${isCurrent ? "ring-4 ring-[#C6A15B]/30 scale-110 border-[#C6A15B]" : ""}`}
+                            ? "bg-[#168548] text-white"
+                            : "bg-white border-2 border-[#DCE7DC] text-[#687B70]"
+                        } ${isCurrent ? "ring-4 ring-[#168548]/20 scale-110 border-[#168548]" : ""}`}
                       >
                         {isCompleted && !isCurrent ? "✓" : idx + 1}
                       </div>
                       <span
                         className={`mt-2 text-[10px] sm:text-xs font-semibold max-w-[70px] ${
-                          isCompleted ? "text-[#092C29]" : "text-stone-400"
+                          isCompleted ? "text-[#168548]" : "text-[#687B70]"
                         }`}
                       >
                         {stage.label}
@@ -178,33 +178,33 @@ export default function OrderStatusPage({ params }: { params: Promise<{ orderId:
 
         {/* Order Receipt Breakdown */}
         <div className="mt-8">
-          <h2 className="text-[11px] font-bold uppercase tracking-wider text-stone-400 mb-3">
+          <h2 className="text-[11px] font-bold uppercase tracking-wider text-[#687B70] mb-3">
             Itemized Receipt
           </h2>
-          <div className="divide-y divide-[#F0ECE1] rounded-2xl border border-[#EAE6DF] bg-white px-4 sm:px-5">
+          <div className="divide-y divide-[#DCE7DC] rounded-2xl border border-[#DCE7DC] bg-white px-4 sm:px-5">
             {selectedOrder.items.map((item, idx) => (
               <div
                 key={`${item.item_name}-${idx}`}
                 className="flex items-center justify-between py-3.5 text-sm"
               >
                 <div className="flex items-center gap-3">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[#FAF8F2] border border-[#EAE6DF] text-xs font-bold text-[#092C29] tabular-nums">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[#F7FAF5] border border-[#DCE7DC] text-xs font-bold text-[#1D2923] tabular-nums">
                     {item.quantity}×
                   </span>
-                  <span className="font-semibold text-stone-900">
+                  <span className="font-semibold text-[#1D2923]">
                     {item.item_name}
                   </span>
                 </div>
-                <span className="font-bold text-[#092C29] tabular-nums">
+                <span className="font-bold text-[#168548] tabular-nums">
                   ₹{Number(item.line_total).toFixed(2)}
                 </span>
               </div>
             ))}
           </div>
 
-          <div className="mt-5 flex items-center justify-between px-2 text-base font-bold text-stone-900">
-            <span className="text-stone-600">Total Paid / Payable</span>
-            <span className="text-xl sm:text-2xl font-black text-[#092C29] tabular-nums">
+          <div className="mt-5 flex items-center justify-between px-2 text-base font-bold text-[#1D2923]">
+            <span className="text-[#687B70]">Total Paid / Payable</span>
+            <span className="text-xl sm:text-2xl font-black text-[#168548] tabular-nums">
               ₹{Number(selectedOrder.total).toFixed(2)}
             </span>
           </div>
@@ -212,9 +212,9 @@ export default function OrderStatusPage({ params }: { params: Promise<{ orderId:
 
         {/* Action: Order More dishes */}
         {selectedOrder.restaurant_id && selectedOrder.table_id && (
-          <div className="mt-8 pt-6 border-t border-[#F0ECE1] flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="mt-8 pt-6 border-t border-[#DCE7DC] flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <p className="text-xs font-medium text-stone-500">
+              <p className="text-xs font-medium text-[#687B70]">
                 Want to add more appetizers, drinks, or desserts?
               </p>
             </div>
@@ -225,7 +225,7 @@ export default function OrderStatusPage({ params }: { params: Promise<{ orderId:
                   `/menu/${selectedOrder.restaurant_id}/${selectedOrder.table_id}`
                 )
               }
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#092C29] hover:bg-[#123F38] active:scale-95 text-[#FAF8F2] px-6 py-3.5 text-sm font-bold shadow-md shadow-stone-900/10 transition-all cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#168548] hover:bg-[#11733D] active:scale-95 text-white px-6 py-3.5 text-sm font-semibold shadow-sm transition-all cursor-pointer"
             >
               <span>+ Order More Dishes</span>
             </button>
@@ -234,8 +234,8 @@ export default function OrderStatusPage({ params }: { params: Promise<{ orderId:
 
         {/* Previous Orders Switcher */}
         {savedOrders.length > 1 && (
-          <div className="mt-8 border-t border-[#F0ECE1] pt-6">
-            <h3 className="text-[11px] font-bold uppercase tracking-wider text-stone-400 mb-3">
+          <div className="mt-8 border-t border-[#DCE7DC] pt-6">
+            <h3 className="text-[11px] font-bold uppercase tracking-wider text-[#687B70] mb-3">
               Orders from this session
             </h3>
             <div className="space-y-2">
@@ -243,24 +243,24 @@ export default function OrderStatusPage({ params }: { params: Promise<{ orderId:
                 <button
                   key={savedOrder.order_id}
                   onClick={() => setSelectedOrderId(savedOrder.order_id)}
-                  className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition-all ${
+                  className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition-all cursor-pointer ${
                     savedOrder.order_id === selectedOrderId
-                      ? "border-[#092C29] bg-[#EBF4F1]/60 shadow-xs"
-                      : "border-[#EAE6DF] hover:border-stone-400 bg-white"
+                      ? "border-[#168548] bg-[#EAF7EF]/60 shadow-xs"
+                      : "border-[#DCE7DC] hover:border-[#168548]/40 bg-white"
                   }`}
                 >
                   <div>
-                    <span className="block text-sm font-bold text-[#092C29]">
+                    <span className="block text-sm font-bold text-[#1D2923]">
                       {orderStates[savedOrder.order_id]?.order?.order_number ??
                         `#${savedOrder.order_id.slice(0, 6)}`}
                     </span>
-                    <span className="text-xs capitalize text-stone-500">
+                    <span className="text-xs capitalize text-[#687B70] font-medium">
                       {orderStates[savedOrder.order_id]?.order?.status ??
                         orderStates[savedOrder.order_id]?.error ??
                         "Checking status..."}
                     </span>
                   </div>
-                  <span className="text-sm font-extrabold text-[#092C29] tabular-nums">
+                  <span className="text-sm font-extrabold text-[#168548] tabular-nums">
                     {orderStates[savedOrder.order_id]?.order
                       ? `₹${Number(
                           orderStates[savedOrder.order_id].order?.total
@@ -273,7 +273,7 @@ export default function OrderStatusPage({ params }: { params: Promise<{ orderId:
           </div>
         )}
 
-        <p className="mt-8 text-center text-[11px] font-medium text-stone-400">
+        <p className="mt-8 text-center text-[11px] font-medium text-[#687B70]">
           Live kitchen status refreshes automatically every 15 seconds.
         </p>
       </section>
@@ -283,11 +283,11 @@ export default function OrderStatusPage({ params }: { params: Promise<{ orderId:
 
 function Message({ title, message }: { title: string; message: string }) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#FAF8F2] px-5 text-center text-stone-900">
-      <section className="w-full max-w-md rounded-3xl border border-[#EAE6DF] bg-white p-8 shadow-xl shadow-stone-900/5">
-        <h1 className="text-xl font-bold text-[#092C29]">{title}</h1>
-        <p className="mt-3 text-sm leading-relaxed text-stone-500">{message}</p>
+    <main className="flex min-h-screen items-center justify-center bg-[#F7FAF5] px-5 text-center text-[#1D2923]">
+      <section className="w-full max-w-md rounded-3xl border border-[#DCE7DC] bg-white p-8 shadow-sm">
+        <h1 className="text-xl font-bold text-[#1D2923]">{title}</h1>
+        <p className="mt-3 text-sm leading-relaxed text-[#687B70] font-medium">{message}</p>
       </section>
     </main>
   );
-}
+}
